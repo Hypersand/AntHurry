@@ -1,1 +1,31 @@
+spring:
+  datasource:
+    driver-class-name: '${custom.prod_database.driver-class-name}'
+    url: '${custom.prod_database.url}'
+    username: '${custom.prod_database.username}'
+    password: '${custom.prod_database.password}'
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
+        use_sql_comments: false
+  servlet:
+    multipart:
+      maxFileSize: 10MB
+      maxRequestSize: 10MB
+      location: ${custom.prod_fileLocation}
+      enabled: true
 
+
+logging:
+  level:
+    root: INFO
+    com.ll.weflea: INFO
+    org.hibernate.orm.jdbc.bind: INFO
+    org.hibernate.orm.jdbc.extract: INFO
+custom:
+  site:
+    baseUrl:
