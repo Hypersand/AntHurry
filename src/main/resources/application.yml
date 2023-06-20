@@ -1,0 +1,54 @@
+spring:
+  mvc:
+    hidden-method:
+      filter:
+        enabled: true
+  profiles:
+    active: dev
+    include: secret
+  datasource:
+    driver-class-name: '${custom.dev_database.driver-class-name}'
+    url: '${custom.dev_database.url}'
+    username: '${custom.dev_database.username}'
+    password: '${custom.dev_database.password}'
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            scope:
+            client-name: Kakao
+            authorization-grant-type: authorization_code
+            redirect-uri: '${custom.site.baseUrl}/login/oauth2/code/kakao'
+            client-authentication-method: POST
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        default_batch_fetch_size: 200
+  servlet:
+    multipart:
+      maxFileSize: 10MB
+      maxRequestSize: 10MB
+      location: ${custom.dev_fileLocation}
+      enabled: true
+
+
+logging:
+  level:
+    root: INFO
+    com.ll.weflea: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+custom:
+  site:
+    baseUrl: http://localhost:8080
