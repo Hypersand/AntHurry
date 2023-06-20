@@ -47,7 +47,7 @@ spring:
 logging:
   level:
     root: INFO
-    com.ll.weflea: DEBUG
+    com.ant.hurry: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
 custom:
   site:
