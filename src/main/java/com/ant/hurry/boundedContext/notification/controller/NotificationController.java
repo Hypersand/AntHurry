@@ -10,5 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class NotificationController {
 
 
+    //알림목록 페이지
+    public String list() {
+
+        return "notification/list";
+    }
+
+
+
+
 
 }
