@@ -34,6 +34,8 @@ public class Member extends BaseEntity {
 
     private String providerTypeCode; //일반, 카카오 등 어떤 회원가입인지 구별
 
+    private int coin = 0;
+
 
     public List<? extends GrantedAuthority> getGrantedAuthorities() {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
