@@ -1,4 +1,4 @@
-package com.ant.hurry.base.api.dto;
+package com.ant.hurry.base.region.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
