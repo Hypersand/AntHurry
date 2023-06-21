@@ -56,7 +56,7 @@ public class Rq {
 //
 //        return getMember().isAdmin();
 //    }
-
+//
 //    public boolean isRefererAdminPage() {
 //        SavedRequest savedRequest = (SavedRequest) session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
 //
@@ -65,28 +65,28 @@ public class Rq {
 //        String referer = savedRequest.getRedirectUrl();
 //        return referer != null && referer.contains("/adm");
 //    }
-//
-//    // 로그인 되어 있는지 체크
-//    public boolean isLogin() {
-//        return user != null;
-//    }
-//
-//    // 로그아웃 되어 있는지 체크
-//    public boolean isLogout() {
-//        return !isLogin();
-//    }
-//
-//    // 로그인 된 회원의 객체
-//    public Member getMember() {
-//        if (isLogout()) return null;
-//
-//        // 데이터가 없는지 체크
-//        if (member == null) {
-//            member = memberService.findByUsername(user.getUsername()).orElseThrow();
-//        }
-//
-//        return member;
-//    }
+
+    // 로그인 되어 있는지 체크
+    public boolean isLogin() {
+        return user != null;
+    }
+
+    // 로그아웃 되어 있는지 체크
+    public boolean isLogout() {
+        return !isLogin();
+    }
+
+    // 로그인 된 회원의 객체
+    public Member getMember() {
+        if (isLogout()) return null;
+
+        // 데이터가 없는지 체크
+        if (member == null) {
+            member = memberService.findByNickname(user.getUsername()).orElseThrow();
+        }
+
+        return member;
+    }
 
     // 뒤로가기 + 메세지
     public String historyBack(String msg) {

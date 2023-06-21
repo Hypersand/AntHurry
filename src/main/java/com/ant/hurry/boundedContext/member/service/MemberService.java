@@ -45,4 +45,7 @@ public class MemberService {
         return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
     }
 
+    public Optional<Member> findByNickname(String nickname) {
+        return memberRepository.findByNickname(nickname);
+    }
 }
