@@ -17,8 +17,6 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-
-
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -31,9 +29,9 @@ public class SmsController {
     @PostMapping("/user/sms")
     @PreAuthorize("permitAll()")
     public ResponseEntity<SmsResponse> test(@RequestBody SendRequest request) throws NoSuchAlgorithmException, URISyntaxException, UnsupportedEncodingException, InvalidKeyException, JsonProcessingException, UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
-        log.info("request phone = {}", request.getRecipientPhoneNumber());
+        log.info("request phone = {}", request.getReceiverPhoneNumber());
         log.info("request message = {}", request.getContent());
-        SmsResponse data = smsService.sendSms(request.getRecipientPhoneNumber(), request.getContent());
+        SmsResponse data = smsService.sendSms(request.getReceiverPhoneNumber(), request.getContent());
         return ResponseEntity.ok().body(data);
     }
 }

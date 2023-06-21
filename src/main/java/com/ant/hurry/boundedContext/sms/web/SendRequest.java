@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @Getter
 public class SendRequest {
-    private String recipientPhoneNumber;
+    private String receiverPhoneNumber;
     private String title;
     private String content;
 
