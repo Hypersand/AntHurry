@@ -23,7 +23,7 @@ public class MemberService {
     // 소셜 로그인(카카오, 구글, 네이버) 로그인이 될 때 마다 실행되는 함수
     @Transactional
     public RsData<Member> whenSocialLogin(String providerTypeCode, String username) {
-        Optional<Member> opMember = memberRepository.findByNickname(username); // username 예시 : KAKAO__1312319038130912, NAVER__1230812300
+        Optional<Member> opMember = memberRepository.findByUsername(username); // username 예시 : KAKAO__1312319038130912, NAVER__1230812300
 
         if (opMember.isPresent())
             return RsData.of("S-2", "로그인 되었습니다.", opMember.get());
@@ -32,10 +32,11 @@ public class MemberService {
         return createAndSave(username, "", "", providerTypeCode); // 최초 로그인 시 딱 한번 실행
     }
 
-    private RsData<Member> createAndSave(String nickname, String password, String phone, String providerTypeCode) {
+    private RsData<Member> createAndSave(String username, String password, String phone, String providerTypeCode) {
         Member member = Member
                 .builder()
-                .nickname(nickname)
+                .username(username)
+                .nickname(username) //소셜 로그인 초기 닉네임은 username 과 동일
                 .password(passwordEncoder.encode(password))
                 .phoneNumber(phone)
                 .providerTypeCode(providerTypeCode)
@@ -45,7 +46,7 @@ public class MemberService {
         return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
     }
 
-    public Optional<Member> findByNickname(String nickname) {
-        return memberRepository.findByNickname(nickname);
+    public Optional<Member> findByUsername(String username) {
+        return memberRepository.findByUsername(username);
     }
 }
