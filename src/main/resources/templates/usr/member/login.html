@@ -6,12 +6,56 @@
     <title>로그인 페이지</title>
 </head>
 <body>
-    <main layout:fragment="main" class="flex-grow flex items-center justify-center">
+    <main layout:fragment="main">
 
-        <a href="/oauth2/authorization/kakao" class="btn btn-block btn-outline gap-1">
-            <i class="fa-solid fa-comment text-[color:#ffe812]"></i>
-            <span class="normal-case">카카오 로그인</span>
-        </a>
+
+        <section class="navbar bg-base-100">
+            <div class="navbar-start">
+                <div class="dropdown">
+                    <label tabindex="0" class="btn btn-ghost btn-circle">
+                        <i class="fa-solid fa-bars"></i>
+                    </label>
+                    <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
+                        <li>
+                            <a th:href="@{/}">
+                                <span>메인</span>
+                            </a>
+                        </li>
+                        <li th:if="${@rq.logout}">
+                            <a href="/usr/member/login">
+                                <span>로그인</span>
+                            </a>
+                        </li>
+                        <li th:if="${@rq.login}">
+                            <a href="javascript:" onclick="$(this).next().submit();">
+                                <span>로그아웃</span>
+                            </a>
+                            <form class="!hidden" hidden th:action="|/usr/member/logout|" method="POST"></form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="navbar-center">
+                <a class="font-black">로그인 페이지</a>
+            </div>
+            <div class="navbar-end">
+                <button class="btn btn-ghost btn-circle">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+            </div>
+        </section>
+
+        <div class="text-center">
+
+            <div th:if="${@rq.logout}">
+                <!-- 로그인하지 않은 경우, 로그인 버튼을 보여줌 -->
+                <a href="/oauth2/authorization/kakao" class="btn btn-block btn-outline gap-1">
+                    <i class="fa-solid fa-comment text-[color:#ffe812]"></i>
+                    <span class="normal-case">카카오 로그인</span>
+                </a>
+            </div>
+        </div>
+
 
     </main>
 
