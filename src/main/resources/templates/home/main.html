@@ -8,30 +8,45 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <!-- 제이쿼리 불러오기 -->
+    <!--    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.6/dist/full.css" rel="stylesheet" type="text/css" />-->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.1.0/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/87140d707c.js" crossorigin="anonymous"></script>
+    <!-- toastr 불러오기 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
-    <!-- toastr 불러오기 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
     <link rel="stylesheet" href="https://jhs512.github.io/toastr/toastr.css">
 
-    <!-- 폰트어썸 아이콘 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- 아이콘 목록 : https://fontawesome.com/search?o=r&m=free -->
-
-    <!-- 공통 JS 불러오기 -->
     <script src="/resource/common/common.js"></script>
-    <!-- 공통 CSS 불러오기 -->
-    <link rel="stylesheet" href="/resource/common/common.css">
+    <link href="/resource/common/common.css" rel="stylesheet">
 </head>
 
 <body class="w-screen">
-<!-- 데이지 UI 불러오기 -->
-<link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css"/>
-<!-- 테일윈드 불러오기 -->
-<script src="https://cdn.tailwindcss.com"></script>
 
-<main layout:fragment="main"></main>
+<main layout:fragment="main">
+    <section class="navbar bg-base-100">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">메인</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </section>
+
+    <div class="text-center">
+        Main
+    </div>
+</main>
 
 <div th:replace="~{common/navbar :: navbar}"></div>
 
@@ -62,5 +77,3 @@
 </body>
 
 </html>
-
-
