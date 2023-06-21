@@ -1,5 +1,6 @@
 package com.ant.hurry.boundedContext.board.controller;
 
+import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.Board;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class BoardController {
 
     private final BoardService boardService;
+    private final Rq rq;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
@@ -29,11 +31,16 @@ public class BoardController {
         return "board/create";
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/create")
-    public String createBoard(@Valid @ModelAttribute CreateRequest createRequest){
-
-        return "board/create";
-    }
+//    @PreAuthorize("isAuthenticated()")
+//    @PostMapping("/create")
+//    public String createBoard(@Valid CreateRequest createRequest){
+//        RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
+//        if(checkUserCoin.isFail()){
+//            return rq.historyBack(checkUserCoin);
+//        }
+//        boardService.addressConvert(createRequest);
+//        RsData<Board> boardRs = boardService.write(rq.getMember(), createRequest);
+//        return rq.redirectWithMsg("/board/list", boardRs);
+//    }
 
 }
