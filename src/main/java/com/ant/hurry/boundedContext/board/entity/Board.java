@@ -20,7 +20,7 @@ public class Board extends BaseEntity {
 
     private String title;
 
-    private String contents;
+    private String content;
 
     private double x;
 

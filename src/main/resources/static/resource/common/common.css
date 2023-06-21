@@ -40,3 +40,7 @@ html > body {
 .border-main {
     border: 2px solid #FF626F;
 }
+
+input[type="submit"] {
+    background-color: #FF626F;
+}
