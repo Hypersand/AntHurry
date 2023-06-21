@@ -6,9 +6,11 @@ import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.repository.BoardRepository;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Optional;
 
@@ -17,18 +19,21 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class BoardService {
 
+    private final Rq rq;
     private final BoardRepository boardRepository;
+    private final MemberService memberService;
 
-//    public RsData hasEnoughCoin(int rewardCoin) {
-//        Optional<Member> member = memberService.findByMemberId(rq.getMember().getId()).orElse(null);
-//        if(member.isEmpty()){
-//            return RsData.of("F-1", "유저정보가 없습니다.");
-//        }
-//        if(member.getCoin < rewardCoin){
-//            return RsData.of("F-1", "유저의 코인이 부족합니다.");
-//        }
-//        return RsData.of("S-1", "충분한 코인을 가지고있습니다.");
-//    }
+    public RsData hasEnoughCoin(int rewardCoin) {
+        Member member = memberService.findById(rq.getMember().getId()).orElse(null);
+        if(ObjectUtils.isEmpty(member)){
+            return RsData.of("F-1", "유저정보가 없습니다.");
+        }
+        if(member.getCoin() < rewardCoin){
+            return RsData.of("F-1", "유저의 코인이 부족합니다.");
+        }
+        member.decreaseCoin(rewardCoin);
+        return RsData.of("S-1", "충분한 코인을 가지고있습니다.");
+    }
 
     @Transactional
     public RsData<Board> write(Member member, CreateRequest createRequest){
@@ -48,6 +53,6 @@ public class BoardService {
     }
 
     public void addressConvert(CreateRequest createRequest) {
-//        createRequest.addressConvert(x, y, regCode);
+//        createRequest.addressConvert();
     }
 }

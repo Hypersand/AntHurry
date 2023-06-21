@@ -24,23 +24,23 @@ public class BoardController {
     private final BoardService boardService;
     private final Rq rq;
 
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
     public String createBoard(Model model){
         model.addAttribute("boardTypes", BoardType.values());
         return "board/create";
     }
 
-//    @PreAuthorize("isAuthenticated()")
-//    @PostMapping("/create")
-//    public String createBoard(@Valid CreateRequest createRequest){
-//        RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
-//        if(checkUserCoin.isFail()){
-//            return rq.historyBack(checkUserCoin);
-//        }
-//        boardService.addressConvert(createRequest);
-//        RsData<Board> boardRs = boardService.write(rq.getMember(), createRequest);
-//        return rq.redirectWithMsg("/board/list", boardRs);
-//    }
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/create")
+    public String createBoard(@Valid CreateRequest createRequest){
+        RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
+        if(checkUserCoin.isFail()){
+            return rq.historyBack(checkUserCoin);
+        }
+        boardService.addressConvert(createRequest);
+        RsData<Board> boardRs = boardService.write(rq.getMember(), createRequest);
+        return rq.redirectWithMsg("/board/list", boardRs);
+    }
 
 }

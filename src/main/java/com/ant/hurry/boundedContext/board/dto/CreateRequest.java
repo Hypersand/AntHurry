@@ -22,11 +22,11 @@ public class CreateRequest {
     @NotNull
     private int rewardCoin;
     @Setter
-    private double x;
+    private Double x;
     @Setter
-    private double y;
+    private Double y;
     @Setter
-    private int regCode;
+    private Integer regCode=0;
 
     public void addressConvert(double x, double y, int regCode){
         this.x = x;

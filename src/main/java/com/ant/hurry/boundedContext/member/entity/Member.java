@@ -48,4 +48,12 @@ public class Member extends BaseEntity {
 
         return grantedAuthorities;
     }
+
+    public void decreaseCoin(int coinAmount){
+        coin -= coinAmount;
+    }
+
+    public void increaseCoin(int coinAmount){
+        coin += coinAmount;
+    }
 }
