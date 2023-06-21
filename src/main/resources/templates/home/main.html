@@ -28,9 +28,27 @@
     <section class="navbar bg-base-100">
         <div class="navbar-start">
             <div class="dropdown">
-                <a href="#" tabindex="0" class="btn btn-ghost btn-circle">
-                    <i class="fa-solid fa-angle-left"></i>
-                </a>
+                <label tabindex="0" class="btn btn-ghost btn-circle">
+                    <i class="fa-solid fa-bars"></i>
+                </label>
+                <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
+                    <li>
+                        <a th:href="@{/}">
+                            <span>메인</span>
+                        </a>
+                    </li>
+                    <li th:if="${@rq.logout}">
+                        <a th:href="@{|/usr/member/login|}">
+                            <span>로그인</span>
+                        </a>
+                    </li>
+                    <li th:if="${@rq.login}">
+                        <a href="javascript:" onclick="$(this).next().submit();">
+                            <span>로그아웃</span>
+                        </a>
+                        <form class="!hidden" hidden th:action="|/usr/member/logout|" method="POST"></form>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="navbar-center">
