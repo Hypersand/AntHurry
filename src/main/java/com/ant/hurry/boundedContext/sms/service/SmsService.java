@@ -47,7 +47,7 @@ public class SmsService {
         List<MessageDto> messages = new ArrayList<>();
         messages.add(new MessageDto(receiverPhoneNumber, content));
 
-        SmsRequest smsRequest = new SmsRequest("SMS", "COMM", "82", senderPhone, "내용", messages);
+        SmsRequest smsRequest = new SmsRequest("SMS", "COMM", "82", senderPhone, content, messages);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonBody = objectMapper.writeValueAsString(smsRequest);
 

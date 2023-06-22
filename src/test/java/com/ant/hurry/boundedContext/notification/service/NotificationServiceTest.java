@@ -18,9 +18,8 @@ import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import static org.assertj.core.api.Assertions.*;
-
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 @SpringBootTest
@@ -54,21 +53,26 @@ class NotificationServiceTest {
 
         //then
         long 채팅시작_알림_이벤트_카운트 = events.stream(NotifyNewMessageEvent.class).count();
-        long 거래종료_알림_이벤트_카운트 = events.stream(NotifyEndMessageEvent.class).count();
+        long 거래완료_알림_이벤트_카운트 = events.stream(NotifyEndMessageEvent.class).count();
         long 거래파기_알림_이벤트_카운트 = events.stream(NotifyCancelMessageEvent.class).count();
 
-        assertThat(채팅시작_알림_이벤트_카운트).isEqualTo(1L);
-        assertThat(거래종료_알림_이벤트_카운트).isEqualTo(0L);
-        assertThat(거래파기_알림_이벤트_카운트).isEqualTo(0L);
+        assertAll(
+                () -> assertThat(채팅시작_알림_이벤트_카운트).isEqualTo(1L),
+                () -> assertThat(거래완료_알림_이벤트_카운트).isEqualTo(0L),
+                () -> assertThat(거래파기_알림_이벤트_카운트).isEqualTo(0L)
+        );
 
-        assertThat(notification.getMessage()).isEqualTo("채팅시작테스트");
-        assertThat(notification.getHelper()).isEqualTo(helper);
-        assertThat(notification.getRequester()).isEqualTo(requester);
+
+        assertAll(
+                () -> assertThat(notification.getMessage()).isEqualTo("채팅시작테스트"),
+                () -> assertThat(notification.getHelper()).isEqualTo(helper),
+                () -> assertThat(notification.getRequester()).isEqualTo(requester)
+        );
 
     }
 
     @Test
-    @DisplayName("거래를 종료하면 알림 엔티티가 생성되고 알림 이벤트가 발생한다.")
+    @DisplayName("거래를 완료하면 알림 엔티티가 생성되고 알림 이벤트가 발생한다.")
     void notifyEnd() {
 
         //when
@@ -76,16 +80,21 @@ class NotificationServiceTest {
 
         //then
         long 채팅시작_알림_이벤트_카운트 = events.stream(NotifyNewMessageEvent.class).count();
-        long 거래종료_알림_이벤트_카운트 = events.stream(NotifyEndMessageEvent.class).count();
+        long 거래완료_알림_이벤트_카운트 = events.stream(NotifyEndMessageEvent.class).count();
         long 거래파기_알림_이벤트_카운트 = events.stream(NotifyCancelMessageEvent.class).count();
 
-        assertThat(채팅시작_알림_이벤트_카운트).isEqualTo(0L);
-        assertThat(거래종료_알림_이벤트_카운트).isEqualTo(1L);
-        assertThat(거래파기_알림_이벤트_카운트).isEqualTo(0L);
+        assertAll(
+                () -> assertThat(채팅시작_알림_이벤트_카운트).isEqualTo(0L),
+                () -> assertThat(거래완료_알림_이벤트_카운트).isEqualTo(1L),
+                () -> assertThat(거래파기_알림_이벤트_카운트).isEqualTo(0L)
+        );
 
-        assertThat(notification.getMessage()).isEqualTo("거래완료테스트");
-        assertThat(notification.getHelper()).isEqualTo(helper);
-        assertThat(notification.getRequester()).isEqualTo(requester);
+
+        assertAll(
+                () -> assertThat(notification.getMessage()).isEqualTo("거래완료테스트"),
+                () -> assertThat(notification.getHelper()).isEqualTo(helper),
+                () -> assertThat(notification.getRequester()).isEqualTo(requester)
+        );
 
     }
 
@@ -98,16 +107,21 @@ class NotificationServiceTest {
 
         //then
         long 채팅시작_알림_이벤트_카운트 = events.stream(NotifyNewMessageEvent.class).count();
-        long 거래종료_알림_이벤트_카운트 = events.stream(NotifyEndMessageEvent.class).count();
+        long 거래완료_알림_이벤트_카운트 = events.stream(NotifyEndMessageEvent.class).count();
         long 거래파기_알림_이벤트_카운트 = events.stream(NotifyCancelMessageEvent.class).count();
 
-        assertThat(채팅시작_알림_이벤트_카운트).isEqualTo(0L);
-        assertThat(거래종료_알림_이벤트_카운트).isEqualTo(0L);
-        assertThat(거래파기_알림_이벤트_카운트).isEqualTo(1L);
+        assertAll(
+                () -> assertThat(채팅시작_알림_이벤트_카운트).isEqualTo(0L),
+                () -> assertThat(거래완료_알림_이벤트_카운트).isEqualTo(0L),
+                () -> assertThat(거래파기_알림_이벤트_카운트).isEqualTo(1L)
+        );
 
-        assertThat(notification.getMessage()).isEqualTo("거래파기테스트");
-        assertThat(notification.getHelper()).isEqualTo(helper);
-        assertThat(notification.getRequester()).isEqualTo(requester);
+
+        assertAll(
+                () -> assertThat(notification.getMessage()).isEqualTo("거래파기테스트"),
+                () -> assertThat(notification.getHelper()).isEqualTo(helper),
+                () -> assertThat(notification.getRequester()).isEqualTo(requester)
+        );
 
     }
 
