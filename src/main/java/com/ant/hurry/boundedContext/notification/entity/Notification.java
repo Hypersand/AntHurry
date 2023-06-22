@@ -7,13 +7,11 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 @SuperBuilder
 public class Notification extends BaseEntity {
 
@@ -24,4 +22,16 @@ public class Notification extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member helper;
+
+    protected Notification() {
+    }
+
+    public static Notification create(String message, Member requester, Member helper) {
+        return Notification.builder()
+                .message(message)
+                .requester(requester)
+                .helper(helper)
+                .build();
+
+    }
 }
