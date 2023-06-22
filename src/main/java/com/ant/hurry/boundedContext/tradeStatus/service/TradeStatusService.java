@@ -19,7 +19,7 @@ public class TradeStatusService {
     private final TradeStatusRepository tradeStatusRepository;
 
     public TradeStatus create(Board board, Member requester, Member helper) {
-        if(requester.equals(helper)) {
+        if (requester.equals(helper)) {
 //            [ErrorCode] 본인의 게시글입니다.
         }
         TradeStatus tradeStatus = TradeStatus.builder()
@@ -33,7 +33,7 @@ public class TradeStatusService {
     }
 
     public TradeStatus updateStatus(TradeStatus tradeStatus, Status status) {
-        if(!canUpdateStatus(tradeStatus, status)) {
+        if (!canUpdateStatus(tradeStatus, status)) {
 //            [ErrorCode] return ErrorCode
             return null;
         }
@@ -50,19 +50,16 @@ public class TradeStatusService {
      */
     private boolean canUpdateStatus(TradeStatus tradeStatus, Status status) {
         Status target = tradeStatus.getStatus();
-        if(!target.equals(BEFORE) && status.equals(INPROGRESS)) {
+        if (!target.equals(BEFORE) && status.equals(INPROGRESS)) {
 //            [ErrorCode]진행 이력이 있는 거래입니다.
             return false;
         }
-        if(!target.equals(INPROGRESS) && status.equals(COMPLETE)) {
+        if (!target.equals(INPROGRESS) && status.equals(COMPLETE)) {
 //            [ErrorCode] 현재 진행 중인 거래만 완료할 수 있습니다.
             return false;
         }
-        if(target.equals(COMPLETE) && status.equals(CANCLED)) {
-//            [ErrorCode] 이미 완료된 거래입니다.
-            return false;
-        }
-        return true;
+        //            [ErrorCode] 이미 완료된 거래입니다.
+        return !target.equals(COMPLETE) || !status.equals(CANCLED);
     }
 
     public List<TradeStatus> findByMember(Member member) {
