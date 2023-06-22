@@ -1,34 +1,12 @@
-<!DOCTYPE html>
-<html data-theme="light" xmlns:th="http://www.thymeleaf.org">
+<html layout:decorate="~{usr/layout/layout.html}">
 
 <head>
-    <meta charset="UTF-8">
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    <!--    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.6/dist/full.css" rel="stylesheet" type="text/css" />-->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.1.0/dist/full.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://kit.fontawesome.com/87140d707c.js" crossorigin="anonymous"></script>
-    <!-- toastr 불러오기 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
-    <link rel="stylesheet" href="https://jhs512.github.io/toastr/toastr.css">
-
-    <script src="/resource/common/common.js"></script>
-    <link href="/resource/common/common.css" rel="stylesheet">
-
-    <!-- Kakao 우편번호 서비스 -->
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <title>게시판 작성</title>
 </head>
 
-<body class="w-screen">
-
-<main layout:fragment="main">
-    <section class="navbar bg-base-100">
+<body>
+<header layout:fragment="header">
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
         <div class="navbar-start">
             <div class="dropdown">
                 <a href="#" tabindex="0" class="btn btn-ghost btn-circle">
@@ -44,7 +22,10 @@
                 <i class="fa-solid fa-ellipsis-vertical"></i>
             </button>
         </div>
-    </section>
+    </div>
+</header>
+
+<main layout:fragment="main">
 
     <div class="text-center">
         <form th:action method="POST">
@@ -74,44 +55,6 @@
         </form>
     </div>
 </main>
-
-<div th:replace="~{common/navbar :: navbar}"></div>
-
-<script th:inline="javascript">
-    // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
-    const params = /*[[ ${param} ]]*/ null;
-
-    if (params.msg) {
-        toastNotice(params.msg[0]);
-    }
-
-    if (params.errorMsg) {
-        toastWarning(params.errorMsg[0]);
-    }
-
-    // history.back 에 의해서 돌아온 경우에 실행됨
-    // 평소에도 실행됨
-    $(window).bind("pageshow", function (event) {
-        const localStorageKeyAboutHistoryBackErrorMsg = "historyBackErrorMsg___" + location.href;
-
-        if (localStorage.getItem(localStorageKeyAboutHistoryBackErrorMsg)) {
-            toastWarning(localStorage.getItem(localStorageKeyAboutHistoryBackErrorMsg));
-            localStorage.removeItem(localStorageKeyAboutHistoryBackErrorMsg);
-        }
-    });
-
-    // 카카오 우편 서비스
-    window.onload = function() {
-        document.getElementById("address_kakao").addEventListener("click", function(){
-
-            new daum.Postcode({
-                oncomplete: function(data) {
-                    document.getElementById("address_kakao").value = data.address;
-                }
-            }).open();
-        });
-    }
-</script>
 
 </body>
 
