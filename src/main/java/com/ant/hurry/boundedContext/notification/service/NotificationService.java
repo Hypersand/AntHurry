@@ -35,7 +35,7 @@ public class NotificationService {
         String content = "채팅시작테스트";
 
         //알림 엔티티 생성
-        Notification notification = Notification.create(content, requester, helper);
+        Notification notification = Notification.create(content, "START", requester, helper);
         notificationRepository.save(notification);
 
         //채팅시작알림 이벤트 발생 (content 수정 필요)
@@ -52,7 +52,7 @@ public class NotificationService {
         String content = "거래완료테스트";
 
         //알림 엔티티 생성
-        Notification notification = Notification.create(content, requester, helper);
+        Notification notification = Notification.create(content, "END", requester, helper);
         notificationRepository.save(notification);
 
         //거래 완료 알림 이벤트 발생 (content 수정 필요)
@@ -69,7 +69,8 @@ public class NotificationService {
         String content = "거래파기테스트";
 
         //알림 엔티티 생성
-        Notification notification = Notification.create(content, requester, helper);
+        Notification notification = Notification.create(content, "CANCEL", requester, helper);
+
         notificationRepository.save(notification);
 
         //거래 파기 알림 이벤트 발생 (title, content 수정 필요)
