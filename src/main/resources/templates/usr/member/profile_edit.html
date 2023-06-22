@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html data-theme="light" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <!--    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.6/dist/full.css" rel="stylesheet" type="text/css" />-->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@3.1.0/dist/full.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/87140d707c.js" crossorigin="anonymous"></script>
+  <!-- toastr 불러오기 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+  <link rel="stylesheet" href="https://jhs512.github.io/toastr/toastr.css">
+
+  <script src="/resource/common/common.js"></script>
+  <link href="/resource/common/common.css" rel="stylesheet">
+</head>
+
+<body class="w-screen">
+
+<main layout:fragment="main">
+  <section class="navbar bg-base-100">
+    <div class="navbar-start">
+      <div class="dropdown">
+        <label tabindex="0" class="btn btn-ghost btn-circle">
+          <i class="fa-solid fa-bars"></i>
+        </label>
+        <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
+          <li>
+            <a th:href="@{/}">
+              <span>메인</span>
+            </a>
+          </li>
+          <li th:if="${@rq.logout}">
+            <a th:href="@{|/usr/member/login|}">
+              <span>로그인</span>
+            </a>
+          </li>
+          <li th:if="${@rq.login}">
+            <a href="javascript:" onclick="$(this).next().submit();">
+              <span>로그아웃</span>
+            </a>
+            <form class="!hidden" hidden th:action="|/usr/member/logout|" method="POST"></form>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="navbar-center">
+      <a class="font-black">프로필 페이지</a>
+    </div>
+    <div class="navbar-end">
+      <button class="btn btn-ghost btn-circle">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+      </button>
+    </div>
+  </section>
+
+  <div class="flex-grow flex justify-center align-center">
+    <form id="profileUpdateForm" class="flex flex-col">
+      <div class="input-group">
+        <label>기존 닉네임</label>
+        <p th:text="${member.nickname}" class="mx-1"></p>
+      </div>
+      <div class="input-group mt-3">
+        <label for="nickname">닉네임</label>
+        <input type="text" id="nickname" name="nickname" value="" class="mx-1" placeholder="변경할 닉네임을 입력하세요." />
+      </div>
+      <div class="input-group mt-3">
+        <label for="phoneNumber">전화번호</label>
+        <input type="tel" id="phoneNumber" name="phoneNumber" value="" class="mx-1"placeholder="전화번호를 입력해주세요." />
+        <button type="button" id="phoneAuthButton">인증번호 전송</button>
+      </div>
+
+      <input class="mt-3" type="submit" value="수정하기" />
+    </form>
+  </div>
+</main>
+
+<div th:replace="~{common/navbar :: navbar}"></div>
+
+<script th:inline="javascript">
+  // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
+  const params = /*[[ ${param} ]]*/ null;
+
+  if (params.msg) {
+    toastNotice(params.msg[0]);
+  }
+
+  if (params.errorMsg) {
+    toastWarning(params.errorMsg[0]);
+  }
+
+  // history.back 에 의해서 돌아온 경우에 실행됨
+  // 평소에도 실행됨
+  $(window).bind("pageshow", function (event) {
+    const localStorageKeyAboutHistoryBackErrorMsg = "historyBackErrorMsg___" + location.href;
+
+    if (localStorage.getItem(localStorageKeyAboutHistoryBackErrorMsg)) {
+      toastWarning(localStorage.getItem(localStorageKeyAboutHistoryBackErrorMsg));
+      localStorage.removeItem(localStorageKeyAboutHistoryBackErrorMsg);
+    }
+  });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+
+    $(document).ajaxSend(function(e, xhr, options) {
+      xhr.setRequestHeader(header, token);
+    });
+
+    $('#phoneAuthButton').on('click', function(e) {
+      e.preventDefault();
+
+      $.ajax({
+        url: '/usr/member/phoneAuth',
+        type: 'POST',
+        data: {
+          phoneNumber: $('#phoneNumber').val()
+        },
+        success: function(data) {
+          // 요청이 성공적으로 완료되면 이곳에 코드를 작성합니다.
+          // 예: alert('핸드폰 인증이 완료되었습니다.');
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          // 요청이 실패하면 이곳에 코드를 작성합니다.
+          // 예: alert('핸드폰 인증에 실패하였습니다. 다시 시도해 주세요.');
+        }
+      });
+    });
+
+    $('#profileUpdateForm').on('submit', function(e) {
+      e.preventDefault();
+
+      // 폼의 데이터를 serialize하여 서버에 전송합니다.
+      $.ajax({
+        url: '/usr/member/updateProfile', // 실제 프로필 수정 요청 URL로 변경해 주세요.
+        type: 'POST',
+        data: $(this).serialize(),
+        success: function(data) {
+          // 프로필 수정 요청이 성공적으로 완료되면 이곳에 코드를 작성합니다.
+          // 예: alert('프로필 수정이 완료되었습니다.');
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          // 프로필 수정 요청이 실패하면 이곳에 코드를 작성합니다.
+          // 예: alert('프로필 수정에 실패하였습니다. 다시 시도해 주세요.');
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+
+</html>

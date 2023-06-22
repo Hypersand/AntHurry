@@ -43,6 +43,11 @@ spring:
       location: ${custom.dev_fileLocation}
       enabled: true
 
+naver-cloud-sms:
+  accessKey: ${custom.naver-cloud-sms.accessKey}
+  secretKey: ${custom.naver-cloud-sms.secretKey}
+  serviceId: ${custom.naver-cloud-sms.serviceId}
+  senderPhone: ${custom.naver-cloud-sms.senderPhone}
 
 logging:
   level:
