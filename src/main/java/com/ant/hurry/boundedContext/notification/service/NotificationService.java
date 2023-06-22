@@ -85,7 +85,7 @@ public class NotificationService {
 
         if (member == null) {
             //MEMBER_NOT_EXISTS
-            return RsData.of("F-1", "존재하지 않는 회원입니다.");
+            return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
         }
 
 
