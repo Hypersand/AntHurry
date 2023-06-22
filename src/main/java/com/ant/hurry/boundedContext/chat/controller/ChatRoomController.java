@@ -31,7 +31,7 @@ public class ChatRoomController {
         return "chat/room";
     }
 
-    @GetMapping
+    @GetMapping("/myRooms")
     public String findAll(Model model) {
         List<TradeStatus> tradeStatuses = tradeStatusService.findByMember(rq.getMember());
         List < ChatRoom > chatRooms = chatRoomService.findByTradeStatus(tradeStatuses);
@@ -39,7 +39,7 @@ public class ChatRoomController {
         return "chat/myRooms";
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public String create(TradeStatus tradeStatus) {
         ChatRoom chatRoom = chatRoomService.create(tradeStatus);
         return "redirect:/room/%d".formatted(chatRoom.getId());

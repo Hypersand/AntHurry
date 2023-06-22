@@ -28,4 +28,12 @@ public class TradeStatus extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Board board;
 
+    public String getRequesterUsername() {
+        return requester.getUsername();
+    }
+
+    public String getHelperUsername() {
+        return helper.getUsername();
+    }
+
 }
