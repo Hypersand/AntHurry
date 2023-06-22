@@ -1,26 +1,26 @@
 <html layout:decorate="~{usr/layout/layout.html}">
 
 <head>
-    <title>로그인 페이지</title>
+    <title>메인 페이지</title>
 </head>
 
 <body>
-<header layout:fragment="header">
+<header layout:fragment="header" class="sticky top-0 z-50">
+
     <div class="navbar max-w-2xl mx-auto bg-base-100">
         <div class="navbar-start">
             <div class="dropdown">
                 <label tabindex="0" class="btn btn-ghost btn-circle">
                     <i class="fa-solid fa-bars"></i>
                 </label>
-                <ul tabindex="0"
-                    class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
+                <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
                     <li>
                         <a th:href="@{/}">
                             <span>메인</span>
                         </a>
                     </li>
                     <li th:if="${@rq.logout}">
-                        <a href="/usr/member/login">
+                        <a th:href="@{|/usr/member/login|}">
                             <span>로그인</span>
                         </a>
                     </li>
@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="navbar-center">
-            <a class="font-black">로그인 페이지</a>
+            <a class="font-black">메인</a>
         </div>
         <div class="navbar-end">
             <button class="btn btn-ghost btn-circle">
@@ -42,26 +42,15 @@
             </button>
         </div>
     </div>
+
 </header>
 
-<main layout:fragment="main">
-
-
-
-
+<main layout:fragment="main" class="flex-grow flex items-center justify-center">
     <div class="text-center">
-
-        <div th:if="${@rq.logout}">
-            <!-- 로그인하지 않은 경우, 로그인 버튼을 보여줌 -->
-            <a href="/oauth2/authorization/kakao" class="btn btn-block btn-outline gap-1">
-                <i class="fa-solid fa-comment text-[color:#ffe812]"></i>
-                <span class="normal-case">카카오 로그인</span>
-            </a>
-        </div>
+        Main
     </div>
-
-
 </main>
 
 </body>
+
 </html>
