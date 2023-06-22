@@ -10,13 +10,10 @@ public class NotifyNewMessageEvent {
 
     private String requesterPhoneNumber;
 
-    private String title;
-
     private String content;
 
-    public NotifyNewMessageEvent(String requesterPhoneNumber, String title, String content) {
+    public NotifyNewMessageEvent(String requesterPhoneNumber, String content) {
         this.requesterPhoneNumber = requesterPhoneNumber;
-        this.title = title;
         this.content = content;
     }
 }

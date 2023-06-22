@@ -12,14 +12,11 @@ public class NotifyEndMessageEvent {
 
     private String helperPhoneNumber;
 
-    private String title;
-
     private String content;
 
-    public NotifyEndMessageEvent(String requesterPhoneNumber, String helperPhoneNumber, String title, String content) {
+    public NotifyEndMessageEvent(String requesterPhoneNumber, String helperPhoneNumber, String content) {
         this.requesterPhoneNumber = requesterPhoneNumber;
         this.helperPhoneNumber = helperPhoneNumber;
-        this.title = title;
         this.content = content;
     }
 }

@@ -12,14 +12,11 @@ public class NotifyCancelMessageEvent {
 
     private String helperPhoneNumber;
 
-    private String title;
-
     private String content;
 
-    public NotifyCancelMessageEvent(String requesterPhoneNumber, String helperPhoneNumber, String title, String content) {
+    public NotifyCancelMessageEvent(String requesterPhoneNumber, String helperPhoneNumber, String content) {
         this.requesterPhoneNumber = requesterPhoneNumber;
         this.helperPhoneNumber = helperPhoneNumber;
-        this.title = title;
         this.content = content;
     }
 }

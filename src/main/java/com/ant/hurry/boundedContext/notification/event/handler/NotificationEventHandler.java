@@ -28,25 +28,25 @@ public class NotificationEventHandler {
 
     public void notifyNewMessageEventListener(NotifyNewMessageEvent event) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
 
-        //sms 전송 (메시지 수정 필요)
-        smsService.sendSms(event.getRequesterPhoneNumber(), "당신을 도와주실 분이 채팅을 원합니다.");
+        //sms 전송
+        smsService.sendSms(event.getRequesterPhoneNumber(), event.getContent());
 
     }
 
     @EventListener
     public void notifyEndMessageEventListener(NotifyEndMessageEvent event) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
 
-        //sms 전송 (메시지 수정 필요)
-        smsService.sendSms(event.getRequesterPhoneNumber(), "거래가 완료되었습니다.");
-        smsService.sendSms(event.getHelperPhoneNumber(), "거래가 완료되었습니다.");
+        //sms 전송
+        smsService.sendSms(event.getRequesterPhoneNumber(), event.getContent());
+        smsService.sendSms(event.getHelperPhoneNumber(), event.getContent());
     }
 
     @EventListener
     public void notifyCancelMessageEventListener(NotifyCancelMessageEvent event) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
 
-        //sms 전송 (메시지 수정 필요)
-        smsService.sendSms(event.getRequesterPhoneNumber(), "거래가 파기되었습니다.");
-        smsService.sendSms(event.getHelperPhoneNumber(), "거래가 파기되었습니다.");
+        //sms 전송
+        smsService.sendSms(event.getRequesterPhoneNumber(), event.getContent());
+        smsService.sendSms(event.getHelperPhoneNumber(), event.getContent());
     }
 
 
