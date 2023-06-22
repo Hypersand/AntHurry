@@ -12,6 +12,7 @@ public class NotificationController {
 
 
     //알림목록 페이지
+    @GetMapping("/list")
     public String list() {
 
         return "notification/list";
