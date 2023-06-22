@@ -32,8 +32,8 @@ public class ChatRoomService {
         return chatRoom.get();
     }
 
-    public List<ChatRoom> findByMember(Member member) {
-        return chatRoomRepository.findByMember(member);
+    public List<ChatRoom> findByTradeStatus(List<TradeStatus> tradeStatuses) {
+        return chatRoomRepository.findByTradeStatus(tradeStatuses);
     }
 
 }

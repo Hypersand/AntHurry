@@ -8,6 +8,8 @@ import com.ant.hurry.boundedContext.tradeStatus.repository.TradeStatusRepository
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.ant.hurry.boundedContext.tradeStatus.entity.Status.*;
 
 @Service
@@ -53,5 +55,9 @@ public class TradeStatusService {
 //            [ErrorCode] 이미 완료된 거래입니다.
         }
         return true;
+    }
+
+    public List<TradeStatus> findByMember(Member member) {
+        return tradeStatusRepository.findByRequester(member);
     }
 }

@@ -4,6 +4,7 @@ import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.boundedContext.chat.entity.ChatRoom;
 import com.ant.hurry.boundedContext.chat.service.ChatRoomService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
+import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import java.util.List;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
+    private final TradeStatusService tradeStatusService;
     private final Rq rq;
 
     @GetMapping("/room/{id}")
@@ -31,7 +33,8 @@ public class ChatRoomController {
 
     @GetMapping
     public String findAll(Model model) {
-        List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember());
+        List<TradeStatus> tradeStatuses = tradeStatusService.findByMember(rq.getMember());
+        List < ChatRoom > chatRooms = chatRoomService.findByTradeStatus(tradeStatuses);
         model.addAttribute("chatRooms", chatRooms);
         return "chat/myRooms";
     }
