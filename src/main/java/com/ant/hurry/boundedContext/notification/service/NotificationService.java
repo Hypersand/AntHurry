@@ -1,6 +1,8 @@
 package com.ant.hurry.boundedContext.notification.service;
 
+import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.notification.entity.Notification;
 import com.ant.hurry.boundedContext.notification.event.NotifyCancelMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyEndMessageEvent;
@@ -12,6 +14,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -21,6 +25,8 @@ public class NotificationService {
     private final ApplicationEventPublisher publisher;
 
     private final NotificationRepository notificationRepository;
+
+    private final MemberService memberService;
 
     //채팅 시작
     public Notification notifyNew(Member requester, Member helper) {
@@ -70,6 +76,22 @@ public class NotificationService {
         publisher.publishEvent(new NotifyCancelMessageEvent(requester.getPhoneNumber(), helper.getPhoneNumber(), content));
 
         return notification;
+    }
+
+    @Transactional(readOnly = true)
+    public RsData<List<Notification>> findNotificationList(String username) {
+
+        Member member = memberService.findByUsername(username).orElse(null);
+
+        if (member == null) {
+            //MEMBER_NOT_EXISTS
+            return RsData.of("F-1", "존재하지 않는 회원입니다.");
+        }
+
+
+        //NOTIFICATION_LIST_MOVE
+        return RsData.of("S_N-1", "알림목록페이지로 이동합니다.",
+                notificationRepository.findAllByMemberId(member.getId()));
     }
 
 
