@@ -20,7 +20,4 @@ public class ChatRoom extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private TradeStatus tradeStatus;
 
-
-
-
 }

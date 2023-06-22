@@ -25,5 +25,8 @@ public class ChatMessage extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member sender;
 
+    public Long getChatRoomId() {
+        return chatRoom.getId();
+    }
 
 }

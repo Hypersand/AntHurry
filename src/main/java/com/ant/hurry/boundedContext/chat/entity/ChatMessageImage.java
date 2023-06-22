@@ -13,7 +13,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class ChatMessageImage {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String uploadFileName;
@@ -24,4 +25,5 @@ public class ChatMessageImage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private ChatMessage chatMessage;
+
 }
