@@ -1,10 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-theme="light" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!--    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.6/dist/full.css" rel="stylesheet" type="text/css" />-->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.1.0/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/87140d707c.js" crossorigin="anonymous"></script>
+    <!-- toastr 불러오기 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://jhs512.github.io/toastr/toastr.css">
+
+    <script src="/resource/common/common.js"></script>
+    <link href="/resource/common/common.css" rel="stylesheet">
+
+    <!-- Kakao 우편번호 서비스 -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
-<body>
+
+<body class="w-screen">
+
+<main layout:fragment="main">
+    <section class="navbar bg-base-100">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">알림 목록</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle hidden">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </section>
+
+    <div class="text-center">
+        <ul class="w-full max-w-lg mx-auto p-4 mb-4 bg-base-100 shadow-md rounded-lg">
+            <li class="flex items-center border-b border-base-200 py-3">
+                <div class="alert alert-info flex items-center space-x-2 w-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div class="flex-grow flex flex-col">
+                        <p class="text-m text-secondary text-white self-start">큰모래님에게 채팅이 왔습니다.</p>
+                        <span class="text-xs text-white mt-auto ml-auto">2023년 6월 22일 17시 50분</span>
+                    </div>
+                </div>
+            </li>
+            <li class="flex items-center border-b border-base-200 py-3">
+                <div class="alert alert-success flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <div class="flex-grow flex flex-col">
+                        <p class="text-m text-secondary text-white self-start">큰모래님과의 거래가 완료되었습니다.</p>
+                        <span class="text-xs text-white mt-auto ml-auto">2023년 6월 13일 10시 25분</span>
+                    </div>
+                </div>
+            </li>
+            <li class="flex items-start justify-between border-b border-base-200 py-3">
+                <div class="alert alert-error flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <div class="flex-grow flex flex-col">
+                        <p class="text-m text-secondary text-white self-start">큰모래님과의 거래가 파기되었습니다.</p>
+                        <span class="text-xs text-white mt-auto ml-auto">2023년 6월 5일 8시 25분</span>
+                    </div>
+                </div>
+            </li>
+
+
+            <!-- 알림의 추가 항목을 계속하여 추가하세요 -->
+        </ul>
+    </div>
+
+
+
+</main>
+
+<div th:replace="~{common/navbar :: navbar}"></div>
+
+<script th:inline="javascript">
+    // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
+    const params = /*[[ ${param} ]]*/ null;
+
+    if (params.msg) {
+        toastNotice(params.msg[0]);
+    }
+
+    if (params.errorMsg) {
+        toastWarning(params.errorMsg[0]);
+    }
+
+    // history.back 에 의해서 돌아온 경우에 실행됨
+    // 평소에도 실행됨
+    $(window).bind("pageshow", function (event) {
+        const localStorageKeyAboutHistoryBackErrorMsg = "historyBackErrorMsg___" + location.href;
+
+        if (localStorage.getItem(localStorageKeyAboutHistoryBackErrorMsg)) {
+            toastWarning(localStorage.getItem(localStorageKeyAboutHistoryBackErrorMsg));
+            localStorage.removeItem(localStorageKeyAboutHistoryBackErrorMsg);
+        }
+    });
+
+    // 카카오 우편 서비스
+    window.onload = function() {
+        document.getElementById("address_kakao").addEventListener("click", function(){
+
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    document.getElementById("address_kakao").value = data.address;
+                }
+            }).open();
+        });
+    }
+</script>
 
 </body>
+
 </html>
