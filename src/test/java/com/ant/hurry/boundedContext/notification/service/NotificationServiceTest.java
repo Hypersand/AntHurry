@@ -5,6 +5,7 @@ import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.notification.entity.Notification;
+import com.ant.hurry.boundedContext.notification.entity.NotifyType;
 import com.ant.hurry.boundedContext.notification.event.NotifyCancelMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyEndMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyNewMessageEvent;
@@ -173,7 +174,7 @@ class NotificationServiceTest {
         String message = "첫번째알림메시지";
 
         when(memberService.findByUsername(username)).thenReturn(Optional.of(requester));
-        when(notificationRepository.findAllByMemberId(requester.getId())).thenReturn(List.of(new Notification(message, requester, helper)));
+        when(notificationRepository.findAllByMemberId(requester.getId())).thenReturn(List.of(new Notification(message, NotifyType.START, requester, helper)));
 
         //when
         RsData<List<Notification>> notificationRsData = notificationService.findNotificationList(requester.getUsername());
