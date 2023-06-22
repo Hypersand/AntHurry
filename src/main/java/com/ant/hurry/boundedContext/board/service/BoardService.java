@@ -2,6 +2,7 @@ package com.ant.hurry.boundedContext.board.service;
 
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.board.dto.CreateConvertDTO;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.repository.BoardRepository;
@@ -36,16 +37,16 @@ public class BoardService {
     }
 
     @Transactional
-    public RsData<Board> write(Member member, CreateRequest createRequest){
+    public RsData<Board> write(Member member, CreateConvertDTO createConvertDTO){
         Board board = Board
                 .builder()
-                .boardType(createRequest.getBoardType())
-                .title(createRequest.getTitle())
-                .content(createRequest.getContent())
-                .x(createRequest.getX())
-                .y(createRequest.getY())
-                .rewardCoin(createRequest.getRewardCoin())
-                .regCode(createRequest.getRegCode())
+                .boardType(createConvertDTO.getBoardType())
+                .title(createConvertDTO.getTitle())
+                .content(createConvertDTO.getContent())
+                .x(createConvertDTO.getX())
+                .y(createConvertDTO.getY())
+                .rewardCoin(createConvertDTO.getRewardCoin())
+                .regCode(createConvertDTO.getRegCode())
                 .member(member)
                 .build();
         boardRepository.save(board);
@@ -54,5 +55,6 @@ public class BoardService {
 
     public void addressConvert(CreateRequest createRequest) {
 //        createRequest.addressConvert();
+
     }
 }

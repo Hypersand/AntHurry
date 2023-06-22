@@ -21,17 +21,5 @@ public class CreateRequest {
     private String address;
     @NotNull
     private int rewardCoin;
-    @Setter
-    private Double x;
-    @Setter
-    private Double y;
-    @Setter
-    private Integer regCode=0;
-
-    public void addressConvert(double x, double y, int regCode){
-        this.x = x;
-        this.y = y;
-        this.regCode = regCode;
-    }
 
 }
