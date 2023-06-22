@@ -9,8 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import reactor.core.publisher.Mono;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -34,16 +34,33 @@ class RegionSearchServiceTest {
     }
 
     @Test
-    @DisplayName("regCodePattern을 11*로 했을 때 saveRegionData메서드를 통해 code가 1111010200인 것의 one,two,three Depth 확인")
+    @DisplayName("saveRegionData 메서드 테스트")
     public void t2() throws Exception {
+        //11*로 API 호출하여 데이터 가져왔을 때
         String regCodePattern = "11*";
         regionSearchService.saveRegionData(regCodePattern);
 
+        // 서울특별시 종로구 신교동의 지역코드를 통해 데이터가 들어갔는지 확인
         Region region = regionSearchService.findByCode("1111010200").orElseThrow();
 
-        assertThat(region.getOneDepth()).isEqualTo("서울특별시");
-        assertThat(region.getTwoDepth()).isEqualTo("종로구");
-        assertThat(region.getThreeDepth()).isEqualTo("신교동");
+        assertThat(region.getDepth1()).isEqualTo("서울특별시");
+        assertThat(region.getDepth2()).isEqualTo("종로구");
+        assertThat(region.getDepth3()).isEqualTo("신교동");
+
+    }
+
+    @Test
+    @DisplayName("selectPattern 메서드 테스트")
+    public void t3() throws Exception {
+        // selectPattern 메서드 호출하면 모든 정보가 저장된다
+        regionSearchService.selectPattern();
+
+        // 서울특별시 종로구 효자동의 지역코드를 통해 데이터가 들어갔는지 확인
+        Region region = regionSearchService.findByCode("1111010400").orElseThrow();
+
+        assertThat(region.getDepth1()).isEqualTo("서울특별시");
+        assertThat(region.getDepth2()).isEqualTo("종로구");
+        assertThat(region.getDepth3()).isEqualTo("효자동");
 
     }
 

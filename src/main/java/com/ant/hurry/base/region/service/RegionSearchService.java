@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,37 @@ public class RegionSearchService {
     }
 
     /**
+     * 지역 코드를 뽑아내는 메서드
+     * getRegCodeListDTO 메서드 사용해서 모든 특별시/광역시, 도만 뽑아내서 saveRegionData 메서드 호출
+     */
+    @Transactional
+    public void selectPattern(){
+        String regCodePattern = "*00000000";
+        Mono<RegCodeListDTO> result = getRegCodeListDTO(regCodePattern);
+        RegCodeListDTO regCodeListDTO = result.block();
+
+        if (regCodeListDTO.getRegCodeDTOList().isEmpty()) {
+            rq.redirectWithMsg("/", "데이터 읽어오지 못함");
+        }
+
+        //code에서 앞에 두 글자만 list에 저장
+        List<RegCodeDTO> regCodeDTOList = regCodeListDTO.getRegCodeDTOList();
+        List<String> oneDepthList = new ArrayList<>();
+        for (RegCodeDTO regCodeDTO : regCodeDTOList) {
+            String code = regCodeDTO.getCode();
+            String oneDepthCode = code.substring(0, 2);
+            oneDepthList.add(oneDepthCode);
+        }
+
+        //저장한 list 사용해서 saveRegionData 반복 호출
+        for (String oneDepthCode : oneDepthList) {
+            regCodePattern = oneDepthCode + "*";
+            saveRegionData(regCodePattern);
+        }
+
+    }
+
+    /**
      * 지역 코드 데이터를 저장하기 위한 메서드
      **/
     @Transactional
@@ -59,9 +91,9 @@ public class RegionSearchService {
             if (depthTokens.length == 3) {
                 Region region = new Region();
                 region.setCode(regCode.getCode());
-                region.setOneDepth(depthTokens[0]);
-                region.setTwoDepth(depthTokens[1]);
-                region.setThreeDepth(depthTokens[2]);
+                region.setDepth1(depthTokens[0]);
+                region.setDepth2(depthTokens[1]);
+                region.setDepth3(depthTokens[2]);
 
                 regionRepository.save(region);
             }
