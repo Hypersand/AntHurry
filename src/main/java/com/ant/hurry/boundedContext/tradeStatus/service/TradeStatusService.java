@@ -70,6 +70,6 @@ public class TradeStatusService {
     }
 
     public List<TradeStatus> findByMember(Member member) {
-        return tradeStatusRepository.findByRequester(member);
+        return tradeStatusRepository.findByRequesterOrHelper(member.getId());
     }
 }
