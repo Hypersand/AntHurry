@@ -1,7 +1,13 @@
-<html layout:decorate="~{common/layout.html}">
+<html layout:decorate="~{usr/layout/layout.html}">
 
-<main layout:fragment="main">
-    <section class="navbar bg-base-100">
+<head>
+    <title th:text="|${room.getTradeStatus().getHelperUsername()} 님과의 채팅|"></title>
+</head>
+
+<body>
+<header layout:fragment="header" class="sticky top-0 z-50">
+
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
         <div class="navbar-start">
             <div class="dropdown">
                 <label tabindex="0" class="btn btn-ghost btn-circle">
@@ -35,8 +41,11 @@
                 <i class="fa-solid fa-ellipsis-vertical"></i>
             </button>
         </div>
-    </section>
+    </div>
 
+</header>
+
+<main layout:fragment="main" class="flex-grow flex items-center justify-center">
     <div class="text-center">
         채팅방
     </div>
