@@ -2,63 +2,26 @@
 
 <body>
 
-<header layout:fragment="header" class="sticky top-0 z-50">
-    <div class="navbar max-w-2xl mx-auto bg-base-100">
-        <div class="navbar-start">
-            <div class="dropdown">
-                <label tabindex="0" class="btn btn-ghost btn-circle">
-                    <i class="fa-solid fa-bars"></i>
-                </label>
-                <ul tabindex="0"
-                    class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
-                    <li>
-                        <a th:href="@{/static}">
-                            <span>메인</span>
-                        </a>
-                    </li>
-                    <li th:if="${@rq.logout}">
-                        <a th:href="@{|/usr/member/login|}">
-                            <span>로그인</span>
-                        </a>
-                    </li>
-                    <li th:if="${@rq.login}">
-                        <a href="javascript:" onclick="$(this).next().submit();">
-                            <span>로그아웃</span>
-                        </a>
-                        <form class="!hidden" hidden th:action="|/usr/member/logout|" method="POST"></form>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="navbar-center">
-            <a class="font-black">메인</a>
-        </div>
-        <div class="navbar-end">
-            <button class="btn btn-ghost btn-circle">
-                <i class="fa-solid fa-ellipsis-vertical"></i>
-            </button>
-        </div>
+
+
+<footer layout:fragment="footer">
+
+    <div class="btm-nav max-w-2xl mx-auto">
+        <a href="#">
+            <i class="fa-solid fa-list"></i>
+        </a>
+        <a href="#">
+            <i class="fa-regular fa-comment"></i>
+        </a>
+        <a href="#">
+            <i class="fa-regular fa-bell"></i>
+        </a>
+        <a href="#">
+            <i class="fa-regular fa-user"></i>
+        </a>
     </div>
-</header>
 
-<!--<footer layout:fragment="footer">-->
-
-<!--    <div class="btm-nav max-w-2xl mx-auto">-->
-<!--        <a href="#">-->
-<!--            <i class="fa-solid fa-list"></i>-->
-<!--        </a>-->
-<!--        <a href="#">-->
-<!--            <i class="fa-regular fa-comment"></i>-->
-<!--        </a>-->
-<!--        <a href="#">-->
-<!--            <i class="fa-regular fa-bell"></i>-->
-<!--        </a>-->
-<!--        <a href="#">-->
-<!--            <i class="fa-regular fa-user"></i>-->
-<!--        </a>-->
-<!--    </div>-->
-
-<!--</footer>-->
+</footer>
 </body>
 
 </html>
