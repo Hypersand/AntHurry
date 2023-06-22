@@ -6,16 +6,19 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
 
+    @Transactional
     public ChatRoom create(TradeStatus tradeStatus) {
         ChatRoom chatRoom = ChatRoom.builder()
                 .tradeStatus(tradeStatus)

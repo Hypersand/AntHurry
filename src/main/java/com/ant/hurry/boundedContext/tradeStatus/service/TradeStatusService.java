@@ -7,6 +7,7 @@ import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.repository.TradeStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,10 +15,12 @@ import static com.ant.hurry.boundedContext.tradeStatus.entity.Status.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TradeStatusService {
 
     private final TradeStatusRepository tradeStatusRepository;
 
+    @Transactional
     public TradeStatus create(Board board, Member requester, Member helper) {
         if (requester.equals(helper)) {
 //            [ErrorCode] 본인의 게시글입니다.
@@ -32,6 +35,7 @@ public class TradeStatusService {
         return tradeStatus;
     }
 
+    @Transactional
     public TradeStatus updateStatus(TradeStatus tradeStatus, Status status) {
         if (!canUpdateStatus(tradeStatus, status)) {
 //            [ErrorCode] return ErrorCode
