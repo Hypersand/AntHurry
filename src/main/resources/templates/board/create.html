@@ -20,6 +20,9 @@
 
     <script src="/resource/common/common.js"></script>
     <link href="/resource/common/common.css" rel="stylesheet">
+
+    <!-- Kakao 우편번호 서비스 -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
 
 <body class="w-screen">
@@ -28,41 +31,47 @@
     <section class="navbar bg-base-100">
         <div class="navbar-start">
             <div class="dropdown">
-                <label tabindex="0" class="btn btn-ghost btn-circle">
-                    <i class="fa-solid fa-bars"></i>
-                </label>
-                <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
-                    <li>
-                        <a th:href="@{/}">
-                            <span>메인</span>
-                        </a>
-                    </li>
-                    <li th:if="${@rq.logout}">
-                        <a th:href="@{|/usr/member/login|}">
-                            <span>로그인</span>
-                        </a>
-                    </li>
-                    <li th:if="${@rq.login}">
-                        <a href="javascript:" onclick="$(this).next().submit();">
-                            <span>로그아웃</span>
-                        </a>
-                        <form class="!hidden" hidden th:action="|/usr/member/logout|" method="POST"></form>
-                    </li>
-                </ul>
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
             </div>
         </div>
         <div class="navbar-center">
-            <a class="font-black">메인</a>
+            <a class="font-black">게시글 작성</a>
         </div>
         <div class="navbar-end">
-            <button class="btn btn-ghost btn-circle">
+            <button class="btn btn-ghost btn-circle hidden">
                 <i class="fa-solid fa-ellipsis-vertical"></i>
             </button>
         </div>
     </section>
 
     <div class="text-center">
-        Main
+        <form th:action method="POST">
+            <div class="mt-10">
+                <input class="input input-bordered input-md w-full max-w-xs" type="text" placeholder="제목">
+            </div>
+            <div class="mt-10">
+                <label class="btn bg-main btn-active">
+                    <input class="sr-only" type="radio" name="boardType" value="option1"> 나급해요
+                </label>
+                <label class="btn bg-main btn-active">
+                    <input class="sr-only" type="radio" name="boardType" value="option2"> 나급해요
+                </label>
+            </div>
+
+            <div class="w-full mt-10 h-20">
+                <textarea class="textarea textarea-bordered textarea-lg w-full max-w-xs" name="content" maxlength="30" placeholder="내용"></textarea>
+            </div>
+            <div class="mt-10 mx-auto w-1/2 text-center">
+                <input type="text" class="input input-bordered form-control" id="address_kakao" name="address"
+                       placeholder="주소(지번 또는 도로명)를 입력하세요. ex) 서울특별시 성북구 종암로 10길" readonly>
+            </div>
+
+            <div class="mt-5">
+                <input type="submit" value="작성" class="btn">
+            </div>
+        </form>
     </div>
 </main>
 
@@ -90,6 +99,18 @@
             localStorage.removeItem(localStorageKeyAboutHistoryBackErrorMsg);
         }
     });
+
+    // 카카오 우편 서비스
+    window.onload = function() {
+        document.getElementById("address_kakao").addEventListener("click", function(){
+
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    document.getElementById("address_kakao").value = data.address;
+                }
+            }).open();
+        });
+    }
 </script>
 
 </body>
