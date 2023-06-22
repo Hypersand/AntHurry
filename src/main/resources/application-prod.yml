@@ -23,7 +23,7 @@ spring:
 logging:
   level:
     root: INFO
-    com.ll.weflea: INFO
+    com.ant.hurry: INFO
     org.hibernate.orm.jdbc.bind: INFO
     org.hibernate.orm.jdbc.extract: INFO
 custom:
