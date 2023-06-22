@@ -105,6 +105,7 @@ public class RegionSearchService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Optional<Region> findByCode(String code) {
         return regionRepository.findByCode(code);
     }

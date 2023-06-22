@@ -62,4 +62,13 @@ public class BoardController {
         return "board/list";
     }
 
+
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/region")
+    public String showRegion(){
+        return "board/region";
+    }
+
 }
+
