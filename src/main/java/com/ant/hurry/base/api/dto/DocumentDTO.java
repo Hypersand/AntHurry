@@ -6,15 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class KakaoApiResponseDTO {
+public class DocumentDTO {
 
-    @JsonProperty("documents")
-    private List<DocumentDTO> documentDTOList;
-
+    private double x;
+    private double y;
 }
