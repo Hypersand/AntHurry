@@ -58,8 +58,11 @@ public class TradeStatusService {
 //            [ErrorCode] 현재 진행 중인 거래만 완료할 수 있습니다.
             return false;
         }
-        //            [ErrorCode] 이미 완료된 거래입니다.
-        return !target.equals(COMPLETE) || !status.equals(CANCLED);
+        if(target.equals(COMPLETE) && !status.equals(CANCELED)) {
+//         [ErrorCode] 이미 완료된 거래입니다.
+            return false;
+        }
+        return true;
     }
 
     public List<TradeStatus> findByMember(Member member) {
