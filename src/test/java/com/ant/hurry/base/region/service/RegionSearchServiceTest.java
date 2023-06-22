@@ -2,6 +2,8 @@ package com.ant.hurry.base.region.service;
 
 import com.ant.hurry.base.region.dto.RegCodeListDTO;
 import com.ant.hurry.base.region.entity.Region;
+import com.ant.hurry.base.region.repository.RegionRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,13 @@ class RegionSearchServiceTest {
 
     @Autowired
     private RegionSearchService regionSearchService;
+    @Autowired
+    private RegionRepository regionRepository;
+
+    @BeforeEach
+    public void resetRegionData() {
+        regionRepository.deleteAll();
+    }
 
 
     @Test

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,8 +32,12 @@ public class RegionSearchService {
      * @return Mono<RegCodeListDTO> : 지역코드 목록을 반환
      */
     public Mono<RegCodeListDTO> getRegCodeListDTO(String regCodePattern) {
+        String baseUrl = "grpc-proxy-server-mkvo6j4wsq-du.a.run.app";
+
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
+                        .scheme("https")
+                        .host(baseUrl)
                         .path("/v1/regcodes")
                         .queryParam("regcode_pattern", regCodePattern)
                         .build())
