@@ -64,19 +64,21 @@ public class BoardService {
     public CreateConvertDTO addressConvert(CreateRequest createRequest) {
         Mono<KakaoApiResponseDTO> kakaoApiResult = kakaoAddressSearchService.requestAddressSearch(createRequest.getAddress());
         AddressDTO addressInfo = kakaoApiResult.block().getDocumentDTOList().get(0).getAddress();
-        System.out.println(addressInfo.getX());
-        System.out.println(addressInfo.getY());
-        System.out.println(addressInfo.getDepth2());
+        String regCode = getRegCode(addressInfo);
 
-        CreateConvertDTO convertDTO = new CreateConvertDTO(234.234, 234324.234234, "123");
-        return convertDTO;
+        return CreateConvertDTO
+                .builder()
+                .title(createRequest.getTitle())
+                .content(createRequest.getContent())
+                .boardType(createRequest.getBoardType())
+                .rewardCoin(createRequest.getRewardCoin())
+                .x(addressInfo.getX())
+                .y(addressInfo.getY())
+                .regCode(regCode)
+                .build();
     }
 
-    private Optional<Region> getRegionCode(String addressName) {
-        String[] addressTokenizer = addressName.split(" ");
-        System.out.println(addressTokenizer[0]);
-        System.out.println(addressTokenizer[1]);
-        System.out.println(addressTokenizer[2]);
-        return regionRepository.findByDepth2AndAndDepth3(addressTokenizer[1], addressTokenizer[2]);
+    private String getRegCode(AddressDTO addressInfo) {
+        return regionRepository.findByDepth2AndAndDepth3(addressInfo.getDepth2(), addressInfo.getDepth3()).get().getCode();
     }
 }

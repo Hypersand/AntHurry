@@ -38,8 +38,8 @@ public class BoardController {
         if(checkUserCoin.isFail()){
             return rq.historyBack(checkUserCoin);
         }
-        CreateConvertDTO convertDTO = boardService.addressConvert(createRequest);
-        RsData<Board> boardRs = boardService.write(rq.getMember(), convertDTO);
+        CreateConvertDTO boardInfo = boardService.addressConvert(createRequest);
+        RsData<Board> boardRs = boardService.write(rq.getMember(), boardInfo);
         return rq.redirectWithMsg("/board/list", boardRs);
     }
 
