@@ -13,7 +13,8 @@
                 <label tabindex="0" class="btn btn-ghost btn-circle">
                     <i class="fa-solid fa-bars"></i>
                 </label>
-                <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
+                <ul tabindex="0"
+                    class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
                     <li>
                         <a th:href="@{/}">
                             <span>메인</span>
@@ -45,10 +46,22 @@
 
 </header>
 
-<main layout:fragment="main" class="flex-grow flex items-center justify-center">
-    <div class="text-center">
-        Main
+<main layout:fragment="main">
+    <div class="body bg-white dark:bg-[#0F172A]">
+        <div class="bg-black before:animate-pulse before:bg-gradient-to-b before:from-gray-900 overflow-hidden before:via-[#FF626F] before:to-gray-900 before:absolute ">
+            <div id="myDIV">
+                <div class="w-[100vw] h-[100vh] flex items-center justify-center absolute ">
+                    <div class="text-pink-400 z-50">
+                        Main
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+
+
 </main>
 
 </body>
