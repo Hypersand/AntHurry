@@ -1,10 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{usr/layout/layout.html}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>후기 작성</title>
 </head>
+
 <body>
+<header layout:fragment="header">
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">후기 작성</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle hidden">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main layout:fragment="main">
+    <div class="text-center" style="overflow-y: auto;">
+        <div class="mt-5 border-b border-base-200 py-3">
+            <h1 class="text-lg">큰모래님에 대한 리뷰를 작성해주세요.</h1>
+        </div>
+
+
+
+        <form th:action method="POST" class="flex flex-col items-center sm:flex-column">
+            <div class="card w-full sm:w-96 bg-base-100 shadow-xl m-auto mt-7">
+                <div class="card-body items-center text-center">
+                    <label class="form-label text-base font-bold card-title" style="display: block; margin-bottom: 0.1rem;">별점을 선택해주세요</label>
+                    <div class="rating rating-lg mt-5">
+                        <input type="radio" name="rating-7" class="mask mask-star-2 bg-red-400" />
+                        <input type="radio" name="rating-7" class="mask mask-star-2 bg-red-400" />
+                        <input type="radio" name="rating-7" class="mask mask-star-2 bg-red-400" />
+                        <input type="radio" name="rating-7" class="mask mask-star-2 bg-red-400" />
+                        <input type="radio" name="rating-7" class="mask mask-star-2 bg-red-400" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="card w-full sm:w-96 bg-base-100 shadow-xl m-auto mt-7">
+                <div class="card-body items-center text-center">
+                    <label class="form-label text-base font-bold mb-2 card-title" style="display: block; margin-bottom: 0.5rem;">거래는 어떠셨나요??</label>
+                    <textarea class="textarea textarea-bordered textarea-lg h-40 w-full max-w-xs" name="content" maxlength="30" placeholder="후기를 작성해주세요."></textarea>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <button type="submit" class="btn">제출</button>
+            </div>
+        </form>
+    </div>
+
+</main>
+
 
 </body>
+
 </html>
