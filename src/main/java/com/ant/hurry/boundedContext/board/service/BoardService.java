@@ -83,4 +83,12 @@ public class BoardService {
     private String getRegCode(AddressDTO addressInfo) {
         return regionRepository.findByDepth2AndDepth3(addressInfo.getDepth2(), addressInfo.getDepth3()).get().getCode();
     }
+
+    public Board getBoard(Long id) {
+        Optional<Board> board = boardRepository.findById(id);
+        if(board.isEmpty()){
+//            ErrorCode 존재하지 않은 게시판입니다.
+        }
+        return board.get();
+    }
 }

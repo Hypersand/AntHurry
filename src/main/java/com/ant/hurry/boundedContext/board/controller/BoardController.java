@@ -16,10 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -57,6 +54,14 @@ public class BoardController {
         CreateConvertDTO boardInfo = boardService.addressConvert(createRequest);
         RsData<Board> boardRs = boardService.write(rq.getMember(), boardInfo);
         return rq.redirectWithMsg("/board/list", boardRs);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("{id}")
+    public String showBoard(Model model,  @PathVariable("id") Long id) {
+        Board board = boardService.getBoard(id);
+        model.addAttribute("board", board);
+        return "/board/board";
     }
 
 }
