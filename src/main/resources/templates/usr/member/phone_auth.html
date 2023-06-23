@@ -74,6 +74,7 @@
         <input type="tel" id="checkNumber" name="checkNumber" value="" class="mx-1"placeholder="인증번호를 입력해주세요." />
         <button type="button" id="checkAuthCode">인증번호 확인</button>
       </div>
+      <div id="timerDisplay" class="flex-center">03:00</div>
       <input class="mt-3" type="submit" value="인증완료" />
     </form>
   </div>
@@ -138,16 +139,55 @@
       });
     });
 
-    //인증번호 확인
-    $("#checkAuthCode").click(function(){
-      if($("#checkNumber").val() == authCode){ // 위에서 저장한값을 비교
-        alert('인증성공')
-      }else{
-        alert('인증실패')
+    var timer = null;
+    var interval = null;
+
+    $("#phoneAuthButton").click(function () {
+      var timeLeft = 60; // 초 단위
+
+      // 타이머를 표시할 요소를 선택
+      var displayElement = document.getElementById("timerDisplay");
+
+      // 타이머 시작 (1초마다 타이머 업데이트)
+      interval = setInterval(function () {
+        timeLeft--;
+
+        var minutes = Math.floor(timeLeft / 60);
+        var seconds = timeLeft % 60;
+
+        // 타이머 값을 업데이트
+        displayElement.textContent =
+                (minutes < 10 ? "0" : "") +
+                minutes +
+                ":" +
+                (seconds < 10 ? "0" : "") +
+                seconds;
+
+        // 시간이 끝났으면 타이머 중지
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          alert("인증시간이 지났습니다. 인증번호를 다시 받아주세요.");
+        }
+      }, 1000); // 1초에 한 번씩 실행
+    });
+
+    $("#checkAuthCode").click(function () {
+      // 인증을 확인하고, 인증번호가 올바르면 타이머 중지
+      if (interval) {
+        if($("#checkNumber").val() == authCode){
+          alert("인증 성공");
+          clearInterval(interval);
+        }
+        else{
+          alert("인증번호가 올바르지 않습니다.")
+        }
+      } else {
+        alert("인증시간이 지났습니다. 인증번호를 다시 받아주세요.");
       }
     });
+
   });
-</script>
+</script>>
 
 </body>
 
