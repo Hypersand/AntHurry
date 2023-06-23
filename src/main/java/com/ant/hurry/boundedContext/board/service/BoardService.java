@@ -1,5 +1,10 @@
 package com.ant.hurry.boundedContext.board.service;
 
+import com.ant.hurry.base.api.dto.DocumentDTO;
+import com.ant.hurry.base.api.dto.KakaoApiResponseDTO;
+import com.ant.hurry.base.api.service.KakaoAddressSearchService;
+import com.ant.hurry.base.region.entity.Region;
+import com.ant.hurry.base.region.repository.RegionRepository;
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.board.dto.CreateConvertDTO;
@@ -12,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -23,15 +29,17 @@ public class BoardService {
     private final Rq rq;
     private final BoardRepository boardRepository;
     private final MemberService memberService;
+    private final KakaoAddressSearchService kakaoAddressSearchService;
+    private final RegionRepository regionRepository;
 
     public RsData hasEnoughCoin(int rewardCoin) {
         Member member = memberService.findById(rq.getMember().getId()).orElse(null);
         if(ObjectUtils.isEmpty(member)){
             return RsData.of("F-1", "유저정보가 없습니다.");
         }
-        if(member.getCoin() < rewardCoin){
-            return RsData.of("F-1", "유저의 코인이 부족합니다.");
-        }
+//        if(member.getCoin() < rewardCoin){
+//            return RsData.of("F-1", "유저의 코인이 부족합니다.");
+//        }
         member.decreaseCoin(rewardCoin);
         return RsData.of("S-1", "충분한 코인을 가지고있습니다.");
     }
@@ -53,8 +61,19 @@ public class BoardService {
         return RsData.of("S-1", "게시글이 작성되었습니다.");
     }
 
-    public void addressConvert(CreateRequest createRequest) {
-//        createRequest.addressConvert();
+    public CreateConvertDTO addressConvert(CreateRequest createRequest) {
+        Mono<KakaoApiResponseDTO> kakaoApiResult = kakaoAddressSearchService.requestAddressSearch(createRequest.getAddress());
+        DocumentDTO addressInfo = kakaoApiResult.block().getDocumentDTOList().get(1);
+        String regionCode = getRegionCode(addressInfo.getAddress()).get().getCode();
+        CreateConvertDTO convertDTO = new CreateConvertDTO(234.234, 234324.234234, regionCode);
+        return convertDTO;
+    }
 
+    private Optional<Region> getRegionCode(String addressName) {
+        String[] addressTokenizer = addressName.split(" ");
+        System.out.println(addressTokenizer[0]);
+        System.out.println(addressTokenizer[1]);
+        System.out.println(addressTokenizer[2]);
+        return regionRepository.findByDepth2AndAndDepth3(addressTokenizer[1], addressTokenizer[2]);
     }
 }

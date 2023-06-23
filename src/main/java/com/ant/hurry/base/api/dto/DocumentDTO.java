@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DocumentDTO {
 
-    private double x;
-    private double y;
+    private String address;
+
 }

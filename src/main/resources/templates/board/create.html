@@ -2,6 +2,8 @@
 
 <head>
     <title>게시판 작성</title>
+    <!-- Kakao 우편번호 서비스 -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
 
 <body>
@@ -26,6 +28,19 @@
 </header>
 
 <main layout:fragment="main">
+    <script th:inline="javascript">
+        // 카카오 우편 서비스
+        window.onload = function() {
+            document.getElementById("address_kakao").addEventListener("click", function(){
+
+                new daum.Postcode({
+                    oncomplete: function(data) {
+                        document.getElementById("address_kakao").value = data.address;
+                    }
+                }).open();
+            });
+        }
+    </script>
 
     <div class="text-center">
         <form th:action method="POST">

@@ -2,6 +2,7 @@ package com.ant.hurry.boundedContext.board.controller;
 
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.board.dto.CreateConvertDTO;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.entity.BoardType;
@@ -12,7 +13,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -38,8 +38,8 @@ public class BoardController {
         if(checkUserCoin.isFail()){
             return rq.historyBack(checkUserCoin);
         }
-        boardService.addressConvert(createRequest);
-        RsData<Board> boardRs = boardService.write(rq.getMember(), createRequest);
+        CreateConvertDTO convertDTO = boardService.addressConvert(createRequest);
+        RsData<Board> boardRs = boardService.write(rq.getMember(), convertDTO);
         return rq.redirectWithMsg("/board/list", boardRs);
     }
 

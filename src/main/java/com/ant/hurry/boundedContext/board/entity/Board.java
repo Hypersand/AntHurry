@@ -28,7 +28,7 @@ public class Board extends BaseEntity {
 
     private int rewardCoin;
 
-    private int regCode;
+    private String regCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;

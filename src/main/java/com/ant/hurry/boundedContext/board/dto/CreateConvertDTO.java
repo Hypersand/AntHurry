@@ -1,10 +1,14 @@
 package com.ant.hurry.boundedContext.board.dto;
 
 import com.ant.hurry.boundedContext.board.entity.BoardType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class CreateConvertDTO {
 
@@ -15,15 +19,15 @@ public class CreateConvertDTO {
     private int rewardCoin;
     private double x;
     private double y;
-    private int regCode;
+    private String regCode;
 
-    public CreateConvertDTO(int x, int y, int regCode){
+    public CreateConvertDTO(double x, double y, String regCode){
         this.x = x;
         this.y = y;
         this.regCode = regCode;
     }
 
-    public void convertData(CreateRequest createRequest){
+    public void buildCreateRequest(CreateRequest createRequest){
         CreateConvertDTO
                 .builder()
                 .title(createRequest.getTitle())
