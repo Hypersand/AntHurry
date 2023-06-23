@@ -1,73 +1,79 @@
 <html layout:decorate="~{usr/layout/layout.html}">
 
 <head>
-  <title>지역 선택</title>
+    <title>지역 선택</title>
 </head>
 
 <body>
 <header layout:fragment="header" class="sticky top-0 z-50">
 
-  <div class="navbar max-w-2xl mx-auto bg-base-100">
-    <div class="navbar-start">
-      <div>
-        <a href="#" tabindex="0" class="btn btn-ghost btn-circle">
-          <i class="fa-solid fa-angle-left"></i>
-        </a>
-      </div>
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div>
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">동네 선택</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
     </div>
-    <div class="navbar-center">
-      <a class="font-black">동네 선택</a>
-    </div>
-    <div class="navbar-end">
-      <button class="btn btn-ghost btn-circle">
-        <i class="fa-solid fa-ellipsis-vertical"></i>
-      </button>
-    </div>
-  </div>
 
 </header>
 
-<main layout:fragment="main" class="flex-grow flex items-center justify-center">
-  <label for="searchInput">검색</label>
-  <input type="text" id="searchInput" placeholder="읍/면/동을 입력해주세요.">
-  <ul id="searchResults"></ul>
+<main layout:fragment="main" class="flex flex-col items-center justify-center">
+    <div class="md:w-[584px] mx-auto mt-7 flex w-[92%] items-center rounded-full border hover:shadow-md">
+      <div class="pl-5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+      <input type="text" id="searchInput" class="w-full bg-transparent rounded-full py-[14px] pl-4 outline-none" placeholder="지역 읍/면/동으로 검색 예) 서초동, 역삼동 " />
+    </div>
+    <ul class="bg-white mt-2 md:w-[584px] mx-auto w-[92%]" id="searchResults"></ul>
 
-  <script th:inline="javascript">
+    <script th:inline="javascript">
 
-    const allRegions = /*[[${regions}]]*/ [];
+        const allRegions = /*[[${regions}]]*/ [];
 
 
-    function filterRegions(searchText) {
-      return allRegions.filter(region =>
-              region.depth3.toLowerCase().includes(searchText.toLowerCase())
-      );
-    }
-
-    $(document).ready(function() {
-      const $searchInput = $('#searchInput');
-      const $searchResults = $('#searchResults');
-
-      $searchInput.on('input', function() {
-        const searchText = $searchInput.val();
-
-        if (searchText) {
-          const filteredRegions = filterRegions(searchText);
-          $searchResults.empty();
-          filteredRegions.forEach(function(region) {
-            const code = region.code;
-            const li = $('<li></li>');
-            const a = $('<a></a>').attr('href', `/board/enterRegion?code=${encodeURIComponent(code)}`).text(
-                    `${region.depth1} ${region.depth2} ${region.depth3}`
+        function filterRegions(searchText) {
+            return allRegions.filter(region =>
+                region.depth3.toLowerCase().includes(searchText.toLowerCase())
             );
-            li.append(a);
-            $searchResults.append(li);
-          });
-        } else {
-          $searchResults.empty();
         }
-      });
-    });
-  </script>
+
+        $(document).ready(function () {
+            const $searchInput = $('#searchInput');
+            const $searchResults = $('#searchResults');
+
+            $searchInput.on('input', function () {
+                const searchText = $searchInput.val();
+
+                if (searchText) {
+                    const filteredRegions = filterRegions(searchText);
+                    $searchResults.empty();
+                    filteredRegions.forEach(function (region) {
+                        const code = region.code;
+                        const li = $('<li class="pl-8 pr-2 py-2 border-b-2 border-gray-100 relative cursor-pointer hover:bg-yellow-50 hover:text-gray-900"></li>');
+                        const a = $('<a></a>').attr('href', `/board/enterRegion?code=${encodeURIComponent(code)}`).text(
+                            `${region.depth1} ${region.depth2} ${region.depth3}`
+                        );
+                        li.append(a);
+                        $searchResults.append(li);
+                    });
+                } else {
+                    $searchResults.empty();
+                }
+            });
+        });
+    </script>
 
 </main>
 
