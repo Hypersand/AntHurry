@@ -3,33 +3,27 @@ package com.ant.hurry.boundedContext.notification.service;
 
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.repository.MemberRepository;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.notification.entity.Notification;
-import com.ant.hurry.boundedContext.notification.entity.NotifyType;
 import com.ant.hurry.boundedContext.notification.event.NotifyCancelMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyEndMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyNewMessageEvent;
-
 import com.ant.hurry.boundedContext.notification.repository.NotificationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.when;
 
 
 @SpringBootTest
@@ -44,19 +38,25 @@ class NotificationServiceTest {
     @Autowired
     ApplicationEvents events;
 
-    @MockBean
+    @Autowired
     MemberService memberService;
 
-    @MockBean
+    @Autowired
     NotificationRepository notificationRepository;
+
+    @Autowired
+    MemberRepository memberRepository;
 
     private Member requester;
     private Member helper;
 
     @BeforeEach
-    public void setMember() {
+    public void setMemberAndNotification() {
         requester = new Member("손승완", "큰모래", "123", "01012345678", "kakao", 0);
         helper = new Member("멋쟁이사자", "라이크라이온", "123", "01056781234", "kakao", 0);
+
+        memberRepository.save(requester);
+        memberRepository.save(helper);
     }
 
 
@@ -147,9 +147,8 @@ class NotificationServiceTest {
     void findNotificationList_MemberNotExists() {
 
         //given
-        String username = "bigsand";
+        String username = "not_exist_member";
 
-        when(memberService.findByUsername(username)).thenReturn(Optional.empty());
 
         //when
         RsData<List<Notification>> notificationRsData = notificationService.findNotificationList(username);
@@ -170,11 +169,12 @@ class NotificationServiceTest {
     void findNotificationList_MemberExists() {
 
         //given
-        String username = "손승완";
         String message = "첫번째알림메시지";
+        String type = "START";
 
-        when(memberService.findByUsername(username)).thenReturn(Optional.of(requester));
-        when(notificationRepository.findAllByMemberId(requester.getId())).thenReturn(List.of(new Notification(message, NotifyType.START, requester, helper)));
+        Notification notification = Notification.create(message, type, requester, helper);
+        notificationRepository.save(notification);
+
 
         //when
         RsData<List<Notification>> notificationRsData = notificationService.findNotificationList(requester.getUsername());
@@ -187,8 +187,6 @@ class NotificationServiceTest {
                 () -> assertThat(notificationRsData.getData().size()).isEqualTo(1),
                 () -> assertThat(notificationRsData.getData().get(0).getMessage()).isEqualTo("첫번째알림메시지")
         );
-
-
 
     }
 
