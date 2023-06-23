@@ -1,6 +1,5 @@
 package com.ant.hurry.boundedContext.board.service;
 
-import com.ant.hurry.base.api.dto.DocumentDTO;
 import com.ant.hurry.base.api.dto.KakaoApiResponseDTO;
 import com.ant.hurry.base.api.service.KakaoAddressSearchService;
 import com.ant.hurry.base.region.entity.Region;
@@ -9,6 +8,7 @@ import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.board.dto.CreateConvertDTO;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
+import com.ant.hurry.base.api.dto.AddressDTO;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.repository.BoardRepository;
 import com.ant.hurry.boundedContext.member.entity.Member;
@@ -63,9 +63,12 @@ public class BoardService {
 
     public CreateConvertDTO addressConvert(CreateRequest createRequest) {
         Mono<KakaoApiResponseDTO> kakaoApiResult = kakaoAddressSearchService.requestAddressSearch(createRequest.getAddress());
-        DocumentDTO addressInfo = kakaoApiResult.block().getDocumentDTOList().get(1);
-        String regionCode = getRegionCode(addressInfo.getAddress()).get().getCode();
-        CreateConvertDTO convertDTO = new CreateConvertDTO(234.234, 234324.234234, regionCode);
+        AddressDTO addressInfo = kakaoApiResult.block().getDocumentDTOList().get(0).getAddress();
+        System.out.println(addressInfo.getX());
+        System.out.println(addressInfo.getY());
+        System.out.println(addressInfo.getDepth2());
+
+        CreateConvertDTO convertDTO = new CreateConvertDTO(234.234, 234324.234234, "123");
         return convertDTO;
     }
 

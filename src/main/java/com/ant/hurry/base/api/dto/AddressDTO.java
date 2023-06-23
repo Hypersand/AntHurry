@@ -10,9 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DocumentDTO {
+public class AddressDTO {
 
-    @JsonProperty("address")
-    private AddressDTO address;
-
+    private double x;
+    private double y;
+    @JsonProperty("region_2depth_name")
+    private String depth2;
+    @JsonProperty("region_3depth_name")
+    private String depth3;
 }

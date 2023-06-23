@@ -23,8 +23,8 @@ public class KakaoAddressSearchServiceTest {
     @DisplayName("주소를 넣어서 카카오 API 호출 성공")
     public void successKakaoApi() throws Exception {
         Mono<KakaoApiResponseDTO> result = kakaoAddressSearchService.requestAddressSearch("서울 관악구 신림동 1662-3");
-        assertNotNull(result.block().getDocumentDTOList().get(0).getX());
-        assertNotNull(result.block().getDocumentDTOList().get(0).getY());
+        assertNotNull(result.block().getDocumentDTOList().get(0).getAddress());
+        System.out.println(result.block().getDocumentDTOList().get(0).getAddress());
 
     }
 

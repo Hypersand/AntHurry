@@ -33,7 +33,7 @@ public class BoardController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public String createBoard(@Valid CreateRequest createRequest){
+    public String createBoard(@Valid CreateRequest createRequest) {
         RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
         if(checkUserCoin.isFail()){
             return rq.historyBack(checkUserCoin);
