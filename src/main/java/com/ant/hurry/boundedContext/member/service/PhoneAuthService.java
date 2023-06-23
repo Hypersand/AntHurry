@@ -35,7 +35,7 @@ public class PhoneAuthService {
     private String SENDER_NUMBER;
 
 
-    public void sendSms(String toNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+    public String sendSms(String toNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
         RestTemplate restTemplate = new RestTemplate();
 
         //헤더 정보 세팅
@@ -67,6 +67,8 @@ public class PhoneAuthService {
         String API_URL = "https://sens.apigw.ntruss.com/sms/v2/services/" + SERVICE_ID + "/messages";
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
         restTemplate.postForObject(API_URL, request, String.class);
+
+        return certificationNumber;
     }
 
     public String makeSignature() throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {

@@ -48,10 +48,10 @@ public class MemberController {
 
     @PostMapping("/phoneAuth")
     @ResponseBody
-    public Boolean phoneAuth(String phoneNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+    public String phoneAuth(String phoneNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
 
-        smsService.sendSms(phoneNumber);
+        String authCode = smsService.sendSms(phoneNumber);
 
-        return false;
+        return authCode;
     }
 }
