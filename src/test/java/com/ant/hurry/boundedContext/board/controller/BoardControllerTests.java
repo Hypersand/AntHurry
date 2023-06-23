@@ -1,6 +1,7 @@
 package com.ant.hurry.boundedContext.board.controller;
 
 import com.ant.hurry.boundedContext.board.entity.BoardType;
+import com.ant.hurry.boundedContext.board.entity.TradeType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,7 @@ public class BoardControllerTests {
 
     @Test
     @DisplayName("게시판 작성 입력 폼")
+    @WithMockUser("test")
     void shouldRenderCreateBoardPage() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
@@ -57,10 +59,11 @@ public class BoardControllerTests {
                 .perform(post("/board/create")
                         .with(csrf())
                         .param("title", "게시판 제목입니다.")
-                        .param("content", "게시판 내용입니다.")
                         .param("boardType", String.valueOf(BoardType.나잘해요))
-                        .param("address", "서울 관악구 신림동 1662-3")
-                        .param("rewardCoin", "100"))
+                        .param("tradeType", String.valueOf(TradeType.온라인))
+                        .param("content", "게시판 내용입니다.")
+                        .param("rewardCoin", "100")
+                        .param("address", "서울 관악구 신림동 1662-3"))
                 .andDo(print());
 
         // THEN
