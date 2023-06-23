@@ -36,13 +36,13 @@
             </div>
 
             <div class="mt-5">
-                <label class="btn bg-main btn-active" th:each="type : ${boardTypes}" onclick="changeColor(event)">
+                <label class="btn bg-main btn-active" th:each="type : ${boardTypes}" onclick="changeColorBoardType(event)">
                     <input class="sr-only" type="radio" th:field="*{boardType}" th:value="${type}" th:text="${type}">
                 </label><br>
                 <span th:if="${#fields.hasErrors('boardType')}" th:errors="*{boardType}" class="text-error"></span>
             </div>
             <div class="mt-5">
-                <label class="btn bg-main btn-active" th:each="type : ${tradeTypes}"onclick="changeColor(event)">
+                <label class="btn bg-main btn-active" th:each="type : ${tradeTypes}"onclick="changeColorTradeType(event)">
                     <input class="sr-only" type="radio" th:field="*{tradeType}" th:value="${type}" th:text="${type}">
                 </label><br>
                 <span th:if="${#fields.hasErrors('tradeType')}" th:errors="*{tradeType}" class="text-error"></span>
@@ -80,14 +80,21 @@
             });
         }
 
-        function changeColor(event) {
-            // 모든 label 요소를 가져와 active 클래스를 제거합니다.
-            var labels = document.querySelectorAll("label");
+        function changeColorBoardType(event) {
+            var labels = document.querySelectorAll(".boardType");
             labels.forEach(function(label) {
                 label.classList.remove("active");
             });
 
-            // 클릭한 label에 active 클래스를 추가합니다.
+            event.currentTarget.classList.add("active");
+        }
+
+        function changeColorTradeType(event) {
+            var labels = document.querySelectorAll(".tradeType");
+            labels.forEach(function(label) {
+                label.classList.remove("active");
+            });
+
             event.currentTarget.classList.add("active");
         }
     </script>
