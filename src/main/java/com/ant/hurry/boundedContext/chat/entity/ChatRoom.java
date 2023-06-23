@@ -10,14 +10,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class ChatRoom extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     private TradeStatus tradeStatus;
+
+    private LocalDateTime deletedAt;
 
 }

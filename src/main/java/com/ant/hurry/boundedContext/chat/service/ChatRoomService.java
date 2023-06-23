@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public class ChatRoomService {
 
     public ChatRoom findById(Long id) {
         Optional<ChatRoom> chatRoom = chatRoomRepository.findById(id);
-        if (chatRoom.isEmpty()) {
+        if (chatRoom.isEmpty() || chatRoom.get().getDeletedAt() != null) {
 //            [ErrorCode] 존재하지 않는 채팅방입니다.
         }
         return chatRoom.get();
@@ -37,6 +38,17 @@ public class ChatRoomService {
 
     public List<ChatRoom> findByTradeStatus(List<TradeStatus> tradeStatuses) {
         return chatRoomRepository.findByTradeStatus(tradeStatuses);
+    }
+
+    public List<ChatRoom> findByMember(Member member) {
+        return chatRoomRepository.findByMemberId(member.getId());
+    }
+
+    @Transactional
+    public void delete(ChatRoom chatRoom) {
+        ChatRoom deletedChatRoom = chatRoom.toBuilder()
+                .deletedAt(LocalDateTime.now()).build();
+        chatRoomRepository.save(deletedChatRoom);
     }
 
 }

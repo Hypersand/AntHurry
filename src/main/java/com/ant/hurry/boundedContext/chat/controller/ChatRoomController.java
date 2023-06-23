@@ -34,7 +34,7 @@ public class ChatRoomController {
     @GetMapping("/myRooms")
     public String findAll(Model model) {
         List<TradeStatus> tradeStatuses = tradeStatusService.findByMember(rq.getMember());
-        List < ChatRoom > chatRooms = chatRoomService.findByTradeStatus(tradeStatuses);
+        List<ChatRoom> chatRooms = chatRoomService.findByTradeStatus(tradeStatuses);
         model.addAttribute("chatRooms", chatRooms);
         return "chat/myRooms";
     }
