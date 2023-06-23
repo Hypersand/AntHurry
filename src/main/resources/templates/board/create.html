@@ -11,7 +11,7 @@
     <div class="navbar max-w-2xl mx-auto bg-base-100">
         <div class="navbar-start">
             <div class="dropdown">
-                <a href="#" tabindex="0" class="btn btn-ghost btn-circle">
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
                     <i class="fa-solid fa-angle-left"></i>
                 </a>
             </div>
@@ -28,6 +28,45 @@
 </header>
 
 <main layout:fragment="main">
+    <div class="text-center">
+        <form th:object="${createBoard}" th:action method="POST">
+            <div class="mt-5">
+                <input class="input input-bordered input-md w-full max-w-xs" th:field="*{title}" type="text" placeholder="제목"><br>
+                <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-error"></span>
+            </div>
+
+            <div class="mt-5">
+                <label class="btn bg-main btn-active" th:each="type : ${boardTypes}" onclick="changeColor(event)">
+                    <input class="sr-only" type="radio" th:field="*{boardType}" th:value="${type}" th:text="${type}">
+                </label><br>
+                <span th:if="${#fields.hasErrors('boardType')}" th:errors="*{boardType}" class="text-error"></span>
+            </div>
+            <div class="mt-5">
+                <label class="btn bg-main btn-active" th:each="type : ${tradeTypes}"onclick="changeColor(event)">
+                    <input class="sr-only" type="radio" th:field="*{tradeType}" th:value="${type}" th:text="${type}">
+                </label><br>
+                <span th:if="${#fields.hasErrors('tradeType')}" th:errors="*{tradeType}" class="text-error"></span>
+            </div>
+            <div class="mt-5">
+                <textarea class="textarea textarea-bordered textarea-lg w-full max-w-xs" th:field="*{content}" maxlength="30" placeholder="내용"></textarea><br>
+                <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-error"></span>
+            </div>
+            <div class="mt-5">
+                <input class="input input-bordered" type="number" th:field="*{rewardCoin}" placeholder="거래할 코인을 입력해주세요."><br>
+                <span th:if="${#fields.hasErrors('rewardCoin')}" th:errors="*{rewardCoin}" class="text-error"></span>
+            </div>
+            <div class="mt-10 mx-auto w-1/2 text-center">
+                <input type="text" class="input input-bordered form-control" id="address_kakao" th:field="*{address}"
+                       placeholder="주소(지번 또는 도로명)를 입력하세요. ex) 서울특별시 성북구 종암로 10길" readonly><br>
+                <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="text-error"></span>
+            </div>
+
+            <div class="mt-5">
+                <input type="submit" value="작성" class="btn btn-active">
+            </div>
+        </form>
+    </div>
+
     <script th:inline="javascript">
         // 카카오 우편 서비스
         window.onload = function() {
@@ -40,39 +79,18 @@
                 }).open();
             });
         }
+
+        function changeColor(event) {
+            // 모든 label 요소를 가져와 active 클래스를 제거합니다.
+            var labels = document.querySelectorAll("label");
+            labels.forEach(function(label) {
+                label.classList.remove("active");
+            });
+
+            // 클릭한 label에 active 클래스를 추가합니다.
+            event.currentTarget.classList.add("active");
+        }
     </script>
-
-    <div class="text-center">
-        <form th:action method="POST">
-            <div class="mt-10">
-                <input class="input input-bordered input-md w-full max-w-xs" name="title" type="text" placeholder="제목">
-            </div>
-            <div class="mt-10">
-                <label class="btn bg-main btn-active" th:each="type : ${boardTypes}">
-                    <input class="sr-only" type="radio" name="boardType" th:value="${type}" th:text="${type}">
-                </label>
-            </div>
-            <div class="mt-10">
-                <label class="btn bg-main btn-active" th:each="type : ${tradeTypes}">
-                    <input class="sr-only" type="radio" name="tradeType" th:value="${type}" th:text="${type}">
-                </label>
-            </div>
-            <div class="w-full mt-10 h-20">
-                <textarea class="textarea textarea-bordered textarea-lg w-full max-w-xs" name="content" maxlength="30" placeholder="내용"></textarea>
-            </div>
-            <div class="mt-10">
-                <input type="number" name="rewardCoin" placeholder="거래할 코인을 입력해주세요.">
-            </div>
-            <div class="mt-10 mx-auto w-1/2 text-center">
-                <input type="text" class="input input-bordered form-control" id="address_kakao" name="address"
-                       placeholder="주소(지번 또는 도로명)를 입력하세요. ex) 서울특별시 성북구 종암로 10길" readonly>
-            </div>
-
-            <div class="mt-5">
-                <input type="submit" value="작성" class="btn btn-active">
-            </div>
-        </form>
-    </div>
 </main>
 
 </body>

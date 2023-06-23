@@ -43,4 +43,21 @@ html > body {
 
 input[type="submit"] {
     background-color: #FF626F;
+    outline: none;
+}
+
+input:focus {
+    outline: none;
+    border-color: #FF626F;
+    box-shadow: 0 0 0 2px #FF626F;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #FF626F;
+    box-shadow: 0 0 0 2px #FF626F;
+}
+
+.active {
+    background-color: #FF626F !important;
 }
