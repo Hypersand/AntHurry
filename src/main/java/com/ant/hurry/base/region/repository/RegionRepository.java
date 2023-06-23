@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface RegionRepository extends JpaRepository<Region, Long> {
     Optional<Region> findByCode(String code);
-    Optional<Region> findByDepth2AndAndDepth3(String depth2, String depth3);
+    Optional<Region> findByDepth2AndDepth3(String depth2, String depth3);
 }

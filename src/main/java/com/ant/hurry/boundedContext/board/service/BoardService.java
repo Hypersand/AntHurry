@@ -81,6 +81,6 @@ public class BoardService {
     }
 
     private String getRegCode(AddressDTO addressInfo) {
-        return regionRepository.findByDepth2AndAndDepth3(addressInfo.getDepth2(), addressInfo.getDepth3()).get().getCode();
+        return regionRepository.findByDepth2AndDepth3(addressInfo.getDepth2(), addressInfo.getDepth3()).get().getCode();
     }
 }
