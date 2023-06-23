@@ -53,24 +53,14 @@
                         <div class="w-full flex justify-center text-[#FF626F] text-xl mb:2 md:mb-5">
                             로그인
                         </div>
-                        <div class="mb-6">
-                            <label for="id" class="block mb-2 text-xs font-medium text-white">아이디</label>
-                            <input type="text" id="id"
-                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                   required>
+
+                        <div class="btn w-full bg-[#FF626F]">
+                            네이버 로그인
                         </div>
-                        <div class="mb-6">
-                            <label for="password" class="block mb-2 text-xs font-medium text-white">비밀번호</label>
-                            <input type="password" id="password"
-                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                   required>
-                        </div>
-                        <div class="flex flex-row justify-between">
-                            <div class="text-white text-sm md:text-md ">아이디가 없으신가요?</div>
-                            <div class="text-[#FF626F] text-sm md:text-md">회원가입</div>
-                        </div>
-                        <div class="mt-4 md:mt-10 w-full flex justify-center text-sm md:text-xl bg-[#FF626F] py-2 rounded-md">
-                            로그인
+                        <div class="my-3 flex items-center px-3">
+                            <hr class="w-full border-slate-600" />
+                            <span class="mx-3 text-slate-500">or</span>
+                            <hr class="w-full border-slate-600" />
                         </div>
                         <div class="text-center mt-2">
 
@@ -89,19 +79,6 @@
         </div>
 
     </div>
-
-    <script>
-        const para = document.createElement("div");
-        para.className = 'flex flex-wrap gap-0.5 h-screen items-center justify-center  relative';
-        let el = '<div class = "  transition-colors duration-[1.5s] hover:duration-[0s] border-[#00FF00] h-[calc(5vw-2px)] w-[calc(5vw-2px)] md:h-[calc(4vw-2px)] md:w-[calc(4vw-2px)] lg:h-[calc(3vw-4px)] lg:w-[calc(3vw-4px)] bg-gray-900 hover:bg-[#FF626F]"></div>'
-        for (var k = 1; k <= 1000; k++) {
-            el += '<div class = " transition-colors duration-[1.5s] hover:duration-[0s] border-[#00FF00] h-[calc(5vw-2px)] w-[calc(5vw-2px)] md:h-[calc(4vw-2px)] md:w-[calc(4vw-2px)] lg:h-[calc(3vw-4px)] lg:w-[calc(3vw-4px)] bg-gray-900 hover:bg-[#FF626F]"></div>';
-        }
-        ;
-
-        para.innerHTML = el;
-        document.getElementById("myDIV").appendChild(para);
-    </script>
 
 
 </main>
