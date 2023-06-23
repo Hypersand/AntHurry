@@ -40,6 +40,8 @@ public class MemberService {
                 .password(passwordEncoder.encode(password))
                 .phoneNumber(phone)
                 .providerTypeCode(providerTypeCode)
+                .coin(0)
+                .phoneAuth(0)
                 .build();
 
         Member savedMember = memberRepository.save(member);
@@ -48,5 +50,14 @@ public class MemberService {
 
     public Optional<Member> findByUsername(String username) {
         return memberRepository.findByUsername(username);
+    }
+
+    public boolean isPhoneAuthenticated(String username) {
+
+        Optional<Member> findMember = findByUsername(username);
+        Member member = findMember.get();
+        if(member.isPhoneAuth())
+            return true;
+        return false;
     }
 }

@@ -64,15 +64,17 @@
 
   <div class="flex-grow flex justify-center align-center">
     <form id="profileUpdateForm" class="flex flex-col">
-      <div class="input-group">
-        <label>기존 닉네임</label>
-        <p th:text="${member.nickname}" class="mx-1"></p>
+      <div class="input-group mt-3">
+        <label for="phoneNumber">전화번호</label>
+        <input type="tel" id="phoneNumber" name="phoneNumber" value="" class="mx-1"placeholder="전화번호를 입력해주세요." />
+        <button type="button" id="phoneAuthButton">인증번호 전송</button>
       </div>
       <div class="input-group mt-3">
-        <label for="nickname">닉네임</label>
-        <input type="text" id="nickname" name="nickname" value="" class="mx-1" placeholder="변경할 닉네임을 입력하세요." />
+        <label for="checkNumber">인증번호</label>
+        <input type="tel" id="checkNumber" name="checkNumber" value="" class="mx-1"placeholder="인증번호를 입력해주세요." />
+        <button type="button" id="checkAuthCode">인증번호 확인</button>
       </div>
-      <input class="mt-3" type="submit" value="수정하기" />
+      <input class="mt-3" type="submit" value="인증완료" />
     </form>
   </div>
 </main>
@@ -113,23 +115,36 @@
       xhr.setRequestHeader(header, token);
     });
 
-    $('#profileUpdateForm').on('submit', function(e) {
+    //인증번호 전송
+    var authCode;
+    $('#phoneAuthButton').on('click', function(e) {
       e.preventDefault();
 
-      // 폼의 데이터를 serialize하여 서버에 전송합니다.
       $.ajax({
-        url: '/usr/member/updateProfile', // 실제 프로필 수정 요청 URL로 변경해 주세요.
+        url: '/usr/member/phoneAuth',
         type: 'POST',
-        data: $(this).serialize(),
+        data: {
+          phoneNumber: $('#phoneNumber').val()
+        },
         success: function(data) {
-          // 프로필 수정 요청이 성공적으로 완료되면 이곳에 코드를 작성합니다.
-          // 예: alert('프로필 수정이 완료되었습니다.');
+          // 요청이 성공적으로 완료되면 이곳에 코드를 작성합니다.
+          alert("인증번호가 발송되었싑니다.");
+          authCode = data;
         },
         error: function(jqXHR, textStatus, errorThrown) {
-          // 프로필 수정 요청이 실패하면 이곳에 코드를 작성합니다.
-          // 예: alert('프로필 수정에 실패하였습니다. 다시 시도해 주세요.');
+          // 요청이 실패하면 이곳에 코드를 작성합니다.
+          // 예: alert('핸드폰 인증에 실패하였습니다. 다시 시도해 주세요.');
         }
       });
+    });
+
+    //인증번호 확인
+    $("#checkAuthCode").click(function(){
+      if($("#checkNumber").val() == authCode){ // 위에서 저장한값을 비교
+        alert('인증성공')
+      }else{
+        alert('인증실패')
+      }
     });
   });
 </script>

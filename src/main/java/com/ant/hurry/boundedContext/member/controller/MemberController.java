@@ -45,11 +45,15 @@ public class MemberController {
         return "usr/member/profile_edit";
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/phoneAuth")
+    public String phoneAuthPage(){
+        return "usr/member/phone_auth";
+    }
 
     @PostMapping("/phoneAuth")
     @ResponseBody
     public String phoneAuth(String phoneNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
-
         String authCode = smsService.sendSms(phoneNumber);
 
         return authCode;
