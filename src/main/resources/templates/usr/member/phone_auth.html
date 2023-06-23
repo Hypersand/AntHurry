@@ -109,85 +109,95 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   $(document).ready(function() {
+    //CSRF
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
+
+    //타이머
+    var interval = null;
 
     $(document).ajaxSend(function(e, xhr, options) {
       xhr.setRequestHeader(header, token);
     });
 
     //인증번호 전송
-    var authCode;
     $('#phoneAuthButton').on('click', function(e) {
       e.preventDefault();
 
+      var phoneNumber = $("#phoneNumber").val();
+
       $.ajax({
-        url: '/usr/member/phoneAuth',
+        url: '/usr/member/phoneAuth/send',
         type: 'POST',
         data: {
-          phoneNumber: $('#phoneNumber').val()
+          phoneNumber: phoneNumber
         },
         success: function(data) {
           // 요청이 성공적으로 완료되면 이곳에 코드를 작성합니다.
-          alert("인증번호가 발송되었싑니다.");
-          authCode = data;
+          alert("인증번호가 발송되었습니다.");
+          var timeLeft = 180; // 초 단위
+
+          // 타이머를 표시할 요소를 선택
+          var displayElement = document.getElementById("timerDisplay");
+
+          // 이전 타이머가 있다면 종료
+          if (interval) {
+            clearInterval(interval);
+          }
+
+          // 타이머 시작 (1초마다 타이머 업데이트)
+          interval = setInterval(function () {
+            timeLeft--;
+
+            var minutes = Math.floor(timeLeft / 60);
+            var seconds = timeLeft % 60;
+
+            // 타이머 값을 업데이트
+            displayElement.textContent =
+                    (minutes < 10 ? "0" : "") +
+                    minutes +
+                    ":" +
+                    (seconds < 10 ? "0" : "") +
+                    seconds;
+            // 시간이 끝났으면 타이머 중지
+            if (timeLeft <= 0) {
+              clearInterval(interval);
+              alert("인증시간이 지났습니다. 인증번호를 다시 받아주세요.");
+            }
+          }, 1000); // 1초에 한 번씩 실행
         },
         error: function(jqXHR, textStatus, errorThrown) {
           // 요청이 실패하면 이곳에 코드를 작성합니다.
-          // 예: alert('핸드폰 인증에 실패하였습니다. 다시 시도해 주세요.');
+          alert('핸드폰 인증에 실패하였습니다. 다시 시도해 주세요.');
         }
       });
     });
 
-    var timer = null;
-    var interval = null;
-
-    $("#phoneAuthButton").click(function () {
-      var timeLeft = 60; // 초 단위
-
-      // 타이머를 표시할 요소를 선택
-      var displayElement = document.getElementById("timerDisplay");
-
-      // 타이머 시작 (1초마다 타이머 업데이트)
-      interval = setInterval(function () {
-        timeLeft--;
-
-        var minutes = Math.floor(timeLeft / 60);
-        var seconds = timeLeft % 60;
-
-        // 타이머 값을 업데이트
-        displayElement.textContent =
-                (minutes < 10 ? "0" : "") +
-                minutes +
-                ":" +
-                (seconds < 10 ? "0" : "") +
-                seconds;
-
-        // 시간이 끝났으면 타이머 중지
-        if (timeLeft <= 0) {
-          clearInterval(interval);
-          alert("인증시간이 지났습니다. 인증번호를 다시 받아주세요.");
-        }
-      }, 1000); // 1초에 한 번씩 실행
-    });
-
+    //인증번호 검증
     $("#checkAuthCode").click(function () {
-      // 인증을 확인하고, 인증번호가 올바르면 타이머 중지
-      if (interval) {
-        if($("#checkNumber").val() == authCode){
-          alert("인증 성공");
-          clearInterval(interval);
+      var phoneNumber = $("#phoneNumber").val();
+      var checkNumber = $("#checkNumber").val();
+
+      $.ajax({
+        url: '/usr/member/phoneAuth/check',
+        type: 'POST',
+        data: {
+          phoneNumber: phoneNumber,
+          authCode: checkNumber
+        },
+        success: function (response) {
+          clearInterval(interval); //타이머 중지
+          alert(response);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          // 서버가 반환한 데이터를 확인합니다.
+          alert(jqXHR.responseText);
         }
-        else{
-          alert("인증번호가 올바르지 않습니다.")
-        }
-      } else {
-        alert("인증시간이 지났습니다. 인증번호를 다시 받아주세요.");
-      }
+      });
     });
 
   });
-</script>>
+</script>
 
 </body>
 

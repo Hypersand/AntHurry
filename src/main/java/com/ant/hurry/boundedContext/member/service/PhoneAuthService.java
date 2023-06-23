@@ -3,6 +3,7 @@ package com.ant.hurry.boundedContext.member.service;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 @Service
@@ -33,6 +35,8 @@ public class PhoneAuthService {
 
     @Value("${naver-cloud-sms.senderPhone}")
     private String SENDER_NUMBER;
+
+    private final StringRedisTemplate redisTemplate;
 
 
     public String sendSms(String toNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
@@ -67,6 +71,9 @@ public class PhoneAuthService {
         String API_URL = "https://sens.apigw.ntruss.com/sms/v2/services/" + SERVICE_ID + "/messages";
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
         restTemplate.postForObject(API_URL, request, String.class);
+
+        //redis 에 인증번호 저장
+        setAuthCode(toNumber, certificationNumber);
 
         return certificationNumber;
     }
@@ -109,5 +116,15 @@ public class PhoneAuthService {
             numStr += ran;
         }
         return numStr;
+    }
+
+    public void setAuthCode(String phoneNumber, String authCode) {
+        System.out.println(phoneNumber);
+        System.out.println(authCode);
+        redisTemplate.opsForValue().set(phoneNumber, authCode, 3, TimeUnit.MINUTES);
+    }
+
+    public String getAuthCode(String phoneNumber) {
+        return redisTemplate.opsForValue().get(phoneNumber);
     }
 }

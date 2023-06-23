@@ -40,6 +40,9 @@ dependencies {
 
 	//레이아웃
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+	//redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {
