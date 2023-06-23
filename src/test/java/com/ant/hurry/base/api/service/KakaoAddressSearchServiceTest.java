@@ -1,5 +1,6 @@
 package com.ant.hurry.base.api.service;
 
+import com.ant.hurry.base.api.dto.AddressDTO;
 import com.ant.hurry.base.api.dto.KakaoApiResponseDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,10 +23,12 @@ public class KakaoAddressSearchServiceTest {
     @Test
     @DisplayName("주소를 넣어서 카카오 API 호출 성공")
     public void successKakaoApi() throws Exception {
-        Mono<KakaoApiResponseDTO> result = kakaoAddressSearchService.requestAddressSearch("서울 관악구 신림동 1662-3");
-        assertNotNull(result.block().getDocumentDTOList().get(0).getAddress());
-        System.out.println(result.block().getDocumentDTOList().get(0).getAddress());
-
+        Mono<KakaoApiResponseDTO> kakaoApiResult = kakaoAddressSearchService.requestAddressSearch("서울 관악구 신림동 1662-3");
+        AddressDTO addressInfo = kakaoApiResult.block().getDocumentDTOList().get(0).getAddress();
+        assertNotNull(addressInfo.getX());
+        assertNotNull(addressInfo.getY());
+        assertNotNull(addressInfo.getDepth2());
+        assertNotNull(addressInfo.getDepth3());
     }
 
     @Test
