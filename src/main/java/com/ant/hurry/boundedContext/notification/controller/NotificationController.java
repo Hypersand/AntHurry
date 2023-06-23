@@ -7,6 +7,7 @@ import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.notification.entity.Notification;
 import com.ant.hurry.boundedContext.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -30,13 +31,14 @@ public class NotificationController {
 
     //알림목록 페이지
     @GetMapping("/list")
+    @PreAuthorize("isAuthenticated()")
     public String list(@AuthenticationPrincipal User user, Model model) {
 
         RsData<List<Notification>> notificationListRsData = notificationService.findNotificationList(user.getUsername());
 
         model.addAttribute("notificationList", notificationListRsData.getData());
 
-        //임시데이터 생성
+        //레이아웃 확인 데이터 생성
 //        Member member1 = Member.create("test1", "nickname1", "123", "01012345678", "kakao");
 //        Member member2= Member.create("test2", "nickname2", "123", "01034124123", "kakao");
 //        List<Notification> list = Stream.of(
