@@ -28,9 +28,43 @@
 </header>
 
 <main layout:fragment="main" class="flex-grow flex items-center justify-center">
-  <div class="text-center">
-    Main
-  </div>
+  <label for="searchInput">검색</label>
+  <input type="text" id="searchInput" placeholder="읍/면/동을 입력해주세요.">
+  <ul id="searchResults"></ul>
+
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    const allRegions = /*[[${regions}]]*/ [];
+    /*]]>*/
+
+    function filterRegions(searchText) {
+      return allRegions.filter(region =>
+              region.depth3.toLowerCase().includes(searchText.toLowerCase())
+      );
+    }
+
+    $(document).ready(function() {
+      const $searchInput = $('#searchInput');
+      const $searchResults = $('#searchResults');
+
+      $searchInput.on('input', function() {
+        const searchText = $searchInput.val();
+
+        if (searchText) {
+          const filteredRegions = filterRegions(searchText);
+          $searchResults.empty();
+          filteredRegions.forEach(function(region) {
+            const li = $('<li></li>').text(
+                    `${region.depth1} ${region.depth2} ${region.depth3}`
+            );
+            $searchResults.append(li);
+          });
+        } else {
+          $searchResults.empty();
+        }
+      });
+    });
+  </script>
 </main>
 
 </body>

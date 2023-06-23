@@ -111,4 +111,7 @@ public class RegionSearchService {
     }
 
 
+    public List<Region> findAll() {
+        return regionRepository.findAll();
+    }
 }
