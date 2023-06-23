@@ -46,16 +46,32 @@
 
 </header>
 
-<main layout:fragment="main" class="flex-grow flex items-center justify-center">
+<main layout:fragment="main">
     <div class="body bg-white dark:bg-[#0F172A]">
         <div class="bg-black before:animate-pulse before:bg-gradient-to-b before:from-gray-900 overflow-hidden before:via-[#FF626F] before:to-gray-900 before:absolute ">
             <div id="myDIV">
-                <div class="w-[100vw] h-[100vh] px-3 sm:px-5 flex items-center justify-center absolute z-50 text-pink-400">
-                    Main
+                <div class="w-[100vw] h-[100vh] flex items-center justify-center absolute ">
+                    <div class="text-pink-400 z-50">
+                        Main
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
+
+    <script th:inline="javascript">
+        const para = document.createElement("div");
+        para.className = 'flex flex-wrap gap-0.5 h-screen items-center justify-center  relative';
+        let el = '<div class = "  transition-colors duration-[1.5s] hover:duration-[0s] border-[#00FF00] h-[calc(5vw-2px)] w-[calc(5vw-2px)] md:h-[calc(4vw-2px)] md:w-[calc(4vw-2px)] lg:h-[calc(3vw-4px)] lg:w-[calc(3vw-4px)] bg-gray-900 hover:bg-[#FF626F]"></div>'
+        for (var k = 1; k <= 1000; k++) {
+            el += '<div class = " transition-colors duration-[1.5s] hover:duration-[0s] border-[#00FF00] h-[calc(5vw-2px)] w-[calc(5vw-2px)] md:h-[calc(4vw-2px)] md:w-[calc(4vw-2px)] lg:h-[calc(3vw-4px)] lg:w-[calc(3vw-4px)] bg-gray-900 hover:bg-[#FF626F]"></div>';
+        }
+        ;
+
+        para.innerHTML = el;
+        document.getElementById("myDIV").appendChild(para);
+    </script>
 
 </main>
 

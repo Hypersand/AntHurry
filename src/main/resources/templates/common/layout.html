@@ -22,18 +22,14 @@
     <!-- 공통 CSS 불러오기 -->
     <link rel="stylesheet" href="/resource/common/common.css">
 
-    <script>
-        // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
-        const params = JSON.parse('[( ${@rq.paramsJsonStr} )]');
-    </script>
+    <!-- 데이지 UI 불러오기 -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css"/>
+    <!-- 테일윈드 불러오기 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 
 <body class="w-screen">
-
-<!-- 데이지 UI 불러오기 -->
-<link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css"/>
-<!-- 테일윈드 불러오기 -->
-<script src="https://cdn.tailwindcss.com"></script>
 
 <div class="min-h-screen flex flex-col pb-10">
     <header layout:fragment="header"></header>
@@ -46,20 +42,6 @@
 
 
 <script th:inline="javascript">
-    const para = document.createElement("div");
-    para.className = 'flex flex-wrap gap-0.5 h-screen items-center justify-center  relative';
-    let el = '<div class = "  transition-colors duration-[1.5s] hover:duration-[0s] border-[#00FF00] h-[calc(5vw-2px)] w-[calc(5vw-2px)] md:h-[calc(4vw-2px)] md:w-[calc(4vw-2px)] lg:h-[calc(3vw-4px)] lg:w-[calc(3vw-4px)] bg-gray-900 hover:bg-[#FF626F]"></div>'
-    for (var k = 1; k <= 1000; k++) {
-        el += '<div class = " transition-colors duration-[1.5s] hover:duration-[0s] border-[#00FF00] h-[calc(5vw-2px)] w-[calc(5vw-2px)] md:h-[calc(4vw-2px)] md:w-[calc(4vw-2px)] lg:h-[calc(3vw-4px)] lg:w-[calc(3vw-4px)] bg-gray-900 hover:bg-[#FF626F]"></div>';
-    }
-    ;
-
-    para.innerHTML = el;
-    document.getElementById("myDIV").appendChild(para);
-
-    if (params.msg) {
-        toastNotice(params.msg[0]);
-    }
 
     if (params.errorMsg) {
         toastWarning(params.errorMsg[0]);
