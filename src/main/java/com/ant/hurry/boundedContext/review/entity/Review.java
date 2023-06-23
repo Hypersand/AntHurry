@@ -25,4 +25,12 @@ public class Review extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private TradeStatus tradeStatus;
 
+    public static Review create(String content, double rating, TradeStatus tradeStatus) {
+        return Review.builder()
+                .content(content)
+                .rating(rating)
+                .tradeStatus(tradeStatus)
+                .build();
+    }
+
 }
