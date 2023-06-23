@@ -33,9 +33,9 @@
   <ul id="searchResults"></ul>
 
   <script th:inline="javascript">
-    /*<![CDATA[*/
+
     const allRegions = /*[[${regions}]]*/ [];
-    /*]]>*/
+
 
     function filterRegions(searchText) {
       return allRegions.filter(region =>
@@ -54,9 +54,12 @@
           const filteredRegions = filterRegions(searchText);
           $searchResults.empty();
           filteredRegions.forEach(function(region) {
-            const li = $('<li></li>').text(
+            const code = region.code;
+            const li = $('<li></li>');
+            const a = $('<a></a>').attr('href', `/board/enterRegion?code=${encodeURIComponent(code)}`).text(
                     `${region.depth1} ${region.depth2} ${region.depth3}`
             );
+            li.append(a);
             $searchResults.append(li);
           });
         } else {
@@ -65,6 +68,7 @@
       });
     });
   </script>
+
 </main>
 
 </body>

@@ -1,0 +1,39 @@
+<html layout:decorate="~{usr/layout/layout.html}">
+
+<head>
+  <title>지역 선택</title>
+</head>
+
+<body>
+<header layout:fragment="header" class="sticky top-0 z-50">
+
+  <div class="navbar max-w-2xl mx-auto bg-base-100">
+    <div class="navbar-start">
+      <div>
+        <a href="#" tabindex="0" class="btn btn-ghost btn-circle">
+          <i class="fa-solid fa-angle-left"></i>
+        </a>
+      </div>
+    </div>
+    <div class="navbar-center">
+      <a th:text="|${region.getDepth1()} ${region.getDepth2()} ${region.getDepth3()}|" class="font-black"></a>
+    </div>
+    <div class="navbar-end">
+      <button class="btn btn-ghost btn-circle">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+      </button>
+    </div>
+  </div>
+
+</header>
+
+<main layout:fragment="main" class="flex-grow flex items-center justify-center">
+  <div>
+
+  </div>
+
+</main>
+
+</body>
+
+</html>

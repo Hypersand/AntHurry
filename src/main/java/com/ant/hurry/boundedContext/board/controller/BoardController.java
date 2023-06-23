@@ -10,6 +10,7 @@ import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.ant.hurry.base.region.entity.Region;
 import com.ant.hurry.base.region.service.RegionSearchService;
 import com.ant.hurry.boundedContext.board.service.BoardService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -66,12 +68,23 @@ public class BoardController {
 
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/region")
+    @GetMapping("/selectRegion")
     public String showRegion(Model model){
         List<Region> regions = regionService.findAll();
         model.addAttribute("regions", regions);
-        return "board/region";
+        return "board/selectRegion";
     }
+
+
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/enterRegion")
+    public String selectRegion(@RequestParam("code")String code, Model model) {
+        Region region = regionService.findByCode(code).orElseThrow();
+        model.addAttribute("region", region);
+        return "board/enterRegion";
+    }
+
 
 }
 
