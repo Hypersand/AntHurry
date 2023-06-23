@@ -44,7 +44,7 @@ public class BoardControllerTests {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(BoardController.class))
-                .andExpect(handler().methodName("createBoard"))
+                .andExpect(handler().methodName("showCreateBoard"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(view().name("board/create"));
     }

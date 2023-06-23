@@ -51,7 +51,11 @@
                 <label class="btn bg-main btn-active" th:each="type : ${boardTypes}">
                     <input class="sr-only" type="radio" name="boardType" th:value="${type}" th:text="${type}">
                 </label>
-
+            </div>
+            <div class="mt-10">
+                <label class="btn bg-main btn-active" th:each="type : ${tradeTypes}">
+                    <input class="sr-only" type="radio" name="tradeType" th:value="${type}" th:text="${type}">
+                </label>
             </div>
             <div class="w-full mt-10 h-20">
                 <textarea class="textarea textarea-bordered textarea-lg w-full max-w-xs" name="content" maxlength="30" placeholder="내용"></textarea>

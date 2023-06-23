@@ -55,6 +55,7 @@ public class BoardService {
                 .y(createConvertDTO.getY())
                 .rewardCoin(createConvertDTO.getRewardCoin())
                 .regCode(createConvertDTO.getRegCode())
+                .tradeType(createConvertDTO.getTradeType())
                 .member(member)
                 .build();
         boardRepository.save(board);
@@ -72,6 +73,7 @@ public class BoardService {
                 .content(createRequest.getContent())
                 .boardType(createRequest.getBoardType())
                 .rewardCoin(createRequest.getRewardCoin())
+                .tradeType(createRequest.getTradeType())
                 .x(addressInfo.getX())
                 .y(addressInfo.getY())
                 .regCode(regCode)

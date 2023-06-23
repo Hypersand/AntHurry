@@ -6,6 +6,7 @@ import com.ant.hurry.boundedContext.board.dto.CreateConvertDTO;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.entity.BoardType;
+import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.ant.hurry.boundedContext.board.service.BoardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +25,11 @@ public class BoardController {
     private final BoardService boardService;
     private final Rq rq;
 
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
-    public String createBoard(Model model){
+    public String showCreateBoard(Model model) {
         model.addAttribute("boardTypes", BoardType.values());
+        model.addAttribute("tradeTypes", TradeType.values());
         return "board/create";
     }
 

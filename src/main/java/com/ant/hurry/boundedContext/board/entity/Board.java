@@ -18,6 +18,9 @@ public class Board extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private BoardType boardType;
 
+    @Enumerated(EnumType.STRING)
+    private TradeType tradeType;
+
     private String title;
 
     private String content;
