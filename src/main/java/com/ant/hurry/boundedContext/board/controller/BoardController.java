@@ -24,7 +24,7 @@ public class BoardController {
     private final BoardService boardService;
     private final Rq rq;
 
-    @PreAuthorize("isAuthenticated()")
+
     @GetMapping("/create")
     public String createBoard(Model model){
         model.addAttribute("boardTypes", BoardType.values());
