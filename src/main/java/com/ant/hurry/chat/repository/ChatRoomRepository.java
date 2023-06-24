@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
-public interface ChatRoomRepository extends MongoRepository<ChatRoom, Long> {
+public interface ChatRoomRepository extends MongoRepository<ChatRoom, String> {
     @Query("{'tradeStatus': {$in: ?0}}")
     List<ChatRoom> findByTradeStatus(List<TradeStatus> tradeStatuses);
 
