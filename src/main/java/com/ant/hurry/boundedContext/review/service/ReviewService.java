@@ -7,29 +7,27 @@ import com.ant.hurry.boundedContext.review.dto.ReviewRequest;
 import com.ant.hurry.boundedContext.review.entity.Review;
 import com.ant.hurry.boundedContext.review.repository.ReviewRepository;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
-import com.ant.hurry.boundedContext.tradeStatus.repository.TradeStatusRepository;
+import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class ReviewService {
 
     private final MemberService memberService;
 
-    //TradeStatusService -> findById 로직 추가해야 함.
-    private final TradeStatusRepository tradeStatusRepository;
+    private final TradeStatusService tradeStatusService;
     private final ReviewRepository reviewRepository;
 
-    @Transactional
     public RsData<Review> save(ReviewRequest reviewRequest, String username, Long tradeStatusId) {
 
         //거래 상태 페이지 접속 -> 거래 완료 시 리뷰 등록 버튼 활성화 -> 버튼 누르면 리뷰 등록 페이지 -> 리뷰 작성
 
         Member member = memberService.findByUsername(username).orElse(null);
-        TradeStatus tradeStatus = tradeStatusRepository.findById(tradeStatusId).orElse(null);
+        TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId);
 
         if (member == null) {
             return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
@@ -42,6 +40,6 @@ public class ReviewService {
         Review review = Review.create(reviewRequest.getContent(), reviewRequest.getRating(), tradeStatus);
         reviewRepository.save(review);
 
-        return RsData.of("S_R-1", "후기가 성공적으로 등록되었습니다.");
+        return RsData.of("S_R-1", "후기가 성공적으로 등록되었습니다.", review);
     }
 }

@@ -24,7 +24,7 @@ public class Notification extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member helper;
 
-    protected Notification() {
+    public Notification() {
     }
 
     public static Notification create(String message, String type, Member requester, Member helper) {
