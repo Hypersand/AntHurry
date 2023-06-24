@@ -4,15 +4,6 @@
     <title>게시판 작성</title>
     <!-- Kakao 우편번호 서비스 -->
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <style>
-        .btn-boardType {
-            background-color: #FF626F;
-        }
-
-        .btn-tradeType {
-            background-color: #FF626F;
-        }
-    </style>
 </head>
 
 <body>
@@ -40,7 +31,7 @@
     <div class="text-center">
         <form method="POST" th:action onsubmit="Validation__createBoard(this); return false;">
             <div class="mt-2">
-                <input class="input input-md w-full" name="title" type="text" placeholder="제목을 입력해주세요."><br>
+                <input class="input input-md w-full" name="title" type="text" placeholder="글 제목"><br>
             </div>
             <hr class="border my-2">
             <div class="mt-2">
@@ -48,7 +39,7 @@
             </div>
             <div class="mt-2">
                 <label class="label cursor-pointer" th:each="type : ${boardTypes}">
-                    <span class="label-text" name="boardType" th:value="${type}" th:text="${type}"></span>
+                    <span class="label-text cursor-pointer inline-block text-white px-4 py-2 rounded-full" style="background-color: #FF626F" name="boardType" th:value="${type}" th:text="${type}"></span>
                     <input type="radio" name="boardType" class="radio checked:bg-red-500" th:value="${type}" checked />
                 </label>
             </div>
@@ -58,7 +49,7 @@
             </div>
             <div class="mt-2">
                 <label class="label cursor-pointer" th:each="type : ${tradeTypes}">
-                    <span class="label-text" name="tradeType" th:value="${type}" th:text="${type}"></span>
+                    <span class="label-text cursor-pointer inline-block text-white px-4 py-2 rounded-full" style="background-color: #FF626F" name="tradeType" th:value="${type}" th:text="${type}"></span>
                     <input type="radio" name="tradeType" class="radio checked:bg-red-500" th:value="${type}" checked />
                 </label>
             </div>

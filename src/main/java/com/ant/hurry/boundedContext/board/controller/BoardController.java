@@ -41,10 +41,12 @@ public class BoardController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public String createBoard(@Validated CreateRequest createRequest, Model model) {
+    public String createBoard(@Valid CreateRequest createRequest, BindingResult bindingResult, Model model) {
         model.addAttribute("boardTypes", BoardType.values());
         model.addAttribute("tradeTypes", TradeType.values());
-
+        if (bindingResult.hasErrors()) {
+            return "board/create";
+        }
         RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
         if(checkUserCoin.isFail()){
             return rq.historyBack(checkUserCoin);
