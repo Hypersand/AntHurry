@@ -11,7 +11,6 @@ import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class CreateRequest {
 
     @NotBlank(message = "제목을 입력해주세요.")

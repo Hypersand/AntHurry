@@ -4,6 +4,15 @@
     <title>게시판 작성</title>
     <!-- Kakao 우편번호 서비스 -->
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <style>
+        .btn-boardType {
+            background-color: #FF626F;
+        }
+
+        .btn-tradeType {
+            background-color: #FF626F;
+        }
+    </style>
 </head>
 
 <body>
@@ -29,36 +38,47 @@
 
 <main layout:fragment="main">
     <div class="text-center">
-        <form th:object="${createBoard}" th:action method="POST">
-            <div class="mt-5">
-                <input class="input input-bordered input-md w-full max-w-xs" th:field="*{title}" type="text" placeholder="제목"><br>
-                <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-error"></span>
+        <form method="POST" th:action onsubmit="Validation__createBoard(this); return false;">
+            <div class="mt-2">
+                <input class="input input-md w-full" name="title" type="text" placeholder="제목을 입력해주세요."><br>
             </div>
-
-            <div class="mt-5">
-                <label class="btn bg-main btn-active" th:each="type : ${boardTypes}" onclick="changeColorBoardType(event)">
-                    <input class="sr-only" type="radio" th:field="*{boardType}" th:value="${type}" th:text="${type}">
-                </label><br>
-                <span th:if="${#fields.hasErrors('boardType')}" th:errors="*{boardType}" class="text-error"></span>
+            <hr class="border my-2">
+            <div class="mt-2">
+                <h2 class="text-center">게시판 유형</h2>
             </div>
-            <div class="mt-5">
-                <label class="btn bg-main btn-active" th:each="type : ${tradeTypes}"onclick="changeColorTradeType(event)">
-                    <input class="sr-only" type="radio" th:field="*{tradeType}" th:value="${type}" th:text="${type}">
-                </label><br>
-                <span th:if="${#fields.hasErrors('tradeType')}" th:errors="*{tradeType}" class="text-error"></span>
+            <div class="mt-2">
+                <label class="label cursor-pointer" th:each="type : ${boardTypes}">
+                    <span class="label-text" name="boardType" th:value="${type}" th:text="${type}"></span>
+                    <input type="radio" name="boardType" class="radio checked:bg-red-500" th:value="${type}" checked />
+                </label>
             </div>
-            <div class="mt-5">
-                <textarea class="textarea textarea-bordered textarea-lg w-full max-w-xs" th:field="*{content}" maxlength="30" placeholder="내용"></textarea><br>
-                <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-error"></span>
+            <hr class="border my-2">
+            <div class="mt-2">
+                <h2 class="text-center">거래 유형</h2>
             </div>
-            <div class="mt-5">
-                <input class="input input-bordered" type="number" th:field="*{rewardCoin}" placeholder="거래할 코인을 입력해주세요."><br>
-                <span th:if="${#fields.hasErrors('rewardCoin')}" th:errors="*{rewardCoin}" class="text-error"></span>
+            <div class="mt-2">
+                <label class="label cursor-pointer" th:each="type : ${tradeTypes}">
+                    <span class="label-text" name="tradeType" th:value="${type}" th:text="${type}"></span>
+                    <input type="radio" name="tradeType" class="radio checked:bg-red-500" th:value="${type}" checked />
+                </label>
             </div>
-            <div class="mt-10 mx-auto w-1/2 text-center">
-                <input type="text" class="input input-bordered form-control" id="address_kakao" th:field="*{address}"
-                       placeholder="주소(지번 또는 도로명)를 입력하세요. ex) 서울특별시 성북구 종암로 10길" readonly><br>
-                <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="text-error"></span>
+            <hr class="border my-2">
+            <div class="mt-2">
+                <textarea class="textarea textarea-md w-full" name="content" maxlength="30" placeholder="내용을 입력해주세요."></textarea><br>
+            </div>
+            <hr class="border my-2">
+            <div class="mt-2">
+                <input class="input input-md w-full placeholder-gray-500 rounded-md py-2 px-3"
+                       type="number"
+                       id="rewardCoin"
+                       name="rewardCoin"
+                       placeholder="거래할 코인을 입력해주세요."
+                       oninput="validateInput()">
+            </div>
+            <hr class="border my-2">
+            <div class="mt-2">
+                <input type="text" class="input w-full" id="address_kakao" name="address"
+                       placeholder="희망 장소" readonly><br>
             </div>
 
             <div class="mt-5">
@@ -66,7 +86,6 @@
             </div>
         </form>
     </div>
-
     <script th:inline="javascript">
         // 카카오 우편 서비스
         window.onload = function() {
@@ -80,22 +99,56 @@
             });
         }
 
-        function changeColorBoardType(event) {
-            var labels = document.querySelectorAll(".boardType");
-            labels.forEach(function(label) {
-                label.classList.remove("active");
-            });
-
-            event.currentTarget.classList.add("active");
+        function validateInput() {
+            var input = document.getElementById('rewardCoin');
+            if (input.value.startsWith('0')) {
+                input.value = input.value.slice(1);
+            }
         }
 
-        function changeColorTradeType(event) {
-            var labels = document.querySelectorAll(".tradeType");
-            labels.forEach(function(label) {
-                label.classList.remove("active");
-            });
+        function Validation__createBoard(form) {
 
-            event.currentTarget.classList.add("active");
+            if (form.title.value.trim().length == 0) {
+                toastWarning("제목을 입력해주세요.");
+                form.title.focus();
+                return;
+            }
+
+            const $checkedBoardTypeRadioButton = $(form).find("[name=boardType]:checked");
+
+            if ($checkedBoardTypeRadioButton.length === 0) {
+                toastWarning('게시글 유형을 선택해주세요.');
+                $(form).find("[name=boardType]:first").focus();
+                return;
+            }
+
+            const $checkedTradeTypeRadioButton = $(form).find("[name=tradeType]:checked");
+
+            if ($checkedTradeTypeRadioButton.length === 0) {
+                toastWarning('거래 유형을 선택해주세요.');
+                $(form).find("[name=tradeType]:first").focus();
+                return;
+            }
+
+            if (form.content.value.trim().length == 0) {
+                toastWarning("내용을 입력해주세요.");
+                form.content.focus();
+                return;
+            }
+
+            if (form.rewardCoin.value.trim().length == 0) {
+                toastWarning("보상코인을 입력해주세요.");
+                form.rewardCoin.focus();
+                return;
+            }
+
+            if (form.address.value.trim().length == 0) {
+                toastWarning("주소를 입력해주세요.");
+                form.address.focus();
+                return;
+            }
+
+            form.submit();
         }
     </script>
 </main>

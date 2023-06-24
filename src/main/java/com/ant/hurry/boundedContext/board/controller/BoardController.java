@@ -36,19 +36,14 @@ public class BoardController {
     public String showCreateBoard(Model model) {
         model.addAttribute("boardTypes", BoardType.values());
         model.addAttribute("tradeTypes", TradeType.values());
-        model.addAttribute("createBoard", new CreateRequest());
         return "board/create";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public String createBoard(@ModelAttribute("createBoard") @Validated CreateRequest createRequest, BindingResult bindingResult, Model model) {
+    public String createBoard(@Validated CreateRequest createRequest, Model model) {
         model.addAttribute("boardTypes", BoardType.values());
         model.addAttribute("tradeTypes", TradeType.values());
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("bindingResult", bindingResult);
-            return "board/create";
-        }
 
         RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
         if(checkUserCoin.isFail()){
