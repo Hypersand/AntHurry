@@ -42,4 +42,16 @@ public class ReviewService {
 
         return RsData.of("S_R-1", "후기가 성공적으로 등록되었습니다.", review);
     }
+
+
+    public boolean isAlreadyReviewed(Member member, TradeStatus tradeStatus) {
+
+        Review review = reviewRepository.findByWriterAndTradeStatus(member, tradeStatus).orElse(null);
+
+        if (review == null) {
+            return false;
+        }
+
+        return true;
+    }
 }

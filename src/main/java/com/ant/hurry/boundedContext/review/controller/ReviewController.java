@@ -34,13 +34,21 @@ public class ReviewController {
     public String showCreate(Model model, @PathVariable Long tradeStatusId,
                              @AuthenticationPrincipal User user) {
 
+
         model.addAttribute("reviewRequest", new ReviewRequest());
 
         TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId);
         Member member = memberService.findByUsername(user.getUsername()).orElse(null);
 
+        if (reviewService.isAlreadyReviewed(member, tradeStatus)) {
+            RsData<Object> rsData = RsData.of("F_R-1", "이미 후기를 작성했습니다.");
+            model.addAttribute("resultCode", "F_R-1");
+            return rq.historyBack(rsData);
+        }
+
         if (!member.getUsername().equals(tradeStatus.getRequesterUsername()) && !member.getUsername().equals(tradeStatus.getHelperUsername())) {
             RsData<Object> rsData = RsData.of("F_M-2", "접근할 수 있는 권한이 없습니다.");
+            model.addAttribute("resultCode", "F_M-2");
             return rq.historyBack(rsData);
         }
 
