@@ -54,4 +54,10 @@ public class BoardController {
         return rq.redirectWithMsg("/board/list", boardRs);
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/list")
+    public String showBoardList() {
+        return "board/list";
+    }
+
 }

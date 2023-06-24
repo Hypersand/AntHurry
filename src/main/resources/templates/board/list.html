@@ -1,0 +1,48 @@
+<html layout:decorate="~{usr/layout/layout.html}">
+
+<head>
+    <title>게시판 작성</title>
+    <!-- Kakao 우편번호 서비스 -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <style>
+        .btn-boardType {
+            background-color: #FF626F;
+        }
+
+        .btn-tradeType {
+            background-color: #FF626F;
+        }
+    </style>
+</head>
+
+<body>
+<header layout:fragment="header">
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">게시글 리스트</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle hidden">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main layout:fragment="main">
+    <div class="text-center">
+
+    </div>
+
+</main>
+
+</body>
+
+</html>
