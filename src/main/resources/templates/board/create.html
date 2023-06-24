@@ -2,6 +2,8 @@
 
 <head>
     <title>게시판 작성</title>
+    <!-- Kakao 우편번호 서비스 -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
 
 <body>
@@ -9,7 +11,7 @@
     <div class="navbar max-w-2xl mx-auto bg-base-100">
         <div class="navbar-start">
             <div class="dropdown">
-                <a href="#" tabindex="0" class="btn btn-ghost btn-circle">
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
                     <i class="fa-solid fa-angle-left"></i>
                 </a>
             </div>
@@ -26,34 +28,76 @@
 </header>
 
 <main layout:fragment="main">
-
     <div class="text-center">
-        <form th:action method="POST">
-            <div class="mt-10">
-                <input class="input input-bordered input-md w-full max-w-xs" type="text" placeholder="제목">
-            </div>
-            <div class="mt-10">
-                <label class="btn bg-main btn-active">
-                    <input class="sr-only" type="radio" name="boardType" value="option1"> 나급해요
-                </label>
-                <label class="btn bg-main btn-active">
-                    <input class="sr-only" type="radio" name="boardType" value="option2"> 나급해요
-                </label>
-            </div>
-
-            <div class="w-full mt-10 h-20">
-                <textarea class="textarea textarea-bordered textarea-lg w-full max-w-xs" name="content" maxlength="30" placeholder="내용"></textarea>
-            </div>
-            <div class="mt-10 mx-auto w-1/2 text-center">
-                <input type="text" class="input input-bordered form-control" id="address_kakao" name="address"
-                       placeholder="주소(지번 또는 도로명)를 입력하세요. ex) 서울특별시 성북구 종암로 10길" readonly>
+        <form th:object="${createBoard}" th:action method="POST">
+            <div class="mt-5">
+                <input class="input input-bordered input-md w-full max-w-xs" th:field="*{title}" type="text" placeholder="제목"><br>
+                <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-error"></span>
             </div>
 
             <div class="mt-5">
-                <input type="submit" value="작성" class="btn">
+                <label class="btn bg-main btn-active" th:each="type : ${boardTypes}" onclick="changeColorBoardType(event)">
+                    <input class="sr-only" type="radio" th:field="*{boardType}" th:value="${type}" th:text="${type}">
+                </label><br>
+                <span th:if="${#fields.hasErrors('boardType')}" th:errors="*{boardType}" class="text-error"></span>
+            </div>
+            <div class="mt-5">
+                <label class="btn bg-main btn-active" th:each="type : ${tradeTypes}"onclick="changeColorTradeType(event)">
+                    <input class="sr-only" type="radio" th:field="*{tradeType}" th:value="${type}" th:text="${type}">
+                </label><br>
+                <span th:if="${#fields.hasErrors('tradeType')}" th:errors="*{tradeType}" class="text-error"></span>
+            </div>
+            <div class="mt-5">
+                <textarea class="textarea textarea-bordered textarea-lg w-full max-w-xs" th:field="*{content}" maxlength="30" placeholder="내용"></textarea><br>
+                <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-error"></span>
+            </div>
+            <div class="mt-5">
+                <input class="input input-bordered" type="number" th:field="*{rewardCoin}" placeholder="거래할 코인을 입력해주세요."><br>
+                <span th:if="${#fields.hasErrors('rewardCoin')}" th:errors="*{rewardCoin}" class="text-error"></span>
+            </div>
+            <div class="mt-10 mx-auto w-1/2 text-center">
+                <input type="text" class="input input-bordered form-control" id="address_kakao" th:field="*{address}"
+                       placeholder="주소(지번 또는 도로명)를 입력하세요. ex) 서울특별시 성북구 종암로 10길" readonly><br>
+                <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="text-error"></span>
+            </div>
+
+            <div class="mt-5">
+                <input type="submit" value="작성" class="btn btn-active">
             </div>
         </form>
     </div>
+
+    <script th:inline="javascript">
+        // 카카오 우편 서비스
+        window.onload = function() {
+            document.getElementById("address_kakao").addEventListener("click", function(){
+
+                new daum.Postcode({
+                    oncomplete: function(data) {
+                        document.getElementById("address_kakao").value = data.address;
+                    }
+                }).open();
+            });
+        }
+
+        function changeColorBoardType(event) {
+            var labels = document.querySelectorAll(".boardType");
+            labels.forEach(function(label) {
+                label.classList.remove("active");
+            });
+
+            event.currentTarget.classList.add("active");
+        }
+
+        function changeColorTradeType(event) {
+            var labels = document.querySelectorAll(".tradeType");
+            labels.forEach(function(label) {
+                label.classList.remove("active");
+            });
+
+            event.currentTarget.classList.add("active");
+        }
+    </script>
 </main>
 
 </body>

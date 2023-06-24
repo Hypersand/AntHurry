@@ -18,9 +18,12 @@ public class Board extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private BoardType boardType;
 
+    @Enumerated(EnumType.STRING)
+    private TradeType tradeType;
+
     private String title;
 
-    private String contents;
+    private String content;
 
     private double x;
 
@@ -28,7 +31,7 @@ public class Board extends BaseEntity {
 
     private int rewardCoin;
 
-    private int regCode;
+    private String regCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
