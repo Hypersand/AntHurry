@@ -37,7 +37,7 @@ public class ReviewService {
             return RsData.of("F_T-1", "존재하지 않는 거래입니다.");
         }
 
-        Review review = Review.create(reviewRequest.getContent(), reviewRequest.getRating(), tradeStatus);
+        Review review = Review.create(reviewRequest.getContent(), reviewRequest.getRating(), tradeStatus, member);
         reviewRepository.save(review);
 
         return RsData.of("S_R-1", "후기가 성공적으로 등록되었습니다.", review);
