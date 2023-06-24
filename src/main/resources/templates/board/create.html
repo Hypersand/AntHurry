@@ -28,14 +28,14 @@
 </header>
 
 <main layout:fragment="main">
-    <div class="text-center">
+    <div class="mb-8 px-5">
         <form method="POST" th:action onsubmit="Validation__createBoard(this); return false;">
             <div class="mt-2">
-                <input class="input input-md w-full" name="title" type="text" placeholder="글 제목"><br>
+                <input class="input input-sm w-full" name="title" type="text" placeholder="글 제목"><br>
             </div>
             <hr class="border my-2">
             <div class="mt-2">
-                <h2 class="text-center">게시판 유형</h2>
+                <h2 class="font-black text-sm">게시판 유형</h2>
             </div>
             <div class="mt-2">
                 <label class="label cursor-pointer" th:each="type : ${boardTypes}">
@@ -45,7 +45,7 @@
             </div>
             <hr class="border my-2">
             <div class="mt-2">
-                <h2 class="text-center">거래 유형</h2>
+                <h2 class="font-black text-sm">거래 유형</h2>
             </div>
             <div class="mt-2">
                 <label class="label cursor-pointer" th:each="type : ${tradeTypes}">
@@ -72,7 +72,7 @@
                        placeholder="희망 장소" readonly><br>
             </div>
             <hr class="border my-2">
-            <div class="mt-5">
+            <div class="text-center mt-5">
                 <input type="submit" value="작성" class="btn btn-active">
             </div>
         </form>
