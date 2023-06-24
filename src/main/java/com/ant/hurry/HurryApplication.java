@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @SpringBootApplication
 @EnableJpaAuditing
-@EnableMongoRepositories(basePackages = "com.ant.hurry.chat")
+@EnableMongoRepositories(basePackages = "com.ant.hurry.chat.repository")
 @EnableJpaRepositories(basePackages = {"com.ant.hurry.boundedContext", "com.ant.hurry.base"})
 public class HurryApplication {
 
