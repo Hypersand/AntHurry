@@ -1,8 +1,8 @@
-package com.ant.hurry.boundedContext.chat.controller;
+package com.ant.hurry.chat.controller;
 
+import com.ant.hurry.chat.service.ChatRoomService;
 import com.ant.hurry.base.rq.Rq;
-import com.ant.hurry.boundedContext.chat.entity.ChatRoom;
-import com.ant.hurry.boundedContext.chat.service.ChatRoomService;
+import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class ChatRoomController {
     private final Rq rq;
 
     @GetMapping("/room/{id}")
-    public String showRoom(@PathVariable Long id, Model model) {
+    public String showRoom(@PathVariable String id, Model model) {
         ChatRoom room = chatRoomService.findById(id);
         model.addAttribute("room", room);
         return "chat/room";

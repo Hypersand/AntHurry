@@ -1,16 +1,15 @@
-package com.ant.hurry.boundedContext.chat.service;
+package com.ant.hurry.chat.service;
 
-import com.ant.hurry.boundedContext.chat.entity.ChatRoom;
-import com.ant.hurry.boundedContext.chat.repository.ChatRoomRepository;
-import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.chat.entity.ChatRoom;
+import com.ant.hurry.chat.repository.ChatRoomRepository;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,37 +17,33 @@ import java.util.Optional;
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
+    private final ReactiveMongoTemplate reactiveMongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
     @Transactional
     public ChatRoom create(TradeStatus tradeStatus) {
         ChatRoom chatRoom = ChatRoom.builder()
                 .tradeStatus(tradeStatus)
                 .build();
-        chatRoomRepository.save(chatRoom);
+        reactiveMongoTemplate.insert(chatRoom);
         return chatRoom;
     }
 
-    public ChatRoom findById(Long id) {
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(id);
-        if (chatRoom.isEmpty() || chatRoom.get().getDeletedAt() != null) {
+    public ChatRoom findById(String id) {
+        ChatRoom chatRoom = reactiveMongoTemplate.findById(id, ChatRoom.class).block();
+        if (chatRoom == null || chatRoom.getDeletedAt() != null) {
 //            [ErrorCode] 존재하지 않는 채팅방입니다.
         }
-        return chatRoom.get();
+        return chatRoom;
     }
 
     public List<ChatRoom> findByTradeStatus(List<TradeStatus> tradeStatuses) {
         return chatRoomRepository.findByTradeStatus(tradeStatuses);
     }
 
-    public List<ChatRoom> findByMember(Member member) {
-        return chatRoomRepository.findByMemberId(member.getId());
-    }
-
     @Transactional
     public void delete(ChatRoom chatRoom) {
-        ChatRoom deletedChatRoom = chatRoom.toBuilder()
-                .deletedAt(LocalDateTime.now()).build();
-        chatRoomRepository.save(deletedChatRoom);
+        chatRoomRepository.deleteSoftly(chatRoom);
     }
 
 }
