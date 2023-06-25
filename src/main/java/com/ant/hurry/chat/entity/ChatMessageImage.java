@@ -1,21 +1,19 @@
-package com.ant.hurry.boundedContext.chat.entity;
+package com.ant.hurry.chat.entity;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@Document(collection = "chat_image")
 public class ChatMessageImage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     private String uploadFileName;
 
@@ -23,7 +21,6 @@ public class ChatMessageImage {
 
     private String fullPath;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     private ChatMessage chatMessage;
 
 }
