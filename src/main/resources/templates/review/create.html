@@ -36,11 +36,11 @@
                 <div class="card-body items-center text-center">
                     <label class="form-label text-base font-bold card-title" style="display: block; margin-bottom: 0.1rem;">별점을 선택해주세요</label>
                     <div class="rating rating-lg mt-5">
-                        <input th:field="*{rating}" type="radio" name="rating" class="mask mask-star-2 bg-red-400" value="1.0" />
-                        <input th:field="*{rating}" type="radio" name="rating" class="mask mask-star-2 bg-red-400" value="2.0" />
-                        <input th:field="*{rating}" type="radio" name="rating" class="mask mask-star-2 bg-red-400" value="3.0" />
-                        <input th:field="*{rating}" type="radio" name="rating" class="mask mask-star-2 bg-red-400" value="4.0" />
-                        <input th:field="*{rating}" type="radio" name="rating" class="mask mask-star-2 bg-red-400" value="5.0" />
+                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="1.0" />
+                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="2.0" />
+                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="3.0" />
+                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="4.0" />
+                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="5.0" />
                         <span th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}" class="text-error"></span>
                     </div>
                 </div>
@@ -49,12 +49,12 @@
             <div class="card w-full sm:w-96 bg-base-100 shadow-xl m-auto mt-7">
                 <div class="card-body items-center text-center">
                     <label class="form-label text-base font-bold mb-2 card-title" style="display: block; margin-bottom: 0.5rem;">거래는 어떠셨나요??</label>
-                    <textarea th:field="*{content}" class="textarea textarea-bordered textarea-lg h-40 w-full max-w-xs" name="content" maxlength="30" placeholder="후기를 작성해주세요."></textarea>
+                    <textarea th:field="*{content}" class="textarea textarea-bordered textarea-lg h-40 w-full max-w-xs" maxlength="30" placeholder="후기를 작성해주세요."></textarea>
                     <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-error"></span>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-wide mt-5 bg-[#FF626F]">제출</button>
+            <input type="submit" value="작성" class="btn btn-wide mt-5 bg-[#FF626F]">
         </form>
     </div>
 

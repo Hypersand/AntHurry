@@ -17,7 +17,7 @@ INSERT INTO BOARD (title, contents, board_type, x, y, reward_coin, reg_code) VAL
 INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (1, 1, 2, 'BEFORE');
 INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (2, 1, 3, 'CANCELED');
 INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (3, 2, 3, 'COMPLETE');
-INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (4, 3, 4, 'INPROGRESS');
+INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (4, 3, 4, 'COMPLETE');
 
 INSERT INTO REVIEW (content, rating, trade_status_id, writer_id) VALUES ('내용1', 1.0, 1, 1);
 INSERT INTO REVIEW (content, rating, trade_status_id, writer_id) VALUES ('내용2', 2.0, 2, 3);
