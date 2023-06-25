@@ -62,4 +62,10 @@ public class ReviewController {
 
         return rq.redirectWithMsg("/review/list", reviewRsData);
     }
+
+    @GetMapping("/list")
+    @PreAuthorize("isAuthenticated()")
+    public String list() {
+        return "review/list";
+    }
 }
