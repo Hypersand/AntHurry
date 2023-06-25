@@ -45,9 +45,61 @@
 
 </header>
 
-<main layout:fragment="main" class="flex-grow flex items-center justify-center">
-    <div class="text-center">
-        채팅방
+<!-- DaisyUI 컴포넌트 사용, 실제 적용할 내용은 추후에 넣을 예정 -->
+<main layout:fragment="main" class="flex-grow flex items-center justify-center w-screen">
+    <div class="text-center w-full m-8">
+        <div class="chat chat-start">
+            <div class="chat-image avatar">
+                <div class="w-10 rounded-full bg-pink-400"></div>
+            </div>
+            <div class="chat-header">
+                Obi-Wan Kenobi
+                <time class="text-xs opacity-50">12:45</time>
+            </div>
+            <div class="chat-bubble">You were the Chosen One!</div>
+            <div class="chat-footer opacity-50">
+                Delivered
+            </div>
+        </div>
+        <div class="chat chat-end">
+            <div class="chat-image avatar">
+                <div class="w-10 rounded-full bg-pink-400"></div>
+            </div>
+            <div class="chat-header">
+                Anakin
+                <time class="text-xs opacity-50">12:46</time>
+            </div>
+            <div class="chat-bubble">Hi!</div>
+            <div class="chat-footer opacity-50">
+                Seen at 12:46
+            </div>
+        </div>
+        <div class="chat chat-start">
+            <div class="chat-image avatar">
+                <div class="w-10 rounded-full bg-pink-400"></div>
+            </div>
+            <div class="chat-header">
+                Obi-Wan Kenobi
+                <time class="text-xs opacity-50">12:45</time>
+            </div>
+            <div class="chat-bubble">You were the Chosen One!</div>
+            <div class="chat-footer opacity-50">
+                Delivered
+            </div>
+        </div>
+        <div class="chat chat-end">
+            <div class="chat-image avatar">
+                <div class="w-10 rounded-full bg-pink-400"></div>
+            </div>
+            <div class="chat-header">
+                Anakin
+                <time class="text-xs opacity-50">12:46</time>
+            </div>
+            <div class="chat-bubble">Hi!</div>
+            <div class="chat-footer opacity-50">
+                Seen at 12:46
+            </div>
+        </div>
     </div>
 </main>
 
