@@ -1,7 +1,6 @@
 package com.ant.hurry.boundedContext.review.controller;
 
 import com.ant.hurry.boundedContext.member.service.MemberService;
-import com.ant.hurry.boundedContext.review.dto.ReviewRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

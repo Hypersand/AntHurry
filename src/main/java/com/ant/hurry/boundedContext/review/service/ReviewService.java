@@ -79,9 +79,9 @@ public class ReviewService {
         TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId);
         Member member = memberService.findByUsername(username).orElse(null);
 
-//        if (!member.getUsername().equals(tradeStatus.getRequesterUsername()) && !member.getUsername().equals(tradeStatus.getHelperUsername())) {
-//            return RsData.of("F_M-2", "접근할 수 있는 권한이 없습니다.");
-//        }
+        if (!member.getUsername().equals(tradeStatus.getRequesterUsername()) && !member.getUsername().equals(tradeStatus.getHelperUsername())) {
+            return RsData.of("F_M-2", "접근할 수 있는 권한이 없습니다.");
+        }
 
         if (!tradeStatus.getStatus().name().equals("COMPLETE")) {
             return RsData.of("F_T-2", "아직 리뷰를 남길 수 없는 거래입니다.");
