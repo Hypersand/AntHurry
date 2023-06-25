@@ -59,6 +59,9 @@ public class BoardController {
         return rq.redirectWithMsg("/board/list", boardRs);
     }
 
+    /**
+     *지역 검색하면 나오는 지역 리스트를 보여준다.
+     **/
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")
     public String showBoardList() {
@@ -76,10 +79,12 @@ public class BoardController {
     }
 
 
-
+    /**
+     * selectRegion에서 지역을 선택하면 해당 지역의 게시판으로 이동한다.
+     **/
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/enterRegion")
-    public String selectRegion(@RequestParam("code")String code, Model model) {
+    public String enterRegion(@RequestParam("code")String code, Model model) {
         Region region = regionService.findByCode(code).orElseThrow();
         model.addAttribute("region", region);
         return "board/enterRegion";
