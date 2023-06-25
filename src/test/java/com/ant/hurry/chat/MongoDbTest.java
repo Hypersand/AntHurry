@@ -7,15 +7,19 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@AutoConfigureDataMongo
+@TestPropertySource(properties = {"spring.config.location=classpath:application-test-mongo.yml, classpath:application.yml"})
+@AutoConfigureTestDatabase
 public class MongoDbTest {
 
     @Autowired
@@ -31,7 +35,7 @@ public class MongoDbTest {
     @Test
     public void insertByRepository() {
         ChatRoom chatRoom = ChatRoom.builder().build();
-        ChatRoom insertChatRoom = chatRoomRepository.save(chatRoom);
+        ChatRoom insertChatRoom = chatRoomRepository.insert(chatRoom).block();
 
         assertThat(chatRoom).isEqualTo(insertChatRoom);
     }
@@ -47,11 +51,10 @@ public class MongoDbTest {
     @Test
     public void update() {
         ChatRoom chatRoom = ChatRoom.builder().build();
-        ChatRoom insertChatRoom = chatRoomRepository.save(chatRoom);
 
         TradeStatus tradeStatus = TradeStatus.builder().build();
         ChatRoom updateChatRoom = chatRoom.toBuilder().tradeStatus(tradeStatus).build();
-        updateChatRoom = chatRoomRepository.save(updateChatRoom);
+        updateChatRoom = chatRoomRepository.insert(updateChatRoom).block();
 
         assertThat(updateChatRoom.getTradeStatus()).isNotNull();
     }
@@ -59,13 +62,13 @@ public class MongoDbTest {
     @Test
     public void findAndDelete() {
         ChatRoom chatRoom = ChatRoom.builder().build();
-        ChatRoom insertChatRoom = chatRoomRepository.save(chatRoom);
+        ChatRoom insertChatRoom = chatRoomRepository.insert(chatRoom).block();
 
-        Optional<ChatRoom> foundChatRoom = chatRoomRepository.findById(insertChatRoom.getId());
+        Optional<ChatRoom> foundChatRoom = chatRoomRepository.findById(insertChatRoom.getId()).blockOptional();
         assertThat(foundChatRoom).isPresent();
 
-        chatRoomRepository.delete(foundChatRoom.get());
-        boolean exists = chatRoomRepository.existsById(chatRoom.getId());
+        chatRoomRepository.delete(foundChatRoom.get()).block();
+        boolean exists = chatRoomRepository.existsById(insertChatRoom.getId()).block();
         assertThat(exists).isFalse();
     }
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,20 +18,18 @@ import java.util.List;
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
-    private final ReactiveMongoTemplate reactiveMongoTemplate;
-    private final MongoTemplate mongoTemplate;
 
     @Transactional
     public ChatRoom create(TradeStatus tradeStatus) {
         ChatRoom chatRoom = ChatRoom.builder()
                 .tradeStatus(tradeStatus)
                 .build();
-        reactiveMongoTemplate.insert(chatRoom);
+        chatRoomRepository.save(chatRoom);
         return chatRoom;
     }
 
     public ChatRoom findById(String id) {
-        ChatRoom chatRoom = reactiveMongoTemplate.findById(id, ChatRoom.class).block();
+        ChatRoom chatRoom = chatRoomRepository.findById(id).block();
         if (chatRoom == null || chatRoom.getDeletedAt() != null) {
 //            [ErrorCode] 존재하지 않는 채팅방입니다.
         }
