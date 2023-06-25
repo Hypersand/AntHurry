@@ -1,6 +1,7 @@
 package com.ant.hurry.boundedContext.review.controller;
 
 import com.ant.hurry.boundedContext.member.service.MemberService;
+import com.ant.hurry.boundedContext.review.dto.ReviewRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,29 +115,29 @@ class ReviewControllerTest {
                 .andExpect(view().name("review/create"));
     }
 
-//    @Test
-//    @DisplayName("정상적인 후기 작성")
-//    @WithMockUser("user3")
-//    void review_success_write() throws Exception {
-//
-//        //given
-//        ReviewRequest reviewRequest = new ReviewRequest("후기테스트입니다.", 5.0);
-//
-//        //when
-//        ResultActions resultActions = mockMvc.perform(post("/review/create/4")
-//                        .with(csrf())
-//                        .param("content", reviewRequest.getContent())
-//                        .param("rating", String.valueOf(reviewRequest.getRating())))
-//                .andDo(print());
-//
-//        //then
-//        resultActions
-//                .andExpect(handler().handlerType(ReviewController.class))
-//                .andExpect(handler().methodName("create"))
-//                .andExpect(status().isOk())
-//                .andExpect(model().attributeDoesNotExist("bindingResult"))
-//                .andExpect(redirectedUrl("/review/list"));
-//    }
+    @Test
+    @DisplayName("정상적인 후기 작성")
+    @WithMockUser("user3")
+    void review_success_write() throws Exception {
+
+        //given
+        ReviewRequest reviewRequest = new ReviewRequest("후기테스트입니다.", 5.0);
+        Long tradeStatusId = 4L;
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/review/create/{tradeStatusId}", tradeStatusId)
+                        .with(csrf())
+                        .param("content", reviewRequest.getContent())
+                        .param("rating", String.valueOf(reviewRequest.getRating())))
+                .andDo(print());
+
+        //then
+        resultActions
+                .andExpect(handler().handlerType(ReviewController.class))
+                .andExpect(handler().methodName("create"))
+                .andExpect(status().isOk());
+    }
+
 
 
 }

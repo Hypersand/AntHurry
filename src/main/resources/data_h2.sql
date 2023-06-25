@@ -8,10 +8,10 @@ INSERT INTO NOTIFICATION (requester_id, helper_id, message, type) VALUES (1, 2, 
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type) VALUES (1, 3, '거래파기테스트', 'CANCEL');
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type) VALUES (3, 4, '거래완료테스트', 'END');
 
-INSERT INTO BOARD (title, contents, board_type, x, y, reward_coin, reg_code) VALUES ('제목1', '내용1', '나급해요', 123.127, 37.123, 0, 12345678);
-INSERT INTO BOARD (title, contents, board_type, x, y, reward_coin, reg_code) VALUES ('제목2', '내용2', '나급해요', 123.127, 37.123, 0, 12345678);
-INSERT INTO BOARD (title, contents, board_type, x, y, reward_coin, reg_code) VALUES ('제목3', '내용3', '나급해요', 123.127, 37.123, 0, 12345678);
-INSERT INTO BOARD (title, contents, board_type, x, y, reward_coin, reg_code) VALUES ('제목4', '내용4', '나급해요', 123.127, 37.123, 0, 12345678);
+INSERT INTO BOARD (title, content, board_type, x, y, reward_coin, reg_code) VALUES ('제목1', '내용1', '나급해요', 123.127, 37.123, 0, 12345678);
+INSERT INTO BOARD (title, content, board_type, x, y, reward_coin, reg_code) VALUES ('제목2', '내용2', '나급해요', 123.127, 37.123, 0, 12345678);
+INSERT INTO BOARD (title, content, board_type, x, y, reward_coin, reg_code) VALUES ('제목3', '내용3', '나급해요', 123.127, 37.123, 0, 12345678);
+INSERT INTO BOARD (title, content, board_type, x, y, reward_coin, reg_code) VALUES ('제목4', '내용4', '나급해요', 123.127, 37.123, 0, 12345678);
 
 
 INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (1, 1, 2, 'BEFORE');
