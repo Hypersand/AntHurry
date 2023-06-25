@@ -24,8 +24,6 @@ public class ReviewService {
 
     public RsData<Review> save(ReviewRequest reviewRequest, String username, Long tradeStatusId) {
 
-        //거래 상태 페이지 접속 -> 거래 완료 시 리뷰 등록 버튼 활성화 -> 버튼 누르면 리뷰 등록 페이지 -> 리뷰 작성
-
         Member member = memberService.findByUsername(username).orElse(null);
         TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId);
 
@@ -40,6 +38,18 @@ public class ReviewService {
         Review review = Review.create(reviewRequest.getContent(), reviewRequest.getRating(), tradeStatus, member);
         reviewRepository.save(review);
 
+        double opponentRating;
+
+        if (member.equals(tradeStatus.getRequester())) {
+            opponentRating = calculateRating(tradeStatus.getHelper(), review.getRating());
+            tradeStatus.getHelper().updateRating(opponentRating);
+        }
+
+        else {
+            opponentRating = calculateRating(tradeStatus.getRequester(), review.getRating());
+            tradeStatus.getRequester().updateRating(opponentRating);
+        }
+
         return RsData.of("S_R-1", "후기가 성공적으로 등록되었습니다.", review);
     }
 
@@ -53,5 +63,14 @@ public class ReviewService {
         }
 
         return true;
+    }
+
+    private double calculateRating(Member opponent, double rating) {
+        double opponentRating = opponent.getRating();
+        int reviewCount = opponent.getReviewCount();
+
+        double avgRating = (opponentRating * reviewCount + rating) / (reviewCount + 1);
+
+        return avgRating;
     }
 }
