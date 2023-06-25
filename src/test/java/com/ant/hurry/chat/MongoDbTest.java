@@ -18,7 +18,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@TestPropertySource(properties = {"spring.config.location=classpath:application-test-mongo.yml, classpath:application.yml"})
 @AutoConfigureTestDatabase
 public class MongoDbTest {
 
