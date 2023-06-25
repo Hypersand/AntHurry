@@ -40,11 +40,19 @@ public class ReviewController {
         TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId);
         Member member = memberService.findByUsername(user.getUsername()).orElse(null);
 
+        //TRADE_STATUS의 status가 COMPLETE일때만 리뷰를 남길 수 있다.
+        if (!tradeStatus.getStatus().name().equals("COMPLETE")) {
+            RsData<Object> rsData = RsData.of("F_T-2", "아직 리뷰를 남길 수 없는 거래입니다.");
+            model.addAttribute("resultCode", "F_T-2");
+            return rq.historyBack(rsData);
+        }
+
         if (reviewService.isAlreadyReviewed(member, tradeStatus)) {
             RsData<Object> rsData = RsData.of("F_R-1", "이미 후기를 작성했습니다.");
             model.addAttribute("resultCode", "F_R-1");
             return rq.historyBack(rsData);
         }
+
 
         if (!member.getUsername().equals(tradeStatus.getRequesterUsername()) && !member.getUsername().equals(tradeStatus.getHelperUsername())) {
             RsData<Object> rsData = RsData.of("F_M-2", "접근할 수 있는 권한이 없습니다.");
