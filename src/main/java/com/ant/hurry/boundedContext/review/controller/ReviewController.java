@@ -16,6 +16,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/review")
@@ -65,7 +67,17 @@ public class ReviewController {
 
     @GetMapping("/list")
     @PreAuthorize("isAuthenticated()")
-    public String list() {
+    public String list(Model model, @AuthenticationPrincipal User user) {
+
+        RsData<List<Review>> rsData = reviewService.getMyReviews(user.getUsername());
+
+        if (rsData.isFail()) {
+            return rq.historyBack(rsData.getMsg());
+        }
+
+
+        model.addAttribute("reviews", rsData.getData());
+
         return "review/list";
     }
 }

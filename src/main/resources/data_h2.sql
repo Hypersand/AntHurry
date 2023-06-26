@@ -20,6 +20,7 @@ INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (3, 
 INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (4, 3, 4, 'COMPLETE');
 
 INSERT INTO REVIEW (content, rating, trade_status_id, writer_id) VALUES ('내용1', 1.0, 1, 1);
-INSERT INTO REVIEW (content, rating, trade_status_id, writer_id) VALUES ('내용2', 2.0, 2, 3);
-INSERT INTO REVIEW (content, rating, trade_status_id, writer_id) VALUES ('내용3', 3.0, 3, 2);
+INSERT INTO REVIEW (content, rating, trade_status_id, writer_id) VALUES ('내용2', 1.0, 2, 1);
+INSERT INTO REVIEW (content, rating, trade_status_id, writer_id) VALUES ('내용3', 2.0, 2, 3);
+INSERT INTO REVIEW (content, rating, trade_status_id, writer_id) VALUES ('내용4', 3.0, 3, 2);
 

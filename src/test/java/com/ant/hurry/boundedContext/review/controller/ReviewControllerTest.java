@@ -139,5 +139,42 @@ class ReviewControllerTest {
     }
 
 
+    @Test
+    @DisplayName("유효하지 않은 멤버로 후기 목록 페이지 접근")
+    @WithMockUser("member_not_exists")
+    void review_list_member_not_exists() throws Exception {
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/review/list"))
+                .andDo(print());
+
+        //then
+        resultActions
+                .andExpect(handler().handlerType(ReviewController.class))
+                .andExpect(handler().methodName("list"))
+                .andExpect(model().attributeDoesNotExist("reviews"))
+                .andExpect(view().name("common/js"))
+                .andExpect(status().is4xxClientError());
+
+    }
+
+    @Test
+    @DisplayName("유효한 멤버로 후기 목록 페이지 접근")
+    @WithMockUser("user1")
+    void review_list_member_exists() throws Exception {
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/review/list"))
+                .andDo(print());
+
+        //then
+        resultActions
+                .andExpect(handler().handlerType(ReviewController.class))
+                .andExpect(handler().methodName("list"))
+                .andExpect(model().attributeExists("reviews"))
+                .andExpect(view().name("review/list"))
+                .andExpect(status().is2xxSuccessful());
+
+    }
 
 }
