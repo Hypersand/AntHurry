@@ -1,15 +1,14 @@
 package com.ant.hurry.boundedContext.member.service;
 
 import com.ant.hurry.base.rsData.RsData;
-import com.ant.hurry.boundedContext.coin.entity.CoinLog;
-import com.ant.hurry.boundedContext.coin.service.CoinService;
+import com.ant.hurry.boundedContext.coin.entity.CoinChargeLog;
+import com.ant.hurry.boundedContext.coin.service.CoinChargeService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
@@ -19,7 +18,7 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
-    private final CoinService coinService;
+    private final CoinChargeService coinChargeService;
 
 
 
@@ -53,9 +52,9 @@ public class MemberService {
 
     @Transactional
     public long addCoin(Member member, long price, String eventType) {
-        CoinLog coinLog = coinService.addCoin(member, price, eventType);
+        CoinChargeLog coinChargeLog = coinChargeService.addCoin(member, price, eventType);
 
-        long newCoin = getCoin(member) + coinLog.getPrice();
+        long newCoin = getCoin(member) + coinChargeLog.getPrice();
         member.setCoin(newCoin);
         memberRepository.save(member);
 

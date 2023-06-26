@@ -1,0 +1,63 @@
+<html layout:decorate="~{usr/layout/layout.html}">
+
+<head>
+    <title>코인 충전</title>
+</head>
+
+<body>
+<header layout:fragment="header" class="sticky top-0 z-50">
+
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div>
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">코인 충전</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+
+</header>
+
+<main layout:fragment="main" class="flex-grow flex items-center justify-center">
+    <script src="https://js.tosspayments.com/v1"></script>
+    <div>
+        <button onclick="payment();" class="btn btn-sm btn-primary">카드결제</button>
+    </div>
+    <script th:inline="javascript">
+        const orderId = /*[[ ${member.id} ]]*/ null;
+        const orderPayPrice = /*[[ ${price} ]]*/ null;
+        const buyerName = /*[[ ${member.nickname} ]]*/ null;
+    </script>
+    <script>
+        const tossPayments = TossPayments("test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq");
+
+        function payment() {
+            const method = "카드";
+
+            const paymentData = {
+                amount: orderPayPrice,
+                orderId: "order__" + orderId,
+                orderName: "코인 충전",
+                customerName: buyerName,
+                successUrl: window.location.origin + "/success",
+                failUrl: window.location.origin + "/fail",
+            };
+
+            tossPayments.requestPayment(method, paymentData);
+        }
+    </script>
+
+</main>
+
+</body>
+
+</html>

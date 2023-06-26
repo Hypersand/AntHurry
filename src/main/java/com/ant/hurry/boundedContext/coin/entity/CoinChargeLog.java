@@ -16,7 +16,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor
 @SuperBuilder
 @ToString(callSuper = true)
-public class CoinLog extends BaseEntity {
+public class CoinChargeLog extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     private Member member;
     private long price; // 충전하거나 나중에 환불할때도 사용

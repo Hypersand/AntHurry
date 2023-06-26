@@ -91,4 +91,5 @@ public class Member extends BaseEntity {
         this.rating = rating;
         this.reviewCount += 1;
     }
+
 }

@@ -1,10 +1,12 @@
 package com.ant.hurry.boundedContext.member.controller;
 
 import com.ant.hurry.base.rq.Rq;
+
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,17 +14,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/usr/member")
 public class MemberController {
-
     private final Rq rq;
 
     private final PhoneAuthService phoneAuthService;
@@ -112,9 +119,13 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body("인증 성공");
     }
 
-    @PreAuthorize("isAnonymous()")
-    @GetMapping("/charge")
-    public String chargePoint(){
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/charge/{price}")
+    public String chargePoint(@PathVariable Long price, Model model){
+        Member member = rq.getMember();
+        model.addAttribute("member", member);
+        model.addAttribute("price", price);
         return "usr/member/charge";
     }
 }
