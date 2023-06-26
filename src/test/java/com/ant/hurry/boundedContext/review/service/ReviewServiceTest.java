@@ -13,6 +13,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -187,5 +189,38 @@ class ReviewServiceTest {
                 () -> assertThat(rsData.getData().getRating()).isEqualTo(5.0)
         );
     }
+
+    @Test
+    @DisplayName("유효하지 않은 멤버로 후기 목록 페이지 접근")
+    void review_list_member_not_exists() {
+
+
+        //when
+        RsData<List<Review>> rsData = reviewService.getMyReviews("member_not_exists");
+
+        //then
+        assertAll(
+                () -> assertThat(rsData.getResultCode()).isEqualTo("F_M-1"),
+                () -> assertThat(rsData.getMsg()).isEqualTo("존재하지 않는 회원입니다.")
+        );
+    }
+
+    @Test
+    @DisplayName("유효한 멤버로 후기 목록 페이지 접근")
+    void review_list_member_exists() {
+
+        //when
+        RsData<List<Review>> rsData = reviewService.getMyReviews("user1");
+
+        //then
+        assertAll(
+                () -> assertThat(rsData.getResultCode()).isEqualTo("S_R-3"),
+                () -> assertThat(rsData.getMsg()).isEqualTo("후기목록페이지로 이동합니다."),
+                () -> assertThat(rsData.getData().get(0).getContent()).isEqualTo("내용1"),
+                () -> assertThat(rsData.getData().get(0).getRating()).isEqualTo(1.0)
+        );
+
+    }
+
 
 }
