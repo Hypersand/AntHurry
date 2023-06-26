@@ -1,7 +1,9 @@
 package com.ant.hurry.boundedContext.member.controller;
 
 import com.ant.hurry.base.rq.Rq;
+import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,8 @@ public class MemberController {
     private final Rq rq;
 
     private final PhoneAuthService phoneAuthService;
+
+    private final MemberService memberService;
 
 
     @PreAuthorize("isAnonymous()")
@@ -50,12 +54,29 @@ public class MemberController {
         return "usr/member/phone_auth";
     }
 
+    @PostMapping("/phoneAuth")
+    @ResponseBody
+    public ResponseEntity phoneAuthComplete(String phoneNumber){
+        Member member = rq.getMember();
+        RsData<?> result = memberService.phoneAuthComplete(member, phoneNumber);
+        if (result.isFail()) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result.getMsg());
+        }
+        memberService.updatePhoneNumber(member, phoneNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(result.getMsg());
+    }
+
     @PostMapping("/phoneAuth/send")
     @ResponseBody
-    public String phoneAuth(String phoneNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+    public ResponseEntity phoneAuth(String phoneNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
         String authCode = phoneAuthService.sendSms(phoneNumber);
 
-        return authCode;
+        Member member = rq.getMember();
+        if(member != null){
+            memberService.updateTmpPhone(member, phoneNumber);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("인증번호 전송 성공");
     }
 
     @PostMapping("/phoneAuth/check")
@@ -63,11 +84,6 @@ public class MemberController {
     public ResponseEntity checkAuthCode(@RequestParam String phoneNumber, @RequestParam String authCode) {
 
         String storedAuthCode = phoneAuthService.getAuthCode(phoneNumber);
-
-        System.out.println("=========인증번호 검증 로직 =========");
-        System.out.println(phoneNumber);
-        System.out.println(authCode);
-        System.out.println("=========인증번호 검증 로직 =========");
 
         if (storedAuthCode == null) {
             return ResponseEntity.status(HttpStatus.GONE).body("인증번호가 만료되었습니다.");
@@ -78,7 +94,10 @@ public class MemberController {
         }
 
         //인증 성공 경우
-        System.out.println("검증 성공인가요?");
+        Member member = rq.getMember();
+        if (member != null) {
+            memberService.updatePhoneAuth(member);
+        }
         return ResponseEntity.status(HttpStatus.OK).body("인증 성공");
     }
 }

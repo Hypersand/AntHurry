@@ -60,4 +60,33 @@ public class MemberService {
             return true;
         return false;
     }
+
+    @Transactional
+    public void updateTmpPhone(Member member, String tmpPhoneNumber) {
+        member.updateTmpPhone(tmpPhoneNumber);
+    }
+
+    @Transactional
+    public void updatePhoneAuth(Member member) {
+        member.updatePhoneAuth();
+    }
+
+    public RsData<?> phoneAuthComplete(Member member, String phoneNumber) {
+        if(member.getTmpPhoneNumber() == null){
+            return RsData.of("F-2", "전화번호를 입력해서 인증번호를 받아주세요.");
+        }
+        if (!member.isPhoneAuth()) {
+            return RsData.of("F-2", "인증번호 검증이 완료되지 않았습니다.");
+        }
+        if (!member.getTmpPhoneNumber().equals(phoneNumber)) {
+            return RsData.of("F-2", "입력하신 전화번호와 인증번호를 받은 번호가 일치하지 않습니다.");
+        }
+
+        return RsData.of("S-2", "전화번호 인증이 완료되었습니다.");
+    }
+
+    @Transactional
+    public void updatePhoneNumber(Member member, String phoneNumber) {
+        member.updatePhoneNumber(phoneNumber);
+    }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-theme="light" xmlns:th="http://www.thymeleaf.org">
+<html data-theme="light" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 
 <head>
   <meta name="_csrf" th:content="${_csrf.token}"/>
@@ -75,7 +75,7 @@
         <button type="button" id="checkAuthCode">인증번호 확인</button>
       </div>
       <div id="timerDisplay" class="flex-center">03:00</div>
-      <input class="mt-3" type="submit" value="인증완료" />
+      <button type="button" class="mt-3" id="certBtn" value="인증완료">인증완료</button>
     </form>
   </div>
 </main>
@@ -195,6 +195,28 @@
         }
       });
     });
+
+    $("#certBtn").click(function(e) {
+      var phoneNumber = $("#phoneNumber").val();
+
+      $.ajax({
+        url: '/usr/member/phoneAuth',
+        type: 'POST',
+        data: {
+          phoneNumber: phoneNumber
+        },
+        success: function (response) {
+          if(response === "전화번호 인증이 완료되었습니다.")
+            window.location.href = "/";
+          alert(response);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          // 서버가 반환한 데이터를 확인합니다.
+          alert(jqXHR.responseText);
+        }
+      });
+    });
+
 
   });
 </script>
