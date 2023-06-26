@@ -89,4 +89,9 @@ public class MemberService {
     public void updatePhoneNumber(Member member, String phoneNumber) {
         member.updatePhoneNumber(phoneNumber);
     }
+
+    public Optional<Member> findById(Long id) {
+        return memberRepository.findById(id);
+
+    }
 }

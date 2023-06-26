@@ -1,0 +1,69 @@
+<html layout:decorate="~{usr/layout/layout.html}">
+
+<head>
+    <title>메인 페이지</title>
+</head>
+
+<body>
+<header layout:fragment="header">
+
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost btn-circle">
+                    <i class="fa-solid fa-bars"></i>
+                </label>
+                <ul tabindex="0"
+                    class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
+                    <li>
+                        <a th:href="@{/}">
+                            <span>메인</span>
+                        </a>
+                    </li>
+                    <li th:if="${@rq.logout}">
+                        <a th:href="@{|/usr/member/login|}">
+                            <span>로그인</span>
+                        </a>
+                    </li>
+                    <li th:if="${@rq.login}">
+                        <a href="javascript:" onclick="$(this).next().submit();">
+                            <span>로그아웃</span>
+                        </a>
+                        <form class="!hidden" hidden th:action="|/usr/member/logout|" method="POST"></form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">메인</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+
+</header>
+
+<main layout:fragment="main">
+    <div class="body bg-white dark:bg-[#0F172A]">
+        <div class="bg-black before:animate-pulse before:bg-gradient-to-b before:from-gray-900 overflow-hidden before:via-[#FF626F] before:to-gray-900 before:absolute ">
+            <div id="myDIV">
+                <div class="w-[100vw] h-[100vh] flex items-center justify-center absolute ">
+                    <div class="text-pink-400 z-50">
+                        Main
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</main>
+
+</body>
+
+</html>

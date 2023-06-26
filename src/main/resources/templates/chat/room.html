@@ -1,0 +1,108 @@
+<html layout:decorate="~{usr/layout/layout.html}">
+
+<head>
+    <title th:text="|${room.getTradeStatus().getHelperUsername()} 님과의 채팅|"></title>
+</head>
+
+<body>
+<header layout:fragment="header" class="sticky top-0 z-50">
+
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost btn-circle">
+                    <i class="fa-solid fa-bars"></i>
+                </label>
+                <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
+                    <li>
+                        <a th:href="@{/}">
+                            <span>메인</span>
+                        </a>
+                    </li>
+                    <li th:if="${@rq.logout}">
+                        <a th:href="@{|/usr/member/login|}">
+                            <span>로그인</span>
+                        </a>
+                    </li>
+                    <li th:if="${@rq.login}">
+                        <a href="javascript:" onclick="$(this).next().submit();">
+                            <span>로그아웃</span>
+                        </a>
+                        <form class="!hidden" hidden th:action="|/usr/member/logout|" method="POST"></form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <p class="font-black" th:text="|${room.getTradeStatus().getHelperUsername()} 님과의 채팅|"></p>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+
+</header>
+
+<!-- DaisyUI 컴포넌트 사용, 실제 적용할 내용은 추후에 넣을 예정 -->
+<main layout:fragment="main" class="flex-grow flex items-center justify-center w-screen">
+    <div class="text-center w-full m-8">
+        <div class="chat chat-start">
+            <div class="chat-image avatar">
+                <div class="w-10 rounded-full bg-pink-400"></div>
+            </div>
+            <div class="chat-header">
+                Obi-Wan Kenobi
+                <time class="text-xs opacity-50">12:45</time>
+            </div>
+            <div class="chat-bubble">You were the Chosen One!</div>
+            <div class="chat-footer opacity-50">
+                Delivered
+            </div>
+        </div>
+        <div class="chat chat-end">
+            <div class="chat-image avatar">
+                <div class="w-10 rounded-full bg-pink-400"></div>
+            </div>
+            <div class="chat-header">
+                Anakin
+                <time class="text-xs opacity-50">12:46</time>
+            </div>
+            <div class="chat-bubble">Hi!</div>
+            <div class="chat-footer opacity-50">
+                Seen at 12:46
+            </div>
+        </div>
+        <div class="chat chat-start">
+            <div class="chat-image avatar">
+                <div class="w-10 rounded-full bg-pink-400"></div>
+            </div>
+            <div class="chat-header">
+                Obi-Wan Kenobi
+                <time class="text-xs opacity-50">12:45</time>
+            </div>
+            <div class="chat-bubble">You were the Chosen One!</div>
+            <div class="chat-footer opacity-50">
+                Delivered
+            </div>
+        </div>
+        <div class="chat chat-end">
+            <div class="chat-image avatar">
+                <div class="w-10 rounded-full bg-pink-400"></div>
+            </div>
+            <div class="chat-header">
+                Anakin
+                <time class="text-xs opacity-50">12:46</time>
+            </div>
+            <div class="chat-bubble">Hi!</div>
+            <div class="chat-footer opacity-50">
+                Seen at 12:46
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+
+</html>

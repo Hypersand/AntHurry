@@ -1,6 +1,15 @@
 package com.ant.hurry.boundedContext.tradeStatus.entity;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public enum Status {
 
-    거래전, 거래중, 거래완료, 거래파기
+    BEFORE("거래 전"),
+    INPROGRESS("거래 중"),
+    COMPLETE("거래 완료"),
+    CANCELED("거래 취소");
+
+    public String msg;
+
 }

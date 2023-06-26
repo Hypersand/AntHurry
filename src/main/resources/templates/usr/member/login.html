@@ -1,63 +1,89 @@
-<!DOCTYPE html>
-<html lang="en"
-      layout:decorate="~{common/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{usr/layout/layout.html}">
+
 <head>
-    <meta charset="UTF-8">
     <title>로그인 페이지</title>
 </head>
+
 <body>
-    <main layout:fragment="main">
+<header layout:fragment="header" >
+    <div class="navbar max-w-2xl mx-auto  bg-base-100">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost btn-circle">
+                    <i class="fa-solid fa-bars"></i>
+                </label>
+                <ul tabindex="0"
+                    class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
+                    <li>
+                        <a th:href="@{/}">
+                            <span>메인</span>
+                        </a>
+                    </li>
+                    <li th:if="${@rq.logout}">
+                        <a href="/usr/member/login">
+                            <span>로그인</span>
+                        </a>
+                    </li>
+                    <li th:if="${@rq.login}">
+                        <a href="javascript:" onclick="$(this).next().submit();">
+                            <span>로그아웃</span>
+                        </a>
+                        <form class="!hidden" hidden th:action="|/usr/member/logout|" method="POST"></form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">로그인 페이지</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+</header>
 
+<main layout:fragment="main">
+    <div class="body bg-white dark:bg-[#0F172A]">
+        <div class="bg-black before:animate-pulse before:bg-gradient-to-b before:from-gray-900 overflow-hidden before:via-[#FF626F] before:to-gray-900 before:absolute ">
+            <div id="myDIV">
+                <div class="w-[100vw] h-[100vh] px-3 sm:px-5 flex items-center justify-center absolute">
+                    <div class="w-full sm:w-1/2 lg:2/3 px-6 bg-gray-500 bg-opacity-20 bg-clip-padding backdrop-filter backdrop-blur-sm text-white z-50 py-4  rounded-lg">
+                        <div class="w-full flex justify-center text-[#FF626F] text-xl mb:2 md:mb-5">
+                            로그인
+                        </div>
 
-        <section class="navbar bg-base-100">
-            <div class="navbar-start">
-                <div class="dropdown">
-                    <label tabindex="0" class="btn btn-ghost btn-circle">
-                        <i class="fa-solid fa-bars"></i>
-                    </label>
-                    <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
-                        <li>
-                            <a th:href="@{/}">
-                                <span>메인</span>
-                            </a>
-                        </li>
-                        <li th:if="${@rq.logout}">
-                            <a href="/usr/member/login">
-                                <span>로그인</span>
-                            </a>
-                        </li>
-                        <li th:if="${@rq.login}">
-                            <a href="javascript:" onclick="$(this).next().submit();">
-                                <span>로그아웃</span>
-                            </a>
-                            <form class="!hidden" hidden th:action="|/usr/member/logout|" method="POST"></form>
-                        </li>
-                    </ul>
+                        <div class="btn w-full bg-[#FF626F]">
+                            네이버 로그인
+                        </div>
+                        <div class="my-3 flex items-center px-3">
+                            <hr class="w-full border-slate-600" />
+                            <span class="mx-3 text-slate-500">or</span>
+                            <hr class="w-full border-slate-600" />
+                        </div>
+                        <div class="text-center mt-2">
+
+                            <div th:if="${@rq.logout}">
+                                <!-- 로그인하지 않은 경우, 로그인 버튼을 보여줌 -->
+                                <a href="/oauth2/authorization/kakao" class="btn w-full gap-1">
+                                    <i class="fa-solid fa-comment text-[color:#ffe812]"></i>
+                                    <span class="normal-case">카카오 로그인</span>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
-            <div class="navbar-center">
-                <a class="font-black">로그인 페이지</a>
-            </div>
-            <div class="navbar-end">
-                <button class="btn btn-ghost btn-circle">
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                </button>
-            </div>
-        </section>
-
-        <div class="text-center">
-
-            <div th:if="${@rq.logout}">
-                <!-- 로그인하지 않은 경우, 로그인 버튼을 보여줌 -->
-                <a href="/oauth2/authorization/kakao" class="btn btn-block btn-outline gap-1">
-                    <i class="fa-solid fa-comment text-[color:#ffe812]"></i>
-                    <span class="normal-case">카카오 로그인</span>
-                </a>
             </div>
         </div>
 
+    </div>
 
-    </main>
+
+
+
+</main>
 
 </body>
 </html>

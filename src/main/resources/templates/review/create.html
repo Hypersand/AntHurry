@@ -1,0 +1,66 @@
+<html layout:decorate="~{usr/layout/layout.html}">
+<head>
+    <title>후기 작성</title>
+</head>
+
+<body>
+<header layout:fragment="header">
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">후기 작성</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle hidden">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main layout:fragment="main">
+    <div class="text-center" style="overflow-y: auto;">
+        <div class="mt-5 border-b border-base-200 py-3">
+            <h1 class="text-lg" th:text="|${opponentNickname}님에 대한 후기를 작성해주세요|"></h1>
+        </div>
+
+
+        <form th:object="${reviewRequest}" th:action method="POST" class="flex flex-col items-center sm:flex-column">
+            <div class="card w-full sm:w-96 bg-base-100 shadow-xl m-auto mt-7">
+                <div class="card-body items-center text-center">
+                    <label class="form-label text-base font-bold card-title" style="display: block; margin-bottom: 0.1rem;">별점을 선택해주세요</label>
+                    <div class="rating rating-lg mt-5">
+                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="1.0" />
+                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="2.0" />
+                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="3.0" />
+                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="4.0" />
+                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="5.0" />
+                        <span th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}" class="text-error"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card w-full sm:w-96 bg-base-100 shadow-xl m-auto mt-7">
+                <div class="card-body items-center text-center">
+                    <label class="form-label text-base font-bold mb-2 card-title" style="display: block; margin-bottom: 0.5rem;">거래는 어떠셨나요??</label>
+                    <textarea th:field="*{content}" class="textarea textarea-bordered textarea-lg h-40 w-full max-w-xs" maxlength="30" placeholder="후기를 작성해주세요."></textarea>
+                    <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-error"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-wide mt-5 bg-[#FF626F]">제출</button>
+        </form>
+    </div>
+
+</main>
+
+
+</body>
+
+</html>

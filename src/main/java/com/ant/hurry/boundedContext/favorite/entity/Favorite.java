@@ -1,5 +1,6 @@
-package com.ant.hurry.boundedContext.chat.entity;
+package com.ant.hurry.boundedContext.favorite.entity;
 
+import com.ant.hurry.boundedContext.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,17 +12,13 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class ChatMessageImage {
+public class Favorite {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String uploadFileName;
-
-    private String storedFileName;
-
-    private String fullPath;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    private ChatMessage chatMessage;
+    private Member member;
+
+    private Long regCode;
 }
