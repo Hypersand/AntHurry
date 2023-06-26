@@ -8,6 +8,8 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 import static com.ant.hurry.chat.code.ChatMessageSuccessCode.MESSAGE_DELETED;
 import static com.ant.hurry.chat.code.ChatMessageSuccessCode.MESSAGE_SENT;
 
@@ -19,6 +21,7 @@ public class ChatMessageService {
 
     public RsData<ChatMessage> create(ChatRoom chatRoom, Member sender, String content) {
         ChatMessage message = ChatMessage.builder()
+                .id(UUID.randomUUID().toString())
                 .chatRoom(chatRoom)
                 .sender(sender)
                 .content(content).build();

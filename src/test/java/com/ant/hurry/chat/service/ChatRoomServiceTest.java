@@ -41,8 +41,8 @@ public class ChatRoomServiceTest {
     }
 
     @Test
-    @DisplayName("채팅방을 생성하고 생성된 채팅방을 완전히 삭제합니다.")
-    void create_hardDelete() {
+    @DisplayName("채팅방을 생성하고 생성된 채팅방을 삭제합니다.")
+    void create_delete() {
         TradeStatus tradeStatus = TradeStatus.builder().id(1L).build();
         RsData<ChatRoom> createdRs = chatRoomService.create(tradeStatus);
         ChatRoom createdChatRoom = createdRs.getData();

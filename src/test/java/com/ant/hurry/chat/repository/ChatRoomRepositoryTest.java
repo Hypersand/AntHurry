@@ -30,25 +30,27 @@ public class ChatRoomRepositoryTest {
 
     @Test
     @DisplayName("repository를 통해 채팅방을 저장합니다.")
-    void insertByRepository() {
+    void saveByRepository() {
         ChatRoom chatRoom = ChatRoom.builder().build();
-        ChatRoom insertChatRoom = chatRoomRepository.insert(chatRoom).block();
+        chatRoomRepository.insert(chatRoom).block();
 
-        assertThat(chatRoom).isEqualTo(insertChatRoom);
+        assertThat(chatRoomRepository.findAll().collectList().block())
+                .hasSize(1);
     }
 
     @Test
     @DisplayName("ReactiveMongoTemplate을 통해 채팅방을 저장합니다.")
-    void insertByMongoTemplate() {
+    void saveByMongoTemplate() {
         ChatRoom chatRoom = ChatRoom.builder().build();
-        ChatRoom insertChatRoom = reactiveMongoTemplate.insert(chatRoom).block();
+        reactiveMongoTemplate.insert(chatRoom).block();
 
-        assertThat(insertChatRoom.getId()).isNotNull();
+        assertThat(reactiveMongoTemplate.findAll(ChatRoom.class).collectList().block())
+                .hasSize(1);
     }
 
     @Test
     @DisplayName("채팅방을 저장하고 저장된 채팅방을 수정합니다.(tradeStatus의 값을 추가)")
-    void insert_update() {
+    void save_update() {
         ChatRoom chatRoom = ChatRoom.builder().build();
         ChatRoom insertChatRoom = chatRoomRepository.insert(chatRoom).block();
 
@@ -62,7 +64,7 @@ public class ChatRoomRepositoryTest {
 
     @Test
     @DisplayName("채팅방을 저장한 후 조회하고, 삭제합니다.")
-    void find_delete() {
+    void save_find_delete() {
         ChatRoom chatRoom = ChatRoom.builder().build();
         ChatRoom insertChatRoom = chatRoomRepository.insert(chatRoom).block();
 
