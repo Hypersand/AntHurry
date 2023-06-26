@@ -111,4 +111,10 @@ public class MemberController {
         }
         return ResponseEntity.status(HttpStatus.OK).body("인증 성공");
     }
+
+    @PreAuthorize("isAnonymous()")
+    @GetMapping("/charge")
+    public String chargePoint(){
+        return "usr/member/charge";
+    }
 }
