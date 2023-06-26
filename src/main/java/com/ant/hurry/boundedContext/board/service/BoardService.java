@@ -85,7 +85,7 @@ public class BoardService {
     }
 
     public Board getBoard(Long id) {
-        Optional<Board> board = boardRepository.findById(id);
+        Optional<Board> board = boardRepository.findByIdWithMember(id);
         if(board.isEmpty()){
 //            ErrorCode 존재하지 않은 게시판입니다.
         }
