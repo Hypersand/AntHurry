@@ -8,6 +8,4 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
-    @Query("SELECT b FROM Board b JOIN FETCH b.member WHERE b.id = :id")
-    Optional<Board> findByIdWithMember(@Param("id") Long id);
 }
