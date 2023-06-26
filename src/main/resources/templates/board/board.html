@@ -20,7 +20,7 @@
             <a class="font-black" th:text="${board.boardType}"></a>
         </div>
         <div class="navbar-end">
-            <button class="btn btn-ghost text-white" style="background-color: #FF626F">
+            <button class="btn btn-ghost text-white" style="background-color: #FF626F" th:if="${board.member != @rq.getMember()}">
                 <a href="#">채팅하기</a>
             </button>
         </div>

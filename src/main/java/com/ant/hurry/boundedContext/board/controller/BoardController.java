@@ -69,14 +69,6 @@ public class BoardController {
         return "/board/board";
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/list")
-    public String showBoardList() {
-        return "board/list";
-    }
-
-
-
     /**
      *지역 검색하면 나오는 지역 리스트를 보여준다.
      **/
