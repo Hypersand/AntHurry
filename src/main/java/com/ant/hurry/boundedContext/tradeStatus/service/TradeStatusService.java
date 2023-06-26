@@ -72,4 +72,8 @@ public class TradeStatusService {
     public List<TradeStatus> findByMember(Member member) {
         return tradeStatusRepository.findByRequesterOrHelper(member.getId());
     }
+
+    public TradeStatus findById(Long id) {
+        return tradeStatusRepository.findById(id).orElse(null);
+    }
 }

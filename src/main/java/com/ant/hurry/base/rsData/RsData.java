@@ -29,7 +29,7 @@ public class RsData<T> {
     }
 
     public boolean isSuccess() {
-        return resultCode.startsWith("S-");
+        return resultCode.startsWith("S");
     }
 
     public boolean isFail() {

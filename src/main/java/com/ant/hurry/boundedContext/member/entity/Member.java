@@ -36,6 +36,10 @@ public class Member extends BaseEntity {
 
     private int coin = 0;
 
+    private double rating = 0;
+
+    private int reviewCount = 0;
+
 
     public List<? extends GrantedAuthority> getGrantedAuthorities() {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
@@ -53,7 +57,11 @@ public class Member extends BaseEntity {
         coin -= coinAmount;
     }
 
-    public void increaseCoin(int coinAmount){
+    public void increaseCoin(int coinAmount) {
         coin += coinAmount;
+    }
+    public void updateRating(double rating) {
+        this.rating = rating;
+        this.reviewCount += 1;
     }
 }
