@@ -1,0 +1,72 @@
+<html layout:decorate="~{usr/layout/layout.html}">
+<head>
+    <title>거래 현황</title>
+</head>
+
+<body>
+<header layout:fragment="header">
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">거래 현황</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle hidden">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main layout:fragment="main">
+    <div class="container mx-auto px-2 py-5 sm:px-4 sm:py-5">
+        <div class="shadow overflow-x-scroll sm:overflow-x-auto rounded border-b border-gray-200 sm:rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead>
+                <tr>
+                    <th class="px-3 py-2 sm:px-6 sm:py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        거래 ID
+                    </th>
+                    <th class="px-3 py-2 sm:px-6 sm:py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        상품명
+                    </th>
+                    <th class="px-3 py-2 sm:px-6 sm:py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        가격
+                    </th>
+                    <th class="px-3 py-2 sm:px-6 sm:py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        거래 상태
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr>
+                    <td class="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap">1</td>
+                    <td class="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap">상품 A</td>
+                    <td class="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap">₩100,000</td>
+                    <td class="px-3 py-2 sm:px-6 sm:py-4 text-center whitespace-nowrap">
+                        <span class="text-sm py-1 px-3 rounded status-green text-white">거래 중</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap">2</td>
+                    <td class="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap">상품 B</td>
+                    <td class="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap">₩200,000</td>
+                    <td class="px-3 py-2 sm:px-6 sm:py-4 text-center whitespace-nowrap">
+                        <span class="text-sm py-1 px-3 rounded status-red text-white">거래 완료</span>
+                    </td>
+                </tr>
+                <!-- More rows... -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
