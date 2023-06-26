@@ -1,10 +1,11 @@
-package com.ant.hurry.boundedContext.chat.service;
+package com.ant.hurry.chat.service;
 
-import com.ant.hurry.boundedContext.chat.entity.ChatRoom;
-import com.ant.hurry.boundedContext.chat.repository.ChatRoomRepository;
-import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.chat.entity.ChatRoom;
+import com.ant.hurry.chat.repository.ChatRoomRepository;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,16 +28,21 @@ public class ChatRoomService {
         return chatRoom;
     }
 
-    public ChatRoom findById(Long id) {
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(id);
-        if (chatRoom.isEmpty()) {
+    public ChatRoom findById(String id) {
+        ChatRoom chatRoom = chatRoomRepository.findById(id).block();
+        if (chatRoom == null || chatRoom.getDeletedAt() != null) {
 //            [ErrorCode] 존재하지 않는 채팅방입니다.
         }
-        return chatRoom.get();
+        return chatRoom;
     }
 
     public List<ChatRoom> findByTradeStatus(List<TradeStatus> tradeStatuses) {
         return chatRoomRepository.findByTradeStatus(tradeStatuses);
+    }
+
+    @Transactional
+    public void delete(ChatRoom chatRoom) {
+        chatRoomRepository.deleteSoftly(chatRoom);
     }
 
 }

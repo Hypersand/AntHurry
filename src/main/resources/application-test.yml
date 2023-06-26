@@ -7,3 +7,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+    defer-datasource-initialization: true
+  sql:
+    init:
+      data-locations: classpath:data_h2.sql
+      mode: always

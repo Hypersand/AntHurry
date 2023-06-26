@@ -1,8 +1,8 @@
-package com.ant.hurry.boundedContext.chat.service;
+package com.ant.hurry.chat.service;
 
-import com.ant.hurry.boundedContext.chat.entity.ChatMessage;
-import com.ant.hurry.boundedContext.chat.entity.ChatRoom;
-import com.ant.hurry.boundedContext.chat.repository.ChatMessageRepository;
+import com.ant.hurry.chat.entity.ChatRoom;
+import com.ant.hurry.chat.repository.ChatMessageRepository;
+import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

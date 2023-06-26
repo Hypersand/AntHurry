@@ -2,6 +2,7 @@ package com.ant.hurry.boundedContext.review.entity;
 
 
 import com.ant.hurry.base.baseEntity.BaseEntity;
+import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,5 +25,17 @@ public class Review extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private TradeStatus tradeStatus;
+
+    @ManyToOne(fetch =  FetchType.LAZY)
+    private Member writer;
+
+    public static Review create(String content, double rating, TradeStatus tradeStatus, Member writer) {
+        return Review.builder()
+                .content(content)
+                .rating(rating)
+                .tradeStatus(tradeStatus)
+                .writer(writer)
+                .build();
+    }
 
 }
