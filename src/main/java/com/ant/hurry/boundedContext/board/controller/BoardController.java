@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,17 +57,17 @@ public class BoardController {
         }
         CreateConvertDTO boardInfo = boardService.addressConvert(createRequest);
         RsData<Board> boardRs = boardService.write(rq.getMember(), boardInfo);
-        return rq.redirectWithMsg("/board/list", boardRs);
+        return rq.redirectWithMsg("/board/enterRegion?code=" + boardInfo.getRegCode(), boardRs);
     }
 
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/list")
-    public String showBoardList() {
-        return "board/list";
+    @GetMapping("{id}")
+    public String showBoard(Model model,  @PathVariable("id") Long id) {
+        Board board = boardService.getBoard(id);
+        model.addAttribute("board", board);
+        return "/board/board";
     }
-
-
 
     /**
      *지역 검색하면 나오는 지역 리스트를 보여준다.
