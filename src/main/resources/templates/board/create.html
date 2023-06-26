@@ -64,7 +64,8 @@
                        id="rewardCoin"
                        name="rewardCoin"
                        placeholder="거래할 코인을 입력해주세요."
-                       oninput="validateInput()">
+                       oninput="validateInput()"
+                       onkeydown="return numberOnly(event)">
             </div>
             <hr class="border my-2">
             <div class="mt-2">
@@ -95,6 +96,15 @@
             if (input.value.startsWith('0')) {
                 input.value = input.value.slice(1);
             }
+        }
+
+        function numberOnly(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            // 숫자와 특수키(백스페이스, 탭, 엔터 등)만 입력 가능하게 하는 조건
+            if ((charCode >= 48 && charCode <= 57) || (charCode >= 96 && charCode <= 105) || (charCode >= 35 && charCode <= 40) || charCode == 46 || charCode == 8 || charCode == 9 || charCode == 13 || charCode == 16 || charCode == 20)
+                return true;
+            else
+                return false;
         }
 
         function Validation__createBoard(form) {
