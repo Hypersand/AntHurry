@@ -60,6 +60,8 @@ public class BoardController {
         model.addAttribute("board", board);
         return "/board/board";
     }
+
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")
     public String showBoardList() {
         return "board/list";
