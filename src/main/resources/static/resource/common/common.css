@@ -61,3 +61,7 @@ textarea:focus {
 .active {
     background-color: #FF626F !important;
 }
+
+#address_kakao::placeholder {
+    color: #FF626F;
+}
