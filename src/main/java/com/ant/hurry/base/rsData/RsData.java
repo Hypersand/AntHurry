@@ -1,5 +1,6 @@
 package com.ant.hurry.base.rsData;
 
+import com.ant.hurry.base.code.Code;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,8 +17,16 @@ public class RsData<T> {
         return new RsData<>(resultCode, msg, data);
     }
 
+    public static <T> RsData<T> of(Code code, T data) {
+        return new RsData<>(code.getCode(), code.getMessage(), data);
+    }
+
     public static <T> RsData<T> of(String resultCode, String msg) {
         return of(resultCode, msg, null);
+    }
+
+    public static <T> RsData<T> of(Code code) {
+        return of(code.getCode(), code.getMessage());
     }
 
     public static <T> RsData<T> successOf(T data) {

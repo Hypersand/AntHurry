@@ -1,5 +1,6 @@
 package com.ant.hurry.chat.controller;
 
+import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.chat.service.ChatRoomService;
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.chat.entity.ChatRoom;
@@ -26,7 +27,7 @@ public class ChatRoomController {
 
     @GetMapping("/room/{id}")
     public String showRoom(@PathVariable String id, Model model) {
-        ChatRoom room = chatRoomService.findById(id);
+        ChatRoom room = chatRoomService.findById(id).getData();
         model.addAttribute("room", room);
         return "chat/room";
     }
@@ -34,15 +35,16 @@ public class ChatRoomController {
     @GetMapping("/myRooms")
     public String findAll(Model model) {
         List<TradeStatus> tradeStatuses = tradeStatusService.findByMember(rq.getMember());
-        List<ChatRoom> chatRooms = chatRoomService.findByTradeStatus(tradeStatuses);
+        List<ChatRoom> chatRooms = chatRoomService.findByTradeStatus(tradeStatuses).getData();
         model.addAttribute("chatRooms", chatRooms);
         return "chat/myRooms";
     }
 
     @PostMapping("/create")
     public String create(TradeStatus tradeStatus) {
-        ChatRoom chatRoom = chatRoomService.create(tradeStatus);
-        return "redirect:/room/%d".formatted(chatRoom.getId());
+        RsData<ChatRoom> rs = chatRoomService.create(tradeStatus);
+        ChatRoom chatRoom = rs.getData();
+        return rq.redirectWithMsg("chat/room/%s".formatted(chatRoom.getId()), rs.getMsg());
     }
 
 }
