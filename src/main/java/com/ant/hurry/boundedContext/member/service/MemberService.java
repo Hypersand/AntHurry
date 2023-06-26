@@ -1,6 +1,8 @@
 package com.ant.hurry.boundedContext.member.service;
 
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.coin.entity.CoinLog;
+import com.ant.hurry.boundedContext.coin.service.CoinService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+    private final CoinService coinService;
 
 
 
@@ -46,6 +49,21 @@ public class MemberService {
 
         Member savedMember = memberRepository.save(member);
         return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
+    }
+
+    @Transactional
+    public long addCoin(Member member, long price, String eventType) {
+        CoinLog coinLog = coinService.addCoin(member, price, eventType);
+
+        long newCoin = getCoin(member) + coinLog.getPrice();
+        member.setCoin(newCoin);
+        memberRepository.save(member);
+
+        return newCoin;
+    }
+
+    public long getCoin(Member member) {
+        return member.getCoin();
     }
 
     public Optional<Member> findByUsername(String username) {
