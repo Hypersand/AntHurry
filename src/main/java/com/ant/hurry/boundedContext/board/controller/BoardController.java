@@ -62,11 +62,26 @@ public class BoardController {
 
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public String showBoard(Model model,  @PathVariable("id") Long id) {
-        Board board = boardService.getBoard(id);
+        Board board = boardService.findById(id).orElse(null);
+        if(board == null){
+            return rq.historyBack("존재하지 않는 게시판 입니다.");
+        }
         model.addAttribute("board", board);
         return "/board/board";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{id}")
+    public String deleteBoard(@PathVariable("id") Long id) {
+        Board board = boardService.findById(id).orElse(null);
+        RsData<Board> canDeleteBoard = boardService.canDelete(rq.getMember(), board);
+        if(canDeleteBoard.isFail()){
+            return rq.historyBack(canDeleteBoard);
+        }
+        RsData<Board> deleteBoard = boardService.delete(board);
+        return rq.redirectWithMsg("/board/selectRegion", deleteBoard);
     }
 
     /**
