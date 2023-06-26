@@ -54,8 +54,11 @@
                             로그인
                         </div>
 
-                        <div class="btn w-full bg-[#FF626F]">
-                            네이버 로그인
+                        <div class="text-center mt-2">
+                            <a href="/oauth2/authorization/naver" class="btn w-full gap-1">
+                                <i class="fa-solid fa-n text-[color:#2DB400]"></i>
+                                <span class="normal-case">네이버 로그인</span>
+                            </a>
                         </div>
                         <div class="my-3 flex items-center px-3">
                             <hr class="w-full border-slate-600" />
@@ -63,14 +66,11 @@
                             <hr class="w-full border-slate-600" />
                         </div>
                         <div class="text-center mt-2">
-
-                            <div th:if="${@rq.logout}">
                                 <!-- 로그인하지 않은 경우, 로그인 버튼을 보여줌 -->
                                 <a href="/oauth2/authorization/kakao" class="btn w-full gap-1">
                                     <i class="fa-solid fa-comment text-[color:#ffe812]"></i>
                                     <span class="normal-case">카카오 로그인</span>
                                 </a>
-                            </div>
                         </div>
 
                     </div>
