@@ -32,10 +32,33 @@ public class Member extends BaseEntity {
 
     private String phoneNumber;
 
+    private String tmpPhoneNumber;
+
     private String providerTypeCode; //일반, 카카오 등 어떤 회원가입인지 구별
 
-    private int coin = 0;
+    private int coin;
 
+    private int phoneAuth;
+
+
+    public boolean isPhoneAuth(){
+        if(phoneAuth == 0)
+            return false;
+        return true;
+    }
+
+    public void updateTmpPhone(String tmpPhoneNumber){
+        this.tmpPhoneNumber = tmpPhoneNumber;
+        this.phoneAuth = 0;
+    }
+
+    public void updatePhoneAuth() {
+        this.phoneAuth = 1;
+    }
+
+    public void updatePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
     private double rating = 0;
 
     private int reviewCount = 0;
