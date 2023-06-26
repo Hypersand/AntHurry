@@ -5,6 +5,7 @@ import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.repository.ChatRoomRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -30,6 +31,7 @@ public class ChatRoomServiceTest {
     }
 
     @Test
+    @DisplayName("채팅방을 생성하고 생성된 채팅방을 조회합니다.")
     void create_findById() {
         TradeStatus tradeStatus = TradeStatus.builder().build();
         RsData<ChatRoom> createdRs = chatRoomService.create(tradeStatus);
@@ -39,20 +41,7 @@ public class ChatRoomServiceTest {
     }
 
     @Test
-    void create_softDelete() {
-        TradeStatus tradeStatus = TradeStatus.builder().id(1L).build();
-        RsData<ChatRoom> createdRs = chatRoomService.create(tradeStatus);
-        ChatRoom createdChatRoom = createdRs.getData();
-        assertThat(chatRoomService.findAll().getData().size()).isEqualTo(1);
-
-        chatRoomService.deleteSoftly(createdChatRoom);
-        List<ChatRoom> chatRooms = chatRoomService.findAll().getData();
-        assertThat(chatRooms.stream()
-                .filter(cr -> cr.getDeletedAt() != null).count())
-                .isEqualTo(1);
-    }
-
-    @Test
+    @DisplayName("채팅방을 생성하고 생성된 채팅방을 완전히 삭제합니다.")
     void create_hardDelete() {
         TradeStatus tradeStatus = TradeStatus.builder().id(1L).build();
         RsData<ChatRoom> createdRs = chatRoomService.create(tradeStatus);
@@ -60,7 +49,7 @@ public class ChatRoomServiceTest {
         assertThat(chatRoomService.findAll().getData().size()).isEqualTo(1);
 
         chatRoomService.delete(createdChatRoom);
-        assertThat(chatRoomService.findAll().getData().size()).isEqualTo(1);
+        assertThat(chatRoomService.findAll().getData().size()).isEqualTo(0);
     }
 
 }

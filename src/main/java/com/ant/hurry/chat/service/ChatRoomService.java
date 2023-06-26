@@ -52,20 +52,9 @@ public class ChatRoomService {
         return RsData.of(CHATROOM_CREATED, insertChatRoom);
     }
 
-    // soft-delete
-    @Transactional
-    public RsData deleteSoftly(ChatRoom chatRoom) {
-        ChatRoom deletedChatRoom = chatRoom.toBuilder()
-                .id(chatRoom.getId())
-                .deletedAt(LocalDateTime.now()).build();
-        chatRoomRepository.save(deletedChatRoom);
-        return RsData.of(CHATROOM_DELETED);
-    }
-
-    // hard-delete
     @Transactional
     public RsData delete(ChatRoom chatRoom) {
-        chatRoomRepository.delete(chatRoom);
+        chatRoomRepository.delete(chatRoom).block();
         return RsData.of(CHATROOM_DELETED);
     }
 
