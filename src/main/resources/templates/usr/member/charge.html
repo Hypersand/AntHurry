@@ -50,18 +50,18 @@
         const buyerName = /*[[ ${member.nickname} ]]*/ null;
     </script>
     <script>
-        const tossPayments = TossPayments("test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq");
+        const tossPayments = TossPayments("test_ck_OAQ92ymxN34waMajkEy8ajRKXvdk");
 
         function payment() {
             const method = "카드";
 
             const paymentData = {
                 amount: orderPayPrice,
-                orderId: "order__" + orderId,
+                orderId: "order__" + orderId+"__" + new Date().getTime(), //임시로 테스트를 위해 주문번호를 랜덤으로 생성
                 orderName: "코인 충전",
                 customerName: buyerName,
-                successUrl: window.location.origin + "/success",
-                failUrl: window.location.origin + "/fail",
+                successUrl: window.location.origin + "/usr/member/"+orderId+"/success",
+                failUrl: window.location.origin + "/usr/member/"+orderId+"/fail",
             };
 
             tossPayments.requestPayment(method, paymentData);

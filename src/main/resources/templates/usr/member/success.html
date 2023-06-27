@@ -1,0 +1,44 @@
+<html layout:decorate="~{usr/layout/layout.html}">
+
+<head>
+    <title>결제 성공</title>
+</head>
+
+<body>
+<header layout:fragment="header" class="sticky top-0 z-50">
+
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div>
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">결제 성공</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+
+</header>
+
+<main layout:fragment="main" class="flex-grow flex items-center justify-center">
+    <section class="section container mx-auto">
+        <div>
+            주문 결제성공
+        </div>
+
+        <div th:text="|주문번호: ${orderId}|"></div>
+
+    </section>
+
+</main>
+
+</body>
+
+</html>

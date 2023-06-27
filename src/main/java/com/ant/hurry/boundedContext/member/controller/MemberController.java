@@ -7,13 +7,19 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpResponse;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +31,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.ResponseErrorHandler;
+
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Controller
@@ -32,10 +44,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/usr/member")
 public class MemberController {
     private final MemberService memberService;
-
     private final PhoneAuthService phoneAuthService;
-
     private final Rq rq;
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final ObjectMapper objectMapper;
+
+    @Value("${custom.toss-payments.secretKey}")
+    private String SECRET_KEY;
 
 
     @PreAuthorize("isAnonymous()")
@@ -128,5 +143,58 @@ public class MemberController {
         model.addAttribute("member", member);
         model.addAttribute("price", price);
         return "usr/member/charge";
+    }
+
+    @PostConstruct
+    private void init() {
+        restTemplate.setErrorHandler(new ResponseErrorHandler() {
+            @Override
+            public boolean hasError(ClientHttpResponse response) {
+                return false;
+            }
+
+            @Override
+            public void handleError(ClientHttpResponse response) {
+            }
+        });
+    }
+
+
+    @RequestMapping("/{id}/success")
+    public String confirmPayment(
+            @RequestParam String paymentKey, @RequestParam String orderId, @RequestParam Long amount,
+            Model model) throws Exception {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString((SECRET_KEY + ":").getBytes()));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, String> payloadMap = new HashMap<>();
+        payloadMap.put("orderId", orderId);
+        payloadMap.put("amount", String.valueOf(amount));
+
+        HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(payloadMap), headers);
+
+        ResponseEntity<JsonNode> responseEntity = restTemplate.postForEntity(
+                "https://api.tosspayments.com/v1/payments/" + paymentKey, request, JsonNode.class);
+
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            JsonNode successNode = responseEntity.getBody();
+            model.addAttribute("orderId", successNode.get("orderId").asText());
+            String secret = successNode.get("secret").asText(); // 가상계좌의 경우 입금 callback 검증을 위해서 secret을 저장하기를 권장함
+            return "usr/member/success";
+        } else {
+            JsonNode failNode = responseEntity.getBody();
+            model.addAttribute("message", failNode.get("message").asText());
+            model.addAttribute("code", failNode.get("code").asText());
+            return "usr/member/fail";
+        }
+    }
+
+    @RequestMapping("/{id}/fail")
+    public String failPayment(@RequestParam String message, @RequestParam String code, Model model) {
+        model.addAttribute("message", message);
+        model.addAttribute("code", code);
+        return "usr/member/fail";
     }
 }
