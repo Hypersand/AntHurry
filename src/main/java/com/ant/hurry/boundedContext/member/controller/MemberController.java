@@ -7,6 +7,7 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
 
+import com.ant.hurry.standard.util.Ut;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -188,7 +189,7 @@ public class MemberController {
             JsonNode successNode = responseEntity.getBody();
             model.addAttribute("orderId", successNode.get("orderId").asText());
             memberService.addCoin(memberService.getMember(), amount, "코인충전");
-            return "usr/member/success";
+            return "redirect:/usr/member/profile?msg=%s".formatted(Ut.url.encode(rsData.getMsg()));
         } else {
             JsonNode failNode = responseEntity.getBody();
             model.addAttribute("message", failNode.get("message").asText());
