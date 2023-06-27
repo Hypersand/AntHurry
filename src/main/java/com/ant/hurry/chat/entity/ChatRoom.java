@@ -30,4 +30,9 @@ public class ChatRoom {
 
     private TradeStatus tradeStatus;
 
+    private ChatMessage latestMessage;
+
+    public void setLatestMessage(ChatMessage message) {
+        this.latestMessage = message;
+    }
 }

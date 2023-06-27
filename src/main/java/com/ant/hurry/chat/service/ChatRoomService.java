@@ -3,6 +3,7 @@ package com.ant.hurry.chat.service;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.chat.entity.ChatRoom;
+import com.ant.hurry.chat.repository.ChatMessageRepository;
 import com.ant.hurry.chat.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ant.hurry.chat.code.ChatRoomErrorCode.CHATROOM_NOT_DELETED;
 import static com.ant.hurry.chat.code.ChatRoomErrorCode.CHATROOM_NO_EXISTS;
 import static com.ant.hurry.chat.code.ChatRoomSuccessCode.*;
 
@@ -25,9 +27,11 @@ public class ChatRoomService {
 
     public RsData<ChatRoom> findById(String id) {
         ChatRoom chatRoom = chatRoomRepository.findById(id).block();
+
         if (chatRoom == null || chatRoom.getDeletedAt() != null) {
             return RsData.of(CHATROOM_NO_EXISTS);
         }
+
         return RsData.of(CHATROOM_FOUND, chatRoom);
     }
 
@@ -41,6 +45,11 @@ public class ChatRoomService {
         return RsData.of(CHATROOM_FOUND, chatRooms.collectList().block());
     }
 
+    public RsData<List<ChatRoom>> findAllAndDeletedAtIsNull() {
+        Flux<ChatRoom> chatRooms = chatRoomRepository.findAllAndDeletedAtIsNull();
+        return RsData.of(CHATROOM_FOUND, chatRooms.collectList().block());
+    }
+
     @Transactional
     public RsData<ChatRoom> create(TradeStatus tradeStatus) {
         ChatRoom chatRoom = ChatRoom.builder()
@@ -50,6 +59,17 @@ public class ChatRoomService {
                 .build();
         ChatRoom insertChatRoom = chatRoomRepository.insert(chatRoom).block();
         return RsData.of(CHATROOM_CREATED, insertChatRoom);
+    }
+
+    @Transactional
+    public RsData deleteSoft(ChatRoom chatRoom) {
+        ChatRoom deletedChatRoom = chatRoomRepository.deleteSoft(chatRoom).block();
+
+        if(deletedChatRoom.getDeletedAt() == null) {
+            return RsData.of(CHATROOM_NOT_DELETED);
+        }
+
+        return RsData.of(CHATROOM_DELETED);
     }
 
     @Transactional

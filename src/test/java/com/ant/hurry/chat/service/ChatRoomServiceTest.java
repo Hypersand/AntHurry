@@ -41,15 +41,28 @@ public class ChatRoomServiceTest {
     }
 
     @Test
-    @DisplayName("채팅방을 생성하고 생성된 채팅방을 삭제합니다.")
+    @DisplayName("채팅방을 생성하고 생성된 채팅방을 soft-delete합니다.(deletedAt 필드 값 생성")
+    void create_deleteSoft() {
+        TradeStatus tradeStatus = TradeStatus.builder().id(1L).build();
+        RsData<ChatRoom> createdRs = chatRoomService.create(tradeStatus);
+        ChatRoom createdChatRoom = createdRs.getData();
+        assertThat(chatRoomService.findAll().getData()).hasSize(1);
+
+        chatRoomService.deleteSoft(createdChatRoom);
+        assertThat(chatRoomService.findAll().getData()).hasSize(1);
+        assertThat(chatRoomService.findAllAndDeletedAtIsNull().getData()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("채팅방을 생성하고 생성된 채팅방을 완전히 삭제합니다.")
     void create_delete() {
         TradeStatus tradeStatus = TradeStatus.builder().id(1L).build();
         RsData<ChatRoom> createdRs = chatRoomService.create(tradeStatus);
         ChatRoom createdChatRoom = createdRs.getData();
-        assertThat(chatRoomService.findAll().getData().size()).isEqualTo(1);
+        assertThat(chatRoomService.findAll().getData()).hasSize(1);
 
         chatRoomService.delete(createdChatRoom);
-        assertThat(chatRoomService.findAll().getData().size()).isEqualTo(0);
+        assertThat(chatRoomService.findAll().getData()).isEmpty();
     }
 
 }
