@@ -187,7 +187,7 @@ public class MemberController {
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             JsonNode successNode = responseEntity.getBody();
             model.addAttribute("orderId", successNode.get("orderId").asText());
-            String secret = successNode.get("secret").asText(); // 가상계좌의 경우 입금 callback 검증을 위해서 secret을 저장하기를 권장함
+            memberService.addCoin(memberService.getMember(), amount, "코인충전");
             return "usr/member/success";
         } else {
             JsonNode failNode = responseEntity.getBody();
