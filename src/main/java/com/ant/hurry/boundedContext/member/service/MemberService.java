@@ -75,7 +75,7 @@ public class MemberService {
         if(member.getTmpPhoneNumber() == null){
             return RsData.of("F-2", "전화번호를 입력해서 인증번호를 받아주세요.");
         }
-        if (!member.isPhoneAuth()) {
+        if (member.getPhoneAuth() != 1) {
             return RsData.of("F-2", "인증번호 검증이 완료되지 않았습니다.");
         }
         if (!member.getTmpPhoneNumber().equals(phoneNumber)) {
@@ -92,6 +92,9 @@ public class MemberService {
 
     public Optional<Member> findById(Long id) {
         return memberRepository.findById(id);
+    }
 
+    public boolean existsPhoneNumber(String phoneNumber){
+        return memberRepository.existsByPhoneNumber(phoneNumber);
     }
 }

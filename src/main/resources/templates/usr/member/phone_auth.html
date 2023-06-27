@@ -71,7 +71,6 @@
         var token = $("meta[name='_csrf']").attr("content");
         var header = $("meta[name='_csrf_header']").attr("content");
 
-        console.log("여기 찍히나요??");
 
         //타이머
         var interval = null;
@@ -83,7 +82,6 @@
         //인증번호 전송
         $('#phoneAuthButton').click( function(e) {
           e.preventDefault();
-          console.log("여기 ㅁㄴㅇㄹㅁㄴ??");
           var phoneNumber = $("#phoneNumber").val();
 
           $.ajax({
@@ -94,7 +92,6 @@
             },
             success: function(data) {
               // 요청이 성공적으로 완료되면 이곳에 코드를 작성합니다.
-              alert("인증번호가 발송되었습니다.");
               var timeLeft = 180; // 초 단위
 
               // 타이머를 표시할 요소를 선택
@@ -125,10 +122,16 @@
                   alert("인증시간이 지났습니다. 인증번호를 다시 받아주세요.");
                 }
               }, 1000); // 1초에 한 번씩 실행
+
+              alert("인증번호가 발송되었습니다.");
             },
             error: function(jqXHR, textStatus, errorThrown) {
               // 요청이 실패하면 이곳에 코드를 작성합니다.
-              alert('핸드폰 인증에 실패하였습니다. 다시 시도해 주세요.');
+              if(jqXHR.responseText === "전화번호 중복"){
+                alert("이미 사용중인 전화번호 입니다. 다른 번호로 요청해주세요.");
+              }else{
+                alert('핸드폰 인증에 실패하였습니다. 다시 시도해 주세요.');
+              }
             }
           });
         });
