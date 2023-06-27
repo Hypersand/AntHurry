@@ -30,6 +30,7 @@ public class Member extends BaseEntity {
 
     private String password;
 
+    @Column(unique = true)
     private String phoneNumber;
 
     private String tmpPhoneNumber;
@@ -42,9 +43,9 @@ public class Member extends BaseEntity {
 
 
     public boolean isPhoneAuth(){
-        if(phoneAuth == 0)
-            return false;
-        return true;
+        if(phoneAuth == 1 && !phoneNumber.trim().equals("") && !phoneNumber.isEmpty())
+            return true;
+        return false;
     }
 
     public void updateTmpPhone(String tmpPhoneNumber){
