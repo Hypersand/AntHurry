@@ -50,6 +50,10 @@ public class TradeStatusController {
         //나의 거래 상태 목록을 모두 띄워야됨.
         RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), Status.valueOf(status));
 
+        if (rsData.isFail()) {
+            return rq.historyBack(rsData.getMsg());
+        }
+
         model.addAttribute("tradeStatusList", rsData.getData());
 
         return "tradeStatus/list";

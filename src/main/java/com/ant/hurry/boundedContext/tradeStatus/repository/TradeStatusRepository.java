@@ -16,9 +16,9 @@ public interface TradeStatusRepository extends JpaRepository<TradeStatus, Long> 
     @Query("select t from TradeStatus t join fetch t.requester r join fetch t.helper h where t.id = :id")
     Optional<TradeStatus> findById(@Param("id") Long id);
 
-    @Query("select t from TradeStatus t join fetch t.requester r join fetch t.helper h left join Review rv on rv.tradeStatus = t " +
+    @Query("select t from TradeStatus t join fetch t.requester r join fetch t.helper h " +
             "where (r.id = :memberId or h.id = :memberId)" +
-            "and t.status = :status and rv.id is null order by t.createdAt desc")
+            "and t.status = :status order by t.id desc")
     List<TradeStatus> findMyTradeStatus(@Param("memberId") Long memberId, @Param("status") Status status);
 
 
