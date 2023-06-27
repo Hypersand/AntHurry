@@ -1,0 +1,147 @@
+<html layout:decorate="~{usr/layout/layout.html}">
+
+<head>
+    <title>지역 선택</title>
+</head>
+
+<body>
+<header layout:fragment="header" class="sticky top-0 z-50">
+
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div>
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">내 프로필</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+
+</header>
+
+<main layout:fragment="main" class="flex-grow flex items-center justify-center">
+    <div class="flex flex-col bg-gray-100 dark:bg-gray-700 shadow-xl rounded-3xl">
+        <div class="bg-[#FF626F] shadow-lg pb-3 rounded-3xl">
+            <div class="flex rounded-3xl bg-gray-100 dark:bg-gray-700 space-y-5 flex-col items-center py-7">
+                <img class="h-28 w-28 rounded-full bg-pink-300" src="#" alt=" ">
+                <h4 class="text-xl font-bold text-navy-700 dark:text-white">이름</h4>
+            </div>
+            <div class="px-7 py-2 flex items-center justify-around gap-2 ">
+                <div class=" flex flex-col items-center pl-2 ">
+                    <span class="text-lg font-bold text-white dark:text-gray-500">10</span>
+                    <span class="text-base text-white font-medium 0">거래</span>
+                </div>
+                <div class="divider divider-horizontal"></div>
+                <div class=" flex flex-col items-center  ">
+                    <span class="text-lg text-white font-bold dark:text-gray-500">5</span>
+                    <span class="text-base text-white font-medium">리뷰</span>
+                </div>
+                <div class="divider divider-horizontal"></div>
+                <div class=" flex flex-col items-center pr-2 ">
+                    <span class="text-lg text-white font-bold dark:text-gray-500">200</span>
+                    <span class="text-base text-white font-medium">포인트</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="grid rounded-2xl divide-y divide-dashed hover:divide-solid  justify-evenly bg-gray-50 dark:bg-gray-300 m-3 mb-10 mt-10 grid-cols-3">
+            <div class="col-span-1  p-3">
+                <div class="flex flex-col items-center ">
+                    <button class="tr-300 flex flex-col items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-14 w-14 text-gray-500" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor"
+                             stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="text-lg font-medium">프로필수정</span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-span-1  p-3">
+                <div class="flex flex-col items-center ">
+                    <button class="tr-300 flex flex-col items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-14 w-14 text-gray-500" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor"
+                             stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                        </svg>
+                        <span class="text-lg font-medium">충전</span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-span-1  p-3">
+                <div class="flex flex-col items-center ">
+                    <button class="tr-300">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-14 w-14 text-gray-500" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor"
+                             stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
+                        </svg>
+                        <span class="text-lg font-medium">공지사항</span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-span-1  p-3">
+                <div class="flex flex-col items-center ">
+                    <button class="tr-300 flex flex-col items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-14 w-14 text-gray-500" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor"
+                             stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span class="text-lg font-medium">파일</span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-span-1  p-3">
+                <div class="flex flex-col items-center ">
+                    <button class="tr-300 flex flex-col items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-14 w-14 text-gray-500" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor"
+                             stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        <span class="text-lg font-medium">이메일</span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-span-1 bg-red-50 p-3">
+                <div class="flex  flex-col items-center ">
+                    <button class="tr-300 flex flex-col items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-14 w-14 text-gray-500" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor"
+                             stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        <span class="text-lg font-medium">나가기</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+
+</html>

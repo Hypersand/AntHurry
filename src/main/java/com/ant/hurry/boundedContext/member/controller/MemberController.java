@@ -38,7 +38,7 @@ public class MemberController {
 
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/profile/edit")
+    @GetMapping("/profile")
     public String showProfile(Model model) {
         if (!rq.isLogin()) {
             return "redirect:/usr/member/login";
@@ -46,7 +46,7 @@ public class MemberController {
         Member member = rq.getMember();
         model.addAttribute("member", member);
 
-        return "usr/member/profile_edit";
+        return "usr/member/profile";
     }
 
     @PreAuthorize("isAuthenticated()")
