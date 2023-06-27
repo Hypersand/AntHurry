@@ -111,4 +111,16 @@ public class MemberController {
         }
         return ResponseEntity.status(HttpStatus.OK).body("인증 성공");
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/profile_edit")
+    public String showProfileEdit(Model model) {
+        if (!rq.isLogin()) {
+            return "redirect:/usr/member/login";
+        }
+        Member member = rq.getMember();
+        model.addAttribute("member", member);
+
+        return "usr/member/profile_edit";
+    }
 }

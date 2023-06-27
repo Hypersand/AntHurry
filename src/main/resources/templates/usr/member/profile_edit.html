@@ -25,21 +25,22 @@
 
 <body class="w-screen">
 
-<main layout:fragment="main">
-  <section class="navbar bg-base-100">
+<header layout:fragment="header" >
+  <div class="navbar max-w-2xl mx-auto  bg-base-100">
     <div class="navbar-start">
       <div class="dropdown">
         <label tabindex="0" class="btn btn-ghost btn-circle">
           <i class="fa-solid fa-bars"></i>
         </label>
-        <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
+        <ul tabindex="0"
+            class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
           <li>
             <a th:href="@{/}">
               <span>메인</span>
             </a>
           </li>
           <li th:if="${@rq.logout}">
-            <a th:href="@{|/usr/member/login|}">
+            <a href="/usr/member/login">
               <span>로그인</span>
             </a>
           </li>
@@ -53,15 +54,17 @@
       </div>
     </div>
     <div class="navbar-center">
-      <a class="font-black">프로필 페이지</a>
+      <a class="font-black">프로필 수정</a>
     </div>
     <div class="navbar-end">
       <button class="btn btn-ghost btn-circle">
         <i class="fa-solid fa-ellipsis-vertical"></i>
       </button>
     </div>
-  </section>
+  </div>
+</header>
 
+<main layout:fragment="main">
   <div class="flex-grow flex justify-center align-center">
     <form id="profileUpdateForm" class="flex flex-col">
       <div class="input-group">
@@ -77,7 +80,6 @@
   </div>
 </main>
 
-<div th:replace="~{common/navbar :: navbar}"></div>
 
 <script th:inline="javascript">
   // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
