@@ -32,8 +32,8 @@ public class ChatRoomService {
     }
 
     public RsData<List<ChatRoom>> findByTradeStatus(List<TradeStatus> tradeStatuses) {
-        List<ChatRoom> chatRooms = chatRoomRepository.findByTradeStatus(tradeStatuses);
-        return RsData.of(CHATROOM_FOUND, chatRooms);
+        Flux<ChatRoom> chatRooms = chatRoomRepository.findByTradeStatus(tradeStatuses);
+        return RsData.of(CHATROOM_FOUND, chatRooms.collectList().block());
     }
 
     public RsData<List<ChatRoom>> findAll() {
