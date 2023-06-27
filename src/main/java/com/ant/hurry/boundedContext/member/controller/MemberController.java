@@ -137,11 +137,10 @@ public class MemberController {
 
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/charge/{price}")
-    public String chargePoint(@PathVariable Long price, Model model){
+    @GetMapping("/charge")
+    public String chargePoint(Model model){
         Member member = memberService.getMember();
         model.addAttribute("member", member);
-        model.addAttribute("price", price);
         return "usr/member/charge";
     }
 
