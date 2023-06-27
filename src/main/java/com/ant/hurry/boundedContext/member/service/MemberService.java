@@ -36,7 +36,7 @@ public class MemberService {
         Member member = Member
                 .builder()
                 .username(username)
-                .nickname(username) //소셜 로그인 초기 닉네임은 username 과 동일
+                .nickname(username.substring(0,19)) //소셜 로그인 초기 닉네임은 username 과 동일
                 .password(passwordEncoder.encode(password))
                 .phoneNumber(phone)
                 .providerTypeCode(providerTypeCode)

@@ -32,7 +32,7 @@
         <div class="bg-[#FF626F] shadow-lg pb-3 rounded-3xl">
             <div class="flex rounded-3xl bg-gray-100 dark:bg-gray-700 space-y-5 flex-col items-center py-7">
                 <img class="h-28 w-28 rounded-full bg-pink-300" src="#" alt=" ">
-                <h4 class="text-xl font-bold text-navy-700 dark:text-white">이름</h4>
+                <h4 class="text-xl font-bold text-navy-700 dark:text-white" th:text="${member.nickname}"></h4>
             </div>
             <div class="px-7 py-2 flex items-center justify-around gap-2 ">
                 <div class=" flex flex-col items-center pl-2 ">
@@ -56,16 +56,19 @@
         <div class="grid rounded-2xl divide-y divide-dashed hover:divide-solid  justify-evenly bg-gray-50 dark:bg-gray-300 m-3 mb-10 mt-10 grid-cols-3">
             <div class="col-span-1  p-3">
                 <div class="flex flex-col items-center ">
-                    <button class="tr-300 flex flex-col items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             class="h-14 w-14 text-gray-500" fill="none"
-                             viewBox="0 0 24 24" stroke="currentColor"
-                             stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <span class="text-lg font-medium">프로필수정</span>
-                    </button>
+                    <a th:href="@{|/usr/member/profile_edit|}">
+                        <button class="tr-300 flex flex-col items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="h-14 w-14 text-gray-500" fill="none"
+                                     viewBox="0 0 24 24" stroke="currentColor"
+                                     stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="text-lg font-medium">프로필수정</span>
+
+                        </button>
+                    </a>
                 </div>
             </div>
             <div class="col-span-1  p-3">
@@ -120,16 +123,19 @@
             </div>
             <div class="col-span-1 bg-red-50 p-3">
                 <div class="flex  flex-col items-center ">
-                    <button class="tr-300 flex flex-col items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             class="h-14 w-14 text-gray-500" fill="none"
-                             viewBox="0 0 24 24" stroke="currentColor"
-                             stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                        </svg>
-                        <span class="text-lg font-medium">나가기</span>
-                    </button>
+                    <a href="javascript:" onclick="$(this).next().submit();">
+                        <button class="tr-300 flex flex-col items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="h-14 w-14 text-gray-500" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor"
+                                 stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                            </svg>
+                            <span class="text-lg font-medium">로그아웃</span>
+                        </button>
+                    </a>
+                    <form class="!hidden" hidden th:action="|/usr/member/logout|" method="POST"></form>
                 </div>
             </div>
         </div>
