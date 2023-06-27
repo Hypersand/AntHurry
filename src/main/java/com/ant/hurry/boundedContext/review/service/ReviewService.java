@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -97,4 +99,18 @@ public class ReviewService {
 
         return RsData.of("S_R-2", "후기등록페이지로 이동합니다.", tradeStatus.getRequester().getNickname());
     }
+
+    public RsData<List<Review>> getMyReviews(String username) {
+
+        Member member = memberService.findByUsername(username).orElse(null);
+
+        if (member == null) {
+            return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
+        }
+
+        List<Review> myReviews = reviewRepository.findByWriter(member);
+
+        return RsData.of("S_R-3", "후기목록페이지로 이동합니다.", myReviews);
+    }
+
 }
