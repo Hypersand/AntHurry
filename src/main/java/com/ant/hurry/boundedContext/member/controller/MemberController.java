@@ -161,8 +161,15 @@ public class MemberController {
 
     @RequestMapping("/{id}/success")
     public String confirmPayment(
+            @PathVariable Long id,
             @RequestParam String paymentKey, @RequestParam String orderId, @RequestParam Long amount,
             Model model) throws Exception {
+
+        RsData rsData = memberService.checkCanCharge(id, orderId);
+
+        if(rsData.isFail()){
+            return rq.redirectWithMsg("/usr/member/charge", rsData);
+        }
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString((SECRET_KEY + ":").getBytes()));
