@@ -24,13 +24,14 @@ import java.security.NoSuchAlgorithmException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/usr/member")
 public class MemberController {
-    private final Rq rq;
+    private final MemberService memberService;
 
     private final PhoneAuthService phoneAuthService;
 
@@ -123,7 +124,7 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/charge/{price}")
     public String chargePoint(@PathVariable Long price, Model model){
-        Member member = rq.getMember();
+        Member member = memberService.getMember();
         model.addAttribute("member", member);
         model.addAttribute("price", price);
         return "usr/member/charge";

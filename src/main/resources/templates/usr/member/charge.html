@@ -30,6 +30,18 @@
 <main layout:fragment="main" class="flex-grow flex items-center justify-center">
     <script src="https://js.tosspayments.com/v1"></script>
     <div>
+        <div class="card shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">코인 충전</h2>
+                <div class="mt-4 mb-2 flex flex-col gap-2">
+                    <div>
+                        <i class="fa-solid fa-check"></i>
+                        충전 코인
+                    </div>
+                    <div class="badge badge-primary" th:text="${price}"></div>
+                </div>
+            </div>
+        </div>
         <button onclick="payment();" class="btn btn-sm btn-primary">카드결제</button>
     </div>
     <script th:inline="javascript">
