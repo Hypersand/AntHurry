@@ -1,5 +1,7 @@
 package com.ant.hurry.boundedContext.board.controller;
 
+import com.ant.hurry.base.region.service.RegionSearchService;
+import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.BoardType;
 import com.ant.hurry.boundedContext.board.entity.TradeType;
 import org.junit.jupiter.api.DisplayName;
@@ -13,8 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -27,9 +29,15 @@ public class BoardControllerTests {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private RegionSearchService regionSearchService;
+
+    @Autowired
+    private
+
     @Test
     @DisplayName("게시판 작성 입력 폼")
-    @WithMockUser("test")
+    @WithMockUser("user3")
     void shouldRenderCreateBoardPage() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
@@ -44,29 +52,121 @@ public class BoardControllerTests {
                 .andExpect(view().name("board/create"));
     }
 
-//    @Test
-//    @DisplayName("게시판 작성 완료")
-//    @WithMockUser(username = "test", roles = "admin")
-//    void shouldCreateBoard() throws Exception {
-//        // WHEN
-//        ResultActions resultActions = mvc
-//                .perform(post("/board/create")
-//                        .param("title", "게시판 제목입니다.")
-//                        .param("content", "게시판 내용입니다.")
-//                        .param("boardType", String.valueOf(BoardType.나잘해요))
-//                        .param("tradeType", String.valueOf(TradeType.온라인))
-//                        .param("address", "서울 성북구 낙산길 243-15")
-//                        .param("rewardCoin", "100"))
-//                .andDo(print());
-//
-//        // THEN
-//        resultActions
-//                .andExpect(handler().handlerType(BoardController.class))
-//                .andExpect(handler().methodName("createBoard"))
-//                .andExpect(status().is3xxRedirection());
-//    }
+    @Test
+    @DisplayName("게시판 작성 완료")
+    @WithMockUser("user3")
+    void shouldCreateBoard() throws Exception {
+        regionSearchService.selectPattern();
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(post("/board/create")
+                        .with(csrf())
+                        .param("title", "게시판 제목입니다.")
+                        .param("content", "게시판 내용입니다.")
+                        .param("boardType", String.valueOf(BoardType.나잘해요))
+                        .param("tradeType", String.valueOf(TradeType.온라인))
+                        .param("address", "")
+                        .param("rewardCoin", "100"))
+                .andDo(print());
 
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(BoardController.class))
+                .andExpect(handler().methodName("createBoard"))
+                .andExpect(status().is3xxRedirection());
+    }
 
+    @Test
+    @DisplayName("게시판 작성 실패 - 폼입력 누락")
+    @WithMockUser("user3")
+    void shouldFailToCreateBoardDueToMissingFormInput() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(post("/board/create")
+                        .with(csrf())
+                        .param("title", "게시판 제목입니다.")
+                        .param("content", "")
+                        .param("boardType", "")
+                        .param("tradeType", String.valueOf(TradeType.온라인))
+                        .param("address", "서울 성동구 마조로 42")
+                        .param("rewardCoin", "100"))
+                .andDo(print());
 
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(BoardController.class))
+                .andExpect(handler().methodName("createBoard"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("bindingResult"));
 
+        resultActions = mvc
+                .perform(post("/board/create")
+                        .with(csrf())
+                        .param("title", "")
+                        .param("content", "게시판 내용입니다.")
+                        .param("boardType", String.valueOf(BoardType.나잘해요))
+                        .param("tradeType", String.valueOf(TradeType.온라인))
+                        .param("address", "서울 성동구 마조로 42")
+                        .param("rewardCoin", "100"))
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(BoardController.class))
+                .andExpect(handler().methodName("createBoard"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("bindingResult"));
+    }
+
+    @Test
+    @DisplayName("게시판 상세페이지")
+    @WithMockUser("user3")
+    void shouldRenderBoardPage() throws Exception {
+
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/board/1"))
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(BoardController.class))
+                .andExpect(handler().methodName("showBoard"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(view().name("board/board"));
+    }
+
+    @Test
+    @DisplayName("게시판 삭제 완료")
+    @WithMockUser("user1")
+    void shouldDeleteBoard() throws Exception {
+
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(delete("/board/1"))
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(BoardController.class))
+                .andExpect(handler().methodName("deleteBoard"))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    @DisplayName("게시판 삭제 실패 - 권한 없음")
+    @WithMockUser("user3")
+    void shouldFailToDeleteBoardDueToInsufficientPermissions() throws Exception {
+
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(delete("/board/1"))
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(BoardController.class))
+                .andExpect(handler().methodName("deleteBoard"))
+                .andExpect(status().is4xxClientError());
+    }
 }

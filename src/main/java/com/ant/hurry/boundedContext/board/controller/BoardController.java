@@ -49,6 +49,7 @@ public class BoardController {
         model.addAttribute("boardTypes", BoardType.values());
         model.addAttribute("tradeTypes", TradeType.values());
         if (bindingResult.hasErrors()) {
+            model.addAttribute("bindingResult", bindingResult);
             return "board/create";
         }
         RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
