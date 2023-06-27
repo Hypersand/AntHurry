@@ -1,8 +1,8 @@
-INSERT INTO MEMBER (username, nickname, password, phone_number, provider_type_code, coin, rating, review_count) VALUES ('user1', 'User1', 'password123', '01012345678', 'kakao', 0, 3.5, 1);
-INSERT INTO MEMBER (username, nickname, password, phone_number, provider_type_code, coin, rating, review_count) VALUES ('user2', 'User2', 'password123', '01023456789', 'kakao', 0, 5.0, 1);
-INSERT INTO MEMBER (username, nickname, password, phone_number, provider_type_code, coin, rating, review_count) VALUES ('user3', 'User3', 'password123', '01034567890', 'kakao', 0, 1.0, 2);
-INSERT INTO MEMBER (username, nickname, password, phone_number, provider_type_code, coin, rating, review_count) VALUES ('user4', 'User4', 'password123', '01045678901', 'kakao', 0, 3.5, 2);
-INSERT INTO MEMBER (username, nickname, password, phone_number, provider_type_code, coin, rating, review_count) VALUES ('admin', 'Admin', 'password123', '01056789012', 'kakao', 0, 0, 0);
+INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user1', 'User1', 'password123', '01012345678', 1, 'kakao', 0, 3.5, 1);
+INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user2', 'User2', 'password123', '01023456789', 1, 'kakao', 0, 5.0, 1);
+INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user3', 'User3', 'password123', '01034567890', 1, 'kakao', 0, 1.0, 2);
+INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user4', 'User4', 'password123', '01045678901', 1, 'kakao', 0, 3.5, 2);
+INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('admin', 'Admin', 'password123', '01056789012', 1, 'kakao', 0, 0, 0);
 
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type) VALUES (1, 2, '채팅시작테스트', 'START');
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type) VALUES (1, 3, '거래파기테스트', 'CANCEL');
