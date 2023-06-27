@@ -8,6 +8,7 @@ import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.repository.ChatMessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
@@ -24,23 +25,25 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
 
     public RsData<List<ChatMessage>> findByChatRoom(ChatRoom chatRoom) {
-        Flux<ChatMessage> chatMessages = chatMessageRepository.findChatMessageByChatRoom(chatRoom);
-        return RsData.of(MESSAGE_FOUND, chatMessages.collectList().block());
+        List<ChatMessage> chatMessages = chatMessageRepository.findChatMessageByChatRoom(chatRoom);
+        return RsData.of(MESSAGE_FOUND, chatMessages);
     }
 
+    @Transactional
     public RsData<ChatMessage> create(ChatRoom chatRoom, Member sender, String content) {
         ChatMessage message = ChatMessage.builder()
                 .id(UUID.randomUUID().toString())
                 .chatRoom(chatRoom)
                 .sender(sender)
                 .content(content).build();
-        chatMessageRepository.save(message).block();
+        chatMessageRepository.save(message);
         chatRoom.setLatestMessage(message);
         return RsData.of(MESSAGE_SENT, message);
     }
 
+    @Transactional
     public RsData deleteSoft(ChatMessage chatMessage) {
-        ChatMessage deletedChatMessage = chatMessageRepository.deleteSoft(chatMessage).block();
+        ChatMessage deletedChatMessage = chatMessageRepository.deleteSoft(chatMessage);
 
         if(deletedChatMessage.getDeletedAt() == null) {
             return RsData.of(MESSAGE_NOT_DELETED);
@@ -49,8 +52,9 @@ public class ChatMessageService {
         return RsData.of(MESSAGE_DELETED);
     }
 
+    @Transactional
     public RsData delete(ChatMessage message) {
-        chatMessageRepository.delete(message).block();
+        chatMessageRepository.delete(message);
         return RsData.of(MESSAGE_DELETED);
     }
 

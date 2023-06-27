@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,13 +21,13 @@ public class ChatMessageRepositoryTest {
     @Autowired
     private ChatRoomService chatRoomService;
     @Autowired
-    private ReactiveMongoTemplate reactiveMongoTemplate;
-    @Autowired
     ChatMessageRepository chatMessageRepository;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @AfterEach
     void refresh() {
-        chatMessageRepository.deleteAll().block();
+        chatMessageRepository.deleteAll();
     }
 
     @Test
@@ -35,10 +35,9 @@ public class ChatMessageRepositoryTest {
     void saveByRepository() {
         ChatRoom chatRoom = chatRoomService.create(TradeStatus.builder().build()).getData();
         ChatMessage chatMessage = ChatMessage.builder().chatRoom(chatRoom).build();
-        chatMessageRepository.save(chatMessage).block();
+        chatMessageRepository.save(chatMessage);
 
-        assertThat(chatMessageRepository.findAll().collectList().block())
-                .hasSize(1);
+        assertThat(chatMessageRepository.findAll()).hasSize(1);
     }
 
     @Test
@@ -46,10 +45,9 @@ public class ChatMessageRepositoryTest {
     void saveByMongoTemplate() {
         ChatRoom chatRoom = chatRoomService.create(TradeStatus.builder().build()).getData();
         ChatMessage chatMessage = ChatMessage.builder().chatRoom(chatRoom).build();
-        reactiveMongoTemplate.save(chatMessage).block();
+        mongoTemplate.save(chatMessage);
 
-        assertThat(reactiveMongoTemplate.findAll(ChatMessage.class).collectList().block())
-                .hasSize(1);
+        assertThat(mongoTemplate.findAll(ChatMessage.class)).hasSize(1);
     }
 
     @Test
@@ -57,12 +55,12 @@ public class ChatMessageRepositoryTest {
     void save_find_delete() {
         ChatRoom chatRoom = chatRoomService.create(TradeStatus.builder().build()).getData();
         ChatMessage chatMessage = ChatMessage.builder().chatRoom(chatRoom).build();
-        ChatMessage savedChatMessage = chatMessageRepository.save(chatMessage).block();
+        ChatMessage savedChatMessage = chatMessageRepository.save(chatMessage);
 
         assertThat(chatMessageRepository.findById(chatMessage.getId())).isNotNull();
 
-        chatMessageRepository.delete(savedChatMessage).block();
-        assertThat(chatMessageRepository.findAll().collectList().block()).hasSize(0);
+        chatMessageRepository.delete(savedChatMessage);
+        assertThat(chatMessageRepository.findAll()).hasSize(0);
     }
 
 }

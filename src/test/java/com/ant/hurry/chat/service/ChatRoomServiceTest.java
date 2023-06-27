@@ -27,7 +27,7 @@ public class ChatRoomServiceTest {
 
     @AfterEach
     void refresh() {
-        chatRoomRepository.deleteAll().block();
+        chatRoomRepository.deleteAll();
     }
 
     @Test

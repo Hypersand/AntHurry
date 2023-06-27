@@ -3,15 +3,14 @@ package com.ant.hurry.chat.service;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.chat.entity.ChatRoom;
-import com.ant.hurry.chat.repository.ChatMessageRepository;
 import com.ant.hurry.chat.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.ant.hurry.chat.code.ChatRoomErrorCode.CHATROOM_NOT_DELETED;
@@ -26,28 +25,33 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
 
     public RsData<ChatRoom> findById(String id) {
-        ChatRoom chatRoom = chatRoomRepository.findById(id).block();
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(id);
 
-        if (chatRoom == null || chatRoom.getDeletedAt() != null) {
+        if (chatRoom.isEmpty()) {
+            return RsData.of(CHATROOM_NO_EXISTS);
+        }
+        ChatRoom foundchatRoom = chatRoom.get();
+
+        if (foundchatRoom.getDeletedAt() != null) {
             return RsData.of(CHATROOM_NO_EXISTS);
         }
 
-        return RsData.of(CHATROOM_FOUND, chatRoom);
+        return RsData.of(CHATROOM_FOUND, foundchatRoom);
     }
 
     public RsData<List<ChatRoom>> findByTradeStatus(List<TradeStatus> tradeStatuses) {
-        Flux<ChatRoom> chatRooms = chatRoomRepository.findByTradeStatus(tradeStatuses);
-        return RsData.of(CHATROOM_FOUND, chatRooms.collectList().block());
+        List<ChatRoom> chatRooms = chatRoomRepository.findByTradeStatus(tradeStatuses);
+        return RsData.of(CHATROOM_FOUND, chatRooms);
     }
 
     public RsData<List<ChatRoom>> findAll() {
-        Flux<ChatRoom> chatRooms = chatRoomRepository.findAll();
-        return RsData.of(CHATROOM_FOUND, chatRooms.collectList().block());
+        List<ChatRoom> chatRooms = chatRoomRepository.findAll();
+        return RsData.of(CHATROOM_FOUND, chatRooms);
     }
 
     public RsData<List<ChatRoom>> findAllAndDeletedAtIsNull() {
-        Flux<ChatRoom> chatRooms = chatRoomRepository.findAllAndDeletedAtIsNull();
-        return RsData.of(CHATROOM_FOUND, chatRooms.collectList().block());
+        List<ChatRoom> chatRooms = chatRoomRepository.findAllAndDeletedAtIsNull();
+        return RsData.of(CHATROOM_FOUND, chatRooms);
     }
 
     @Transactional
@@ -57,15 +61,15 @@ public class ChatRoomService {
                 .tradeStatus(tradeStatus)
                 .createdAt(LocalDateTime.now())
                 .build();
-        ChatRoom insertChatRoom = chatRoomRepository.insert(chatRoom).block();
+        ChatRoom insertChatRoom = chatRoomRepository.insert(chatRoom);
         return RsData.of(CHATROOM_CREATED, insertChatRoom);
     }
 
     @Transactional
     public RsData deleteSoft(ChatRoom chatRoom) {
-        ChatRoom deletedChatRoom = chatRoomRepository.deleteSoft(chatRoom).block();
+        ChatRoom deletedChatRoom = chatRoomRepository.deleteSoft(chatRoom);
 
-        if(deletedChatRoom.getDeletedAt() == null) {
+        if (deletedChatRoom.getDeletedAt() == null) {
             return RsData.of(CHATROOM_NOT_DELETED);
         }
 
@@ -74,7 +78,7 @@ public class ChatRoomService {
 
     @Transactional
     public RsData delete(ChatRoom chatRoom) {
-        chatRoomRepository.delete(chatRoom).block();
+        chatRoomRepository.delete(chatRoom);
         return RsData.of(CHATROOM_DELETED);
     }
 

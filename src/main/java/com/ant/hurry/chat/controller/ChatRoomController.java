@@ -1,15 +1,11 @@
 package com.ant.hurry.chat.controller;
 
-import com.ant.hurry.base.code.BasicErrorCode;
-import com.ant.hurry.base.rsData.RsData;
-import com.ant.hurry.boundedContext.member.entity.Member;
-import com.ant.hurry.chat.entity.ChatMessage;
-import com.ant.hurry.chat.service.ChatMessageService;
-import com.ant.hurry.chat.service.ChatRoomService;
 import com.ant.hurry.base.rq.Rq;
-import com.ant.hurry.chat.entity.ChatRoom;
+import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
+import com.ant.hurry.chat.entity.ChatRoom;
+import com.ant.hurry.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-import static com.ant.hurry.base.code.BasicErrorCode.*;
+import static com.ant.hurry.base.code.BasicErrorCode.UNAUTHORIZED;
 
 @RequiredArgsConstructor
 @Controller
@@ -28,7 +24,6 @@ import static com.ant.hurry.base.code.BasicErrorCode.*;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
-    private final ChatMessageService chatMessageService;
     private final TradeStatusService tradeStatusService;
     private final Rq rq;
 
@@ -63,7 +58,7 @@ public class ChatRoomController {
 
     @GetMapping("/delete/hard/{id}")
     public String deleteHard(@PathVariable String id) {
-        if(!rq.getMember().getNickname().equals("admin")) {
+        if (!rq.getMember().getNickname().equals("admin")) {
             return rq.historyBack(UNAUTHORIZED.getMessage());
         }
         ChatRoom chatRoom = chatRoomService.findById(id).getData();
