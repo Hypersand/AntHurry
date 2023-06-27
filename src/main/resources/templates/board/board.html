@@ -4,9 +4,12 @@
     <title th:text="|${board.title}|"></title>
     <!-- Kakao 우편번호 서비스 -->
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <!-- 데이지 UI 불러오기 -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.1.6/dist/full.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <body>
+
 <header layout:fragment="header">
     <div class="navbar max-w-2xl mx-auto bg-base-100">
         <div class="navbar-start">
@@ -20,15 +23,37 @@
             <a class="font-black" th:text="${board.boardType}"></a>
         </div>
         <div class="navbar-end">
-            <button class="btn btn-ghost text-white" style="background-color: #FF626F" th:if="${board.member != @rq.getMember()}">
+            <button class="btn btn-ghost text-white" style="background-color: #FF626F"
+                    th:if="${board.member != @rq.getMember()}">
                 <a href="#">채팅하기</a>
             </button>
+
+            <!-- The button to open modal -->
+            <label for="modal" class="btn btn-ghost btn-circle"><i class="fa-solid fa-ellipsis-vertical"></i></label>
+
+            <!-- Put this part before </body> tag -->
+            <input type="checkbox" id="modal" class="modal-toggle"/>
+            <div class="modal">
+                <div class="modal-box">
+                    <div class="modal-action">
+                        <label for="modal" class="btn btn-sm btn-circle btn-ghost absolute top-2">✕</label>
+                        <a class="btn btn-sm btn-outline" href="#">
+                            수정하기</a>
+                        <a class="btn btn-sm btn-outline" href="javascript:" onclick="if ( confirm('정말로 게시판을 삭제하시겠습니까?') ) $(this).next().submit();">
+                            삭제하기</a>
+                        <form hidden th:action method="POST" class="flex flex-col items-center justify-center">
+                            <input type="hidden" name="_method" value="delete">
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </header>
 
 <main layout:fragment="main">
-    <div class="px-5 mb-8">
+
+<div class="px-5 mb-8">
         <button class="hover:bg-gray-50 active:bg-gray-100 border-2 border-solid border-gray-100 rounded-lg w-full px-8 py-6 mb-6 flex items-center">
             <div class="chat-image avatar">
                 <div class="w-10 rounded-full bg-pink-400"></div>

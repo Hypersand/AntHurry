@@ -84,11 +84,26 @@ public class BoardService {
         return regionRepository.findByDepth2AndDepth3(addressInfo.getDepth2(), addressInfo.getDepth3()).get().getCode();
     }
 
-    public Board getBoard(Long id) {
-        Optional<Board> board = boardRepository.findById(id);
-        if(board.isEmpty()){
-//            ErrorCode 존재하지 않은 게시판입니다.
+    public RsData<Board> canDelete(Member member, Long id) {
+        Board board = findById(id).orElse(null);
+        if(board == null) {
+            return RsData.of("F-1", "이미 삭제되었습니다.");
         }
-        return board.get();
+        if(!member.equals(board.getMember())){
+            return RsData.of("F-1", "삭제할 권한이 없습니다.");
+        }
+        return RsData.of("S-1", "삭제 가능합니다.");
+    }
+
+    @Transactional
+    public RsData<Board> delete(Long id) {
+        Board board = findById(id).orElse(null);
+        rq.getMember().increaseCoin(board.getRewardCoin());
+        boardRepository.delete(board);
+        return RsData.of("S-1", "게시글이 삭제되었습니다.");
+    }
+
+    public Optional<Board> findById(Long id){
+        return boardRepository.findById(id);
     }
 }

@@ -49,6 +49,7 @@ public class BoardController {
         model.addAttribute("boardTypes", BoardType.values());
         model.addAttribute("tradeTypes", TradeType.values());
         if (bindingResult.hasErrors()) {
+            model.addAttribute("bindingResult", bindingResult);
             return "board/create";
         }
         RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
@@ -62,11 +63,25 @@ public class BoardController {
 
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public String showBoard(Model model,  @PathVariable("id") Long id) {
-        Board board = boardService.getBoard(id);
+        Board board = boardService.findById(id).orElse(null);
+        if(board == null){
+            return rq.historyBack("존재하지 않는 게시판 입니다.");
+        }
         model.addAttribute("board", board);
         return "/board/board";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{id}")
+    public String deleteBoard(@PathVariable("id") Long id) {
+        RsData<Board> canDeleteBoard = boardService.canDelete(rq.getMember(), id);
+        if(canDeleteBoard.isFail()){
+            return rq.historyBack(canDeleteBoard);
+        }
+        RsData<Board> deleteBoard = boardService.delete(id);
+        return rq.redirectWithMsg("/board/selectRegion", deleteBoard);
     }
 
     /**
