@@ -76,12 +76,11 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{id}")
     public String deleteBoard(@PathVariable("id") Long id) {
-        Board board = boardService.findById(id).orElse(null);
-        RsData<Board> canDeleteBoard = boardService.canDelete(rq.getMember(), board);
+        RsData<Board> canDeleteBoard = boardService.canDelete(rq.getMember(), id);
         if(canDeleteBoard.isFail()){
             return rq.historyBack(canDeleteBoard);
         }
-        RsData<Board> deleteBoard = boardService.delete(board);
+        RsData<Board> deleteBoard = boardService.delete(id);
         return rq.redirectWithMsg("/board/selectRegion", deleteBoard);
     }
 

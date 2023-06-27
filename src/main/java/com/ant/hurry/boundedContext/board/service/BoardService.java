@@ -84,7 +84,8 @@ public class BoardService {
         return regionRepository.findByDepth2AndDepth3(addressInfo.getDepth2(), addressInfo.getDepth3()).get().getCode();
     }
 
-    public RsData<Board> canDelete(Member member, Board board) {
+    public RsData<Board> canDelete(Member member, Long id) {
+        Board board = findById(id).orElse(null);
         if(board == null) {
             return RsData.of("F-1", "이미 삭제되었습니다.");
         }
@@ -95,7 +96,8 @@ public class BoardService {
     }
 
     @Transactional
-    public RsData<Board> delete(Board board) {
+    public RsData<Board> delete(Long id) {
+        Board board = findById(id).orElse(null);
         rq.getMember().increaseCoin(board.getRewardCoin());
         boardRepository.delete(board);
         return RsData.of("S-1", "게시글이 삭제되었습니다.");
