@@ -42,9 +42,9 @@ public class Member extends BaseEntity {
 
 
     public boolean isPhoneAuth(){
-        if(phoneAuth == 0)
-            return false;
-        return true;
+        if(phoneAuth == 1 && !phoneNumber.equals("") && !phoneNumber.isEmpty())
+            return true;
+        return false;
     }
 
     public void updateTmpPhone(String tmpPhoneNumber){
