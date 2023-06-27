@@ -119,8 +119,6 @@ public class PhoneAuthService {
     }
 
     public void setAuthCode(String phoneNumber, String authCode) {
-        System.out.println(phoneNumber);
-        System.out.println(authCode);
         redisTemplate.opsForValue().set(phoneNumber, authCode, 3, TimeUnit.MINUTES);
     }
 

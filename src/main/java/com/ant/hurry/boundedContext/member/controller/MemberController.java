@@ -38,7 +38,7 @@ public class MemberController {
 
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/profile/edit")
+    @GetMapping("/profile")
     public String showProfile(Model model) {
         if (!rq.isLogin()) {
             return "redirect:/usr/member/login";
@@ -46,7 +46,7 @@ public class MemberController {
         Member member = rq.getMember();
         model.addAttribute("member", member);
 
-        return "usr/member/profile_edit";
+        return "usr/member/profile";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -55,21 +55,30 @@ public class MemberController {
         return "usr/member/phone_auth";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/phoneAuth")
     @ResponseBody
     public ResponseEntity phoneAuthComplete(String phoneNumber){
         Member member = rq.getMember();
         RsData<?> result = memberService.phoneAuthComplete(member, phoneNumber);
         if (result.isFail()) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result.getMsg());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result.getMsg());
         }
         memberService.updatePhoneNumber(member, phoneNumber);
         return ResponseEntity.status(HttpStatus.OK).body(result.getMsg());
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/phoneAuth/send")
     @ResponseBody
     public ResponseEntity phoneAuth(String phoneNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+        //핸드폰 번호를 가지고 있는 사용자가 존재하는지 체크
+        boolean existPhoneNumber = memberService.existsPhoneNumber(phoneNumber);
+        if(existPhoneNumber){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("전화번호 중복");
+        }
+
+        //SMS 인증번호 전송
         String authCode = phoneAuthService.sendSms(phoneNumber);
 
         Member member = rq.getMember();
@@ -80,6 +89,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body("인증번호 전송 성공");
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/phoneAuth/check")
     @ResponseBody
     public ResponseEntity checkAuthCode(@RequestParam String phoneNumber, @RequestParam String authCode) {

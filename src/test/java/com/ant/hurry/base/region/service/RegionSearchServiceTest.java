@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -84,7 +85,8 @@ class RegionSearchServiceTest {
 
     @Test
     @DisplayName("지역선택을 통해 해당 코드를 넘겨주는 링크를 클릭해 해당 지역의 게시판으로 이동")
-    @WithMockUser("test")
+//    @WithMockUser("test")
+    @WithUserDetails("user1")
     void enterRegionBoard() throws Exception {
         regionSearchService.selectPattern();
         String regionCode = "1168010100"; //서울특별시 강남구 역삼동

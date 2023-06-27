@@ -1,8 +1,8 @@
-INSERT INTO MEMBER (username, nickname, password, phone_number, provider_type_code, coin, rating, review_count) VALUES ('user1', 'User1', 'password123', '01012345678', 'kakao', 0, 3.5, 1);
-INSERT INTO MEMBER (username, nickname, password, phone_number, provider_type_code, coin, rating, review_count) VALUES ('user2', 'User2', 'password123', '01023456789', 'kakao', 0, 5.0, 1);
-INSERT INTO MEMBER (username, nickname, password, phone_number, provider_type_code, coin, rating, review_count) VALUES ('user3', 'User3', 'password123', '01034567890', 'kakao', 0, 1.0, 2);
-INSERT INTO MEMBER (username, nickname, password, phone_number, provider_type_code, coin, rating, review_count) VALUES ('user4', 'User4', 'password123', '01045678901', 'kakao', 0, 3.5, 2);
-INSERT INTO MEMBER (username, nickname, password, phone_number, provider_type_code, coin, rating, review_count) VALUES ('admin', 'Admin', 'password123', '01056789012', 'kakao', 0, 0, 0);
+INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user1', 'User1', 'password123', '01012345678', 1, 'kakao', 0, 3.5, 1);
+INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user2', 'User2', 'password123', '01023456789', 1, 'kakao', 0, 5.0, 1);
+INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user3', 'User3', 'password123', '01034567890', 1, 'kakao', 0, 1.0, 2);
+INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user4', 'User4', 'password123', '01045678901', 1, 'kakao', 0, 3.5, 2);
+INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('admin', 'Admin', 'password123', '01056789012', 1, 'kakao', 0, 0, 0);
 
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type) VALUES (1, 2, '채팅시작테스트', 'START');
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type) VALUES (1, 3, '거래파기테스트', 'CANCEL');
@@ -12,6 +12,12 @@ INSERT INTO BOARD (title, content, board_type, x, y, reward_coin, reg_code) VALU
 INSERT INTO BOARD (title, content, board_type, x, y, reward_coin, reg_code) VALUES ('제목2', '내용2', '나급해요', 123.127, 37.123, 0, 12345678);
 INSERT INTO BOARD (title, content, board_type, x, y, reward_coin, reg_code) VALUES ('제목3', '내용3', '나급해요', 123.127, 37.123, 0, 12345678);
 INSERT INTO BOARD (title, content, board_type, x, y, reward_coin, reg_code) VALUES ('제목4', '내용4', '나급해요', 123.127, 37.123, 0, 12345678);
+
+-- INSERT INTO BOARD (title, content, board_type, trade_type, x, y, reward_coin, reg_code, member_id) VALUES ('제목1', '내용1', '나급해요', '온라인' 127.011390388152, 37.5171300437436, 0, '1165010600', 1);
+-- INSERT INTO BOARD (title, content, board_type, trade_type, x, y, reward_coin, reg_code, member_id) VALUES ('제목2', '내용2', '나급해요', '온라인' 127.072375689053, 37.6334020217527, 0, '1135010400', 1);
+-- INSERT INTO BOARD (title, content, board_type, trade_type, x, y, reward_coin, reg_code, member_id) VALUES ('제목3', '내용3', '나급해요', '오프라인' 129.135026643506, 35.1657825586672, 0, '2635010500', 1);
+-- INSERT INTO BOARD (title, content, board_type, trade_type, x, y, reward_coin, reg_code, member_id) VALUES ('제목4', '내용4', '나급해요', '오프라인' 126.954691116262, 37.4954756157966, 100, '1159010200', 1);
+
 
 
 INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (1, 1, 2, 'BEFORE');

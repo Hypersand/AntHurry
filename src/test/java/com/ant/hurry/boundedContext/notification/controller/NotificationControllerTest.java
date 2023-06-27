@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -27,7 +28,8 @@ class NotificationControllerTest {
 
     @Test
     @DisplayName("알림 목록 페이지 불러오기")
-    @WithMockUser("test")
+//    @WithMockUser("test")
+    @WithUserDetails("user1")
     void showNotificationList() throws Exception {
 
         //when
