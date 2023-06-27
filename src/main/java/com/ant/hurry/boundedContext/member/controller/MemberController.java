@@ -35,7 +35,7 @@ public class MemberController {
 
     private final PhoneAuthService phoneAuthService;
 
-    private final MemberService memberService;
+    private final Rq rq;
 
 
     @PreAuthorize("isAnonymous()")
