@@ -9,35 +9,18 @@
 
     <div class="navbar max-w-2xl mx-auto bg-base-100">
         <div class="navbar-start">
-            <div class="dropdown">
-                <label tabindex="0" class="btn btn-ghost btn-circle">
-                    <i class="fa-solid fa-bars"></i>
-                </label>
-                <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-64">
-                    <li>
-                        <a th:href="@{/}">
-                            <span>메인</span>
-                        </a>
-                    </li>
-                    <li th:if="${@rq.logout}">
-                        <a th:href="@{|/usr/member/login|}">
-                            <span>로그인</span>
-                        </a>
-                    </li>
-                    <li th:if="${@rq.login}">
-                        <a href="javascript:" onclick="$(this).next().submit();">
-                            <span>로그아웃</span>
-                        </a>
-                        <form class="!hidden" hidden th:action="|/usr/member/logout|" method="POST"></form>
-                    </li>
-                </ul>
+            <div>
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
             </div>
         </div>
         <div class="navbar-center">
-            <a class="font-black">채팅 목록</a>
+            <a class="font-black">나의 채팅 목록</a>
         </div>
         <div class="navbar-end">
             <button class="btn btn-ghost btn-circle">
+                <!-- ellipsis 클릭 시 각각의 채팅방 체크하여 채팅방 나가기, 거래 시작/완료 등 선택할 수 있도록 할 예정 -->
                 <i class="fa-solid fa-ellipsis-vertical"></i>
             </button>
         </div>
@@ -45,15 +28,26 @@
 
 </header>
 
-<!-- 실제 적용할 내용은 추후에 넣을 예정 -->
 <main layout:fragment="main" class="flex-grow flex flex-col items-center justify-center w-screen p-4">
-    <button class="hover:bg-gray-50 active:bg-gray-100 border-2 border-solid border-gray-100 rounded-lg w-full px-8 py-6 mb-6 flex justify-between items-center">
-        <div><p class="font-black text-lg mb-2 text-start">유리</p>
-            <p class="text-lg text-start">안녕하세요</p>
+    <div th:if="${#lists.isEmpty(chatRooms)}" class="text-lg text-gray-400 pt-12">
+        채팅 중인 대화방이 없습니다.<i class="fa-regular fa-face-sad-tear ml-2"></i>
+    </div>
+    <div th:if="${!#lists.isEmpty(chatRooms)}">
+    <button th:each="chatRoom : ${chatRooms}" class="hover:bg-gray-50 active:bg-gray-100 border-2 border-solid border-gray-100 rounded-lg w-screen px-8 py-6 mb-6 flex justify-between items-center">
+        <div>
+            <div class="mb-2 text-start">
+                <span style="padding: 0;" th:if="${@rq.getMember() == chatRoom.getTradeStatus().getRequester()}" th:text="|${chatRoom.getTradeStatus().getHelperUsername()} 님|" class="font-black text-lg"></span>
+                <span style="padding: 0;" th:if="${@rq.getMember() == chatRoom.getTradeStatus().getHelper()}" th:text="|${chatRoom.getTradeStatus().getRequesterUsername()} 님|" class="font-black text-lg"></span>
+                <span th:if="${chatRoom.latestMessage.createdAt.isEqual(#dates.createNow())}" th:utext="${#temporals.format(chatRoom.latestMessage.createdAt, 'HH:mm')}" class="ml-2 text-gray-400"></span>
+                <span th:if="${!chatRoom.latestMessage.createdAt.isEqual(#dates.createNow())}" th:utext="${#temporals.format(chatRoom.latestMessage.createdAt, 'MM월 dd일')}" class="ml-2 text-gray-400"></span>
+            </div>
+
+            <p th:if="${chatRoom.getLatestMessage() != null}" th:text="${chatRoom.getLatestMessage().getContent()}" class="text-lg text-start"></p>
+            <p th:if="${chatRoom.getLatestMessage() == null}" class="text-lg text-start">채팅을 시작해보세요!</p>
         </div>
-        <div class="bg-pink-600 w-16 text-white font-semibold rounded-xl">new</div>
-        </div>
+        <div th:if="${@rq.getMember() != chatRoom.getLatestMessage().getSender() && chatRoom.getLatestMessage().isNotRead()}" class="bg-[#ff626f] w-16 text-white font-semibold rounded-xl">new</div>
     </button>
+    </div>
 </main>
 
 </body>
