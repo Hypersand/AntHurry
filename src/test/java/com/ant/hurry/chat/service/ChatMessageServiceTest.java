@@ -27,7 +27,7 @@ public class ChatMessageServiceTest {
 
     @Test
     @DisplayName("채팅 메시지를 생성하고 저장합니다.")
-    void create() {
+    void chatMessage_create() {
         Member member = Member.builder().build();
         ChatRoom chatRoom = ChatRoom.builder().build();
         ChatMessageDto dto = ChatMessageDto.builder()
@@ -44,7 +44,7 @@ public class ChatMessageServiceTest {
 
     @Test
     @DisplayName("채팅 메시지를 생성하고 생성된 메시지를 soft-delete 합니다.")
-    void create_deleteSoft() {
+    void chatMessage_create_deleteSoft() {
         Member member = Member.builder().build();
         ChatRoom chatRoom = ChatRoom.builder().build();
         ChatMessageDto dto = ChatMessageDto.builder()

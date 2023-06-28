@@ -33,7 +33,7 @@ public class ChatMessageRepositoryTest {
 
     @Test
     @DisplayName("repository를 통해 채팅 메시지를 생성하고 저장합니다.")
-    void saveByRepository() {
+    void chatMessage_saveChatRoomByRepository() {
         Member member1 = Member.builder().build();
         Member member2 = Member.builder().build();
         ChatRoom chatRoom = chatRoomService
@@ -46,7 +46,7 @@ public class ChatMessageRepositoryTest {
 
     @Test
     @DisplayName("MongoTemplate을 통해 채팅 메시지를 생성하고 저장합니다.")
-    void saveByMongoTemplate() {
+    void chatMessage_saveByMongoTemplate() {
         Member member1 = Member.builder().build();
         Member member2 = Member.builder().build();
         ChatRoom chatRoom = chatRoomService
@@ -59,7 +59,7 @@ public class ChatMessageRepositoryTest {
 
     @Test
     @DisplayName("채팅 메시지를 저장한 후 조회하고, 삭제합니다.")
-    void save_find_delete() {
+    void chatMessage_save_find_delete() {
         Member member1 = Member.builder().build();
         Member member2 = Member.builder().build();
         ChatRoom chatRoom = chatRoomService

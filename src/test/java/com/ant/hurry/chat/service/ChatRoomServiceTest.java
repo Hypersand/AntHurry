@@ -34,7 +34,7 @@ public class ChatRoomServiceTest {
 
     @Test
     @DisplayName("채팅방을 생성하고 생성된 채팅방을 조회합니다.")
-    void create_findById() {
+    void chatRoom_create_findById() {
         Member member1 = Member.builder().build();
         Member member2 = Member.builder().build();
         TradeStatus tradeStatus = TradeStatus.builder().requester(member1).helper(member2).build();
@@ -46,7 +46,7 @@ public class ChatRoomServiceTest {
 
     @Test
     @DisplayName("채팅방을 생성하고 생성된 채팅방을 삭제합니다.")
-    void create_delete() {
+    void chatRoom_create_delete() {
         Member member1 = Member.builder().build();
         Member member2 = Member.builder().build();
         TradeStatus tradeStatus = TradeStatus.builder().requester(member1).helper(member2).build();
@@ -61,7 +61,7 @@ public class ChatRoomServiceTest {
 
     @Test
     @DisplayName("모든 멤버가 채팅방을 나가면 채팅방은 자동으로 삭제됩니다.")
-    void create_delete_whenMemberExit() {
+    void chatRoom_create_delete_whenMemberExit() {
         Member member1 = Member.builder().build();
         Member member2 = Member.builder().build();
         TradeStatus tradeStatus = TradeStatus.builder().requester(member1).helper(member2).build();

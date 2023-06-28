@@ -1,8 +1,8 @@
 package com.ant.hurry.chat.controller;
 
 import com.ant.hurry.base.rsData.RsData;
-import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.dto.ChatMessageDto;
+import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
