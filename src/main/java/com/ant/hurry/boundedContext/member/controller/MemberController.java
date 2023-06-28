@@ -204,4 +204,12 @@ public class MemberController {
         model.addAttribute("code", code);
         return "usr/member/fail";
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/exchange")
+    public String exchangePoint(Model model){
+        Member member = memberService.getMember();
+        model.addAttribute("member", member);
+        return "usr/member/exchange";
+    }
 }
