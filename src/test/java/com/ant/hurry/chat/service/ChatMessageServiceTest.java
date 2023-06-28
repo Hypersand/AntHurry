@@ -2,18 +2,20 @@ package com.ant.hurry.chat.service;
 
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
-import com.ant.hurry.chat.code.ChatMessageSuccessCode;
 import com.ant.hurry.chat.dto.ChatMessageDto;
 import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.repository.ChatMessageRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import static com.ant.hurry.chat.code.ChatMessageSuccessCode.*;
+import static com.ant.hurry.chat.code.ChatMessageSuccessCode.MESSAGE_DELETED;
+import static com.ant.hurry.chat.code.ChatMessageSuccessCode.MESSAGE_SENT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -24,6 +26,12 @@ public class ChatMessageServiceTest {
     ChatMessageService chatMessageService;
     @Autowired
     ChatMessageRepository chatMessageRepository;
+
+    @AfterEach
+    @Transactional
+    void refresh() {
+        chatMessageRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("채팅 메시지를 생성하고 저장합니다.")
