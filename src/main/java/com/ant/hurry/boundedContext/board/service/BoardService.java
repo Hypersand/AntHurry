@@ -10,6 +10,7 @@ import com.ant.hurry.boundedContext.board.dto.CreateConvertDTO;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.base.api.dto.AddressDTO;
 import com.ant.hurry.boundedContext.board.entity.Board;
+import com.ant.hurry.boundedContext.board.entity.BoardType;
 import com.ant.hurry.boundedContext.board.repository.BoardRepository;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -105,5 +107,9 @@ public class BoardService {
 
     public Optional<Board> findById(Long id){
         return boardRepository.findById(id);
+    }
+
+    public List<Board> findByCode(String code) {
+        return boardRepository.findByRegCode(code);
     }
 }
