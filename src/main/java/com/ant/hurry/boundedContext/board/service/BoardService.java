@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -105,5 +106,9 @@ public class BoardService {
 
     public Optional<Board> findById(Long id){
         return boardRepository.findById(id);
+    }
+
+    public List<Board> findByCode(String code) {
+        return boardRepository.findByRegCode(code);
     }
 }
