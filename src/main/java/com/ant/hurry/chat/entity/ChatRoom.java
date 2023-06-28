@@ -4,6 +4,7 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -12,6 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -37,7 +39,8 @@ public class ChatRoom {
     private List<Member> members;
 
     @ManyToMany
-    private List<Member> exitedMembers; // member 두 명 모두 extiedMembers에 들어가게 되면 채팅방은 삭제됩니다.
+    @Builder.Default
+    private List<Member> exitedMembers = new ArrayList<>();
 
     public void setLatestMessage(ChatMessage message) {
         this.latestMessage = message;

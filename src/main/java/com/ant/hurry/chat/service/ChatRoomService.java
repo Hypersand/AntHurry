@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.ant.hurry.chat.code.ChatRoomErrorCode.CHATROOM_NO_EXISTS;
 import static com.ant.hurry.chat.code.ChatRoomSuccessCode.*;
@@ -39,11 +39,6 @@ public class ChatRoomService {
         }
         ChatRoom foundchatRoom = chatRoom.get();
 
-        List<DeletedChatRoom> deletedChatRooms = deletedChatRoomRepository.findAll();
-        if (deletedChatRooms.contains(foundchatRoom)) {
-            return RsData.of(CHATROOM_NO_EXISTS);
-        }
-
         return RsData.of(CHATROOM_FOUND, foundchatRoom);
     }
 
@@ -59,13 +54,18 @@ public class ChatRoomService {
 
     @Transactional
     public RsData<ChatRoom> create(TradeStatus tradeStatus) {
+        List<Member> members = new ArrayList<>();
+        members.add(tradeStatus.getRequester());
+        members.add(tradeStatus.getHelper());
+
         ChatRoom chatRoom = ChatRoom.builder()
                 .id(UUID.randomUUID().toString())
                 .tradeStatus(tradeStatus)
-                .members(List.of(tradeStatus.getRequester(), tradeStatus.getHelper()))
+                .members(members)
                 .createdAt(LocalDateTime.now())
                 .build();
         ChatRoom insertChatRoom = chatRoomRepository.insert(chatRoom);
+
         return RsData.of(CHATROOM_CREATED, insertChatRoom);
     }
 
@@ -80,9 +80,9 @@ public class ChatRoomService {
                 .members(members)
                 .exitedMembers(exitedMembers)
                 .build();
-        chatRoomRepository.insert(chatRoomMemberExited);
+        chatRoomRepository.save(chatRoomMemberExited);
 
-        if(chatRoomMemberExited.getExitedMembers().size() == 2) {
+        if (chatRoomMemberExited.getExitedMembers().size() == 2) {
             delete(chatRoomMemberExited);
         }
 

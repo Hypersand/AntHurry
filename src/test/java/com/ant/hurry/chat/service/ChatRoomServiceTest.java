@@ -39,8 +39,7 @@ public class ChatRoomServiceTest {
     void create_findById() {
         Member member1 = Member.builder().build();
         Member member2 = Member.builder().build();
-        TradeStatus tradeStatus = TradeStatus.builder()
-                .requester(member1).helper(member2).build();
+        TradeStatus tradeStatus = TradeStatus.builder().requester(member1).helper(member2).build();
         RsData<ChatRoom> createdRs = chatRoomService.create(tradeStatus);
         RsData<ChatRoom> findRs = chatRoomService.findById(createdRs.getData().getId());
 
@@ -52,13 +51,30 @@ public class ChatRoomServiceTest {
     void create_delete() {
         Member member1 = Member.builder().build();
         Member member2 = Member.builder().build();
-        TradeStatus tradeStatus = TradeStatus.builder()
-                .requester(member1).helper(member2).build();
+        TradeStatus tradeStatus = TradeStatus.builder().requester(member1).helper(member2).build();
         RsData<ChatRoom> createdRs = chatRoomService.create(tradeStatus);
         ChatRoom createdChatRoom = createdRs.getData();
         assertThat(chatRoomService.findAll().getData()).hasSize(1);
 
         chatRoomService.delete(createdChatRoom);
+        assertThat(chatRoomService.findAll().getData()).isEmpty();
+        assertThat(deletedChatRoomRepository.findAll()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("모든 멤버가 채팅방을 나가면 채팅방은 자동으로 삭제됩니다.")
+    void create_delete_whenMemberExit() {
+        Member member1 = Member.builder().build();
+        Member member2 = Member.builder().build();
+        TradeStatus tradeStatus = TradeStatus.builder().requester(member1).helper(member2).build();
+        RsData<ChatRoom> createdRs = chatRoomService.create(tradeStatus);
+
+        ChatRoom createdChatRoom = createdRs.getData();
+        assertThat(chatRoomService.findAll().getData()).hasSize(1);
+
+        chatRoomService.exit(createdChatRoom, member1);
+        chatRoomService.exit(createdChatRoom, member2);
+
         assertThat(chatRoomService.findAll().getData()).isEmpty();
         assertThat(deletedChatRoomRepository.findAll()).hasSize(1);
     }
