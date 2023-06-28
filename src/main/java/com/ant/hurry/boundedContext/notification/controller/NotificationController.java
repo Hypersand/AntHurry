@@ -12,7 +12,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
@@ -38,26 +40,22 @@ public class NotificationController {
 
         model.addAttribute("notificationList", notificationListRsData.getData());
 
-        //레이아웃 확인 데이터 생성
-//        Member member1 = Member.create("test1", "nickname1", "123", "01012345678", "kakao");
-//        Member member2= Member.create("test2", "nickname2", "123", "01034124123", "kakao");
-//        List<Notification> list = Stream.of(
-//                Notification.create("임시테스트1", "START", member1, member2),
-//                Notification.create("임시테스트2", "END", member1, member2),
-//                Notification.create("임시테스트3", "CANCEL", member1, member2),
-//                Notification.create("임시테스트4", "START", member1, member2),
-//                Notification.create("임시테스트5", "END", member1, member2),
-//                Notification.create("임시테스트6", "CANCEL", member1, member2)
-//        ).collect(Collectors.toList());
-
-
-//        model.addAttribute("notificationList", list);
-
         return "notification/list";
     }
 
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String delete(@AuthenticationPrincipal User user, @PathVariable Long id) {
+
+        RsData<Notification> rsData = notificationService.delete(id, user.getUsername());
+
+        if (rsData.isFail()) {
+            return rq.historyBack(rsData.getMsg());
+        }
 
 
+        return rq.redirectWithMsg("/notification/list", rsData.getMsg());
+    }
 
 
 }

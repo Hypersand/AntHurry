@@ -1,5 +1,6 @@
 package com.ant.hurry.boundedContext.notification.service;
 
+import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
@@ -28,18 +29,30 @@ public class NotificationService {
 
     private final MemberService memberService;
 
+    private final Rq rq;
+
     //채팅 시작
     public Notification notifyNew(Member requester, Member helper) {
 
         //메시지 내용 생성
-        String content = "채팅시작테스트";
+        Member member = rq.getMember();
+        String message;
+
+        if (member.equals(requester)) {
+            message = helper.getNickname() + "님 과의 채팅이 시작되었습니다.";
+        }
+
+        else {
+            message = requester.getNickname() + "님 과의 채팅이 시작되었습니다.";
+        }
+
 
         //알림 엔티티 생성
-        Notification notification = Notification.create(content, "START", requester, helper);
+        Notification notification = Notification.create(message, "START", requester, helper);
         notificationRepository.save(notification);
 
         //채팅시작알림 이벤트 발생 (content 수정 필요)
-        publisher.publishEvent(new NotifyNewMessageEvent(requester.getPhoneNumber(), content));
+        publisher.publishEvent(new NotifyNewMessageEvent(requester.getPhoneNumber(), message));
 
         return notification;
     }
@@ -49,14 +62,23 @@ public class NotificationService {
     public Notification notifyEnd(Member requester, Member helper) {
 
         //메시지 내용 생성
-        String content = "거래완료테스트";
+        Member member = rq.getMember();
+        String message;
+
+        if (member.equals(requester)) {
+            message = helper.getNickname() + "님 과의 거래가 종료되었습니다.";
+        }
+
+        else {
+            message = requester.getNickname() + "님 과의 거래가 종료되었습니다.";
+        }
 
         //알림 엔티티 생성
-        Notification notification = Notification.create(content, "END", requester, helper);
+        Notification notification = Notification.create(message, "END", requester, helper);
         notificationRepository.save(notification);
 
         //거래 완료 알림 이벤트 발생 (content 수정 필요)
-        publisher.publishEvent(new NotifyEndMessageEvent(requester.getPhoneNumber(), helper.getPhoneNumber(), content));
+        publisher.publishEvent(new NotifyEndMessageEvent(requester.getPhoneNumber(), helper.getPhoneNumber(), message));
 
         return notification;
     }
@@ -66,15 +88,24 @@ public class NotificationService {
     public Notification notifyCancel(Member requester, Member helper) {
 
         //메시지 내용 생성
-        String content = "거래파기테스트";
+        Member member = rq.getMember();
+        String message;
+
+        if (member.equals(requester)) {
+            message = helper.getNickname() + "님 과의 거래가 파기되었습니다.";
+        }
+
+        else {
+            message = requester.getNickname() + "님 과의 거래가 파기되었습니다.";
+        }
 
         //알림 엔티티 생성
-        Notification notification = Notification.create(content, "CANCEL", requester, helper);
+        Notification notification = Notification.create(message, "CANCEL", requester, helper);
 
         notificationRepository.save(notification);
 
         //거래 파기 알림 이벤트 발생 (title, content 수정 필요)
-        publisher.publishEvent(new NotifyCancelMessageEvent(requester.getPhoneNumber(), helper.getPhoneNumber(), content));
+        publisher.publishEvent(new NotifyCancelMessageEvent(requester.getPhoneNumber(), helper.getPhoneNumber(), message));
 
         return notification;
     }
@@ -93,6 +124,20 @@ public class NotificationService {
         //NOTIFICATION_LIST_MOVE
         return RsData.of("S_N-1", "알림목록페이지로 이동합니다.",
                 notificationRepository.findAllByMemberId(member.getId()));
+    }
+
+    public RsData<Notification> delete(Long id, String username) {
+
+        Member member = memberService.findByUsername(username).orElse(null);
+
+        if (member == null) {
+            return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
+        }
+
+
+        notificationRepository.deleteById(id);
+
+        return RsData.of("S_N-2", "성공적으로 알림이 삭제되었습니다.");
     }
 
 

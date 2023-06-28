@@ -27,18 +27,24 @@
 <main layout:fragment="main">
     <div class="text-center" style="overflow-y: auto;">
         <ul class="w-full max-w-lg mx-auto p-4 mb-4 bg-base-100 shadow-md rounded-lg" th:each="notification : ${notificationList}">
-            <li class="flex items-center border-b border-base-200 py-3">
+            <li class="flex items-center">
                 <div class="alert"
                      th:classappend="${notification.type.name() == 'START'} ? 'alert-info' : (${notification.type.name() == 'END'} ? 'alert-success' : 'alert-error')"
-                     style="flex-direction: row">
-                    <i th:class="${notification.type.name() == 'START'} ? 'fa-brands fa-rocketchat' : (${notification.type.name() == 'END'} ? 'fa-regular fa-thumbs-up' : 'fa-solid fa-ban')"></i>
-                    <div class="flex-grow flex flex-col">
-                        <p class="text-m text-white self-start" th:text="${notification.message}"></p>
-                        <span class="text-xs text-white mt-auto ml-auto" th:text="${#temporals.format(notification.createdAt, 'MM-dd HH:mm')}"></span>
+                     style="flex-direction: row; position: relative;">
+                    <form class="delete-notification-form" th:action="@{/notification/delete/{id}(id=${notification.id})}" th:method="DELETE">
+                        <div class="flex items-center" style="position: absolute; top: 0; right: 0;">
+                            <button class="bg-transparent text-white text-xs ml-2"
+                                    style="height: 1.5rem; width: 2rem;">
+                                <i class="fas fa-times fa-xl"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <div class="flex-grow flex flex-col justify-between">
+                        <p class="text-lg text-white self-start mt-1" th:text="${notification.message}"></p>
                     </div>
+                    <span class="text-xs text-white justify-self-end" th:text="${#temporals.format(notification.createdAt, 'MM-dd HH:mm')}"></span>
                 </div>
             </li>
-            <!-- 알림의 추가 항목을 계속하여 추가하세요 -->
         </ul>
     </div>
 </main>
