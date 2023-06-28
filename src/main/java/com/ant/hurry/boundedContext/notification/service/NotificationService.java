@@ -126,5 +126,19 @@ public class NotificationService {
                 notificationRepository.findAllByMemberId(member.getId()));
     }
 
+    public RsData<Notification> delete(Long id, String username) {
+
+        Member member = memberService.findByUsername(username).orElse(null);
+
+        if (member == null) {
+            return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
+        }
+
+
+        notificationRepository.deleteById(id);
+
+        return RsData.of("S_N-2", "성공적으로 알림이 삭제되었습니다.");
+    }
+
 
 }
