@@ -9,6 +9,7 @@ import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
@@ -17,8 +18,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -46,8 +51,6 @@ public class TradeStatusController {
     @PreAuthorize("isAuthenticated()")
     public String showList(@RequestParam(defaultValue = "COMPLETE") String status, @AuthenticationPrincipal User user, Model model) {
 
-        //상대방, 거래상태, 거래시작날짜, 거래후기작성 연결
-        //나의 거래 상태 목록을 모두 띄워야됨.
         RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), Status.valueOf(status));
 
         if (rsData.isFail()) {
@@ -57,6 +60,20 @@ public class TradeStatusController {
         model.addAttribute("tradeStatusList", rsData.getData());
 
         return "tradeStatus/list";
+    }
+
+    @GetMapping("/list/select")
+    @ResponseBody
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> showListByResponseBody(@RequestParam(defaultValue = "COMPLETE") String status, @AuthenticationPrincipal User user, Model model) {
+
+        RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), Status.valueOf(status));
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("statusMsg", Status.valueOf(status).msg);
+        map.put("tradeStatusList", rsData.getData());
+        return ResponseEntity.ok(map);
     }
 
 }
