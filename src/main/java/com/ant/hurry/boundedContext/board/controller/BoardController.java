@@ -105,14 +105,15 @@ public class BoardController {
     @GetMapping("/enterRegion")
     public String enterRegion(@RequestParam("code")String code, Model model) {
         Region region = regionService.findByCode(code).orElseThrow();
-        //board_type이 "나 급해요" 인것만 boards에서 추출
-        List<Board> board1 = boardService.findByCodeAndBoardType(code, BoardType.나급해요);
-        //board_type이 "나 잘해요" 인것만 boards에서 추출
-        List<Board> board2 = boardService.findByCodeAndBoardType(code, BoardType.나잘해요);
-        System.out.println("board1 = " + board1);
+
+        List<Board> board = boardService.findByCode(code);
+
+
         model.addAttribute("region", region);
-        model.addAttribute("board1", board1);
-        model.addAttribute("board2", board2);
+        //Board_type.나급해요인 것만 필터링
+        model.addAttribute("board1", board.stream().filter(b -> b.getBoardType().equals(BoardType.나급해요)).toList());
+        //Board_type.나잘해요인 것만 필터링
+        model.addAttribute("board2", board.stream().filter(b -> b.getBoardType().equals(BoardType.나잘해요)).toList());
         return "board/enterRegion";
     }
 
