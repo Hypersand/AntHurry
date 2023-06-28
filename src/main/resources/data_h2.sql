@@ -3,6 +3,7 @@ INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, prov
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user3', 'User3', 'password123', '01034567890', 1, 'kakao', 0, 1.0, 2);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user4', 'User4', 'password123', '01045678901', 1, 'kakao', 0, 3.5, 2);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('admin', 'Admin', 'password123', '01056789012', 1, 'kakao', 0, 0, 0);
+INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('KAKAO__2861814792', 'bigsand', 'password12311', '01053833333', 1, 'kakao', 0, 0, 0);
 
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type) VALUES (1, 2, '채팅시작테스트', 'START');
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type) VALUES (1, 3, '거래파기테스트', 'CANCEL');
@@ -24,6 +25,10 @@ INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (1, 
 INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (2, 1, 3, 'CANCELED');
 INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (3, 2, 3, 'COMPLETE');
 INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (4, 3, 4, 'COMPLETE');
+INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (null, 6, 4, 'COMPLETE');
+INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (null, 3, 6, 'COMPLETE');
+INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (null, 6, 4, 'BEFORE');
+INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (null, 3, 6, 'CANCELED');
 
 INSERT INTO REVIEW (content, rating, trade_status_id, writer_id) VALUES ('내용1', 1.0, 1, 1);
 INSERT INTO REVIEW (content, rating, trade_status_id, writer_id) VALUES ('내용2', 1.0, 2, 1);

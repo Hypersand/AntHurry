@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -37,7 +38,9 @@ public class Member extends BaseEntity {
 
     private String providerTypeCode; //일반, 카카오 등 어떤 회원가입인지 구별
 
-    private int coin;
+    @Setter
+    private long coin = 0;
+
 
     private int phoneAuth;
 
@@ -88,4 +91,5 @@ public class Member extends BaseEntity {
         this.rating = rating;
         this.reviewCount += 1;
     }
+
 }
