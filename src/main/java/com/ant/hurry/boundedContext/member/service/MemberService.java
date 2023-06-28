@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -96,5 +97,10 @@ public class MemberService {
 
     public boolean existsPhoneNumber(String phoneNumber){
         return memberRepository.existsByPhoneNumber(phoneNumber);
+    }
+
+    @Transactional
+    public void updateProfile(Member member,String nickname, MultipartFile file) {
+        member.updateProfile(nickname);
     }
 }

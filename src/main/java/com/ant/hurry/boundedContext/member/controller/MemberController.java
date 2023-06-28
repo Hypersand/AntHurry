@@ -2,9 +2,11 @@ package com.ant.hurry.boundedContext.member.controller;
 
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.member.dto.ProfileRequestDto;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,11 +14,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -119,8 +125,23 @@ public class MemberController {
             return "redirect:/usr/member/login";
         }
         Member member = rq.getMember();
-        model.addAttribute("member", member);
+        ProfileRequestDto profileRequestDto = new ProfileRequestDto();
+        profileRequestDto.setNickname(member.getNickname());
+        model.addAttribute("profileRequestDto", profileRequestDto);
 
         return "usr/member/profile_edit";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/profile_edit")
+    public String updateProfile(@ModelAttribute @Valid ProfileRequestDto profileRequestDto, BindingResult bindingResult,
+                                MultipartFile file) {
+        if (bindingResult.hasErrors()) {
+            return "/usr/member/profile_edit";
+        }
+        Member member = rq.getMember();
+        memberService.updateProfile(member, profileRequestDto.getNickname(), file);
+
+        return "redirect:/usr/member/profile";
     }
 }
