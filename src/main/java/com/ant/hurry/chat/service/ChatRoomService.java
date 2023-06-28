@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.ant.hurry.base.code.BasicErrorCode.UNAUTHORIZED;
 import static com.ant.hurry.chat.code.ChatRoomErrorCode.CHATROOM_NO_EXISTS;
 import static com.ant.hurry.chat.code.ChatRoomSuccessCode.*;
 
@@ -32,12 +33,20 @@ public class ChatRoomService {
     private final ApplicationEventPublisher publisher;
 
     public RsData<ChatRoom> findById(String id) {
+        return RsData.of(CHATROOM_FOUND, chatRoomRepository.findById(id).get());
+    }
+
+    public RsData<ChatRoom> findByIdAndVerify(String id, Member member) {
         Optional<ChatRoom> chatRoom = chatRoomRepository.findById(id);
 
         if (chatRoom.isEmpty()) {
             return RsData.of(CHATROOM_NO_EXISTS);
         }
         ChatRoom foundchatRoom = chatRoom.get();
+
+        if (!foundchatRoom.getMembers().contains(member)) {
+            return RsData.of(UNAUTHORIZED);
+        }
 
         return RsData.of(CHATROOM_FOUND, foundchatRoom);
     }

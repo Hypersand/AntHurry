@@ -26,7 +26,13 @@ public class ChatRoomController {
 
     @GetMapping("/room/{id}")
     public String showRoom(@PathVariable String id, Model model) {
-        ChatRoom room = chatRoomService.findById(id).getData();
+        RsData<ChatRoom> rs = chatRoomService.findByIdAndVerify(id, rq.getMember());
+
+        if (rs.getData() == null) {
+            return rq.historyBack(rs.getMsg());
+        }
+
+        ChatRoom room = rs.getData();
         model.addAttribute("room", room);
         return "chat/room";
     }
@@ -47,7 +53,7 @@ public class ChatRoomController {
 
     @GetMapping("/exit/{id}")
     public String exit(@PathVariable String id) {
-        ChatRoom chatRoom = chatRoomService.findById(id).getData();
+        ChatRoom chatRoom = chatRoomService.findByIdAndVerify(id, rq.getMember()).getData();
         Member member = rq.getMember();
         RsData rs = chatRoomService.exit(chatRoom, member);
         return rq.redirectWithMsg("chat/myRooms", rs.getMsg());
