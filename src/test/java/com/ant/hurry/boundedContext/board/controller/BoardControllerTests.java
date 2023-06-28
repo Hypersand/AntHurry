@@ -4,6 +4,7 @@ import com.ant.hurry.base.region.service.RegionSearchService;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.BoardType;
 import com.ant.hurry.boundedContext.board.entity.TradeType;
+import com.ant.hurry.boundedContext.board.service.BoardService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -169,5 +171,26 @@ public class BoardControllerTests {
                 .andExpect(handler().handlerType(BoardController.class))
                 .andExpect(handler().methodName("deleteBoard"))
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @DisplayName("해당 지역의 게시판으로 들어가서 게시글 확인")
+    @WithMockUser("user3")
+    void checkEnterRegionBoard() throws Exception {
+        //삼산동 게시판으로 들어가서 글 확인
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/board/enterRegion")
+                        .param("code", "2823710500"))
+                .andDo(print());
+
+
+        resultActions
+                .andExpect(handler().handlerType(BoardController.class))
+                .andExpect(handler().methodName("enterRegionBoard"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(view().name("board/enterRegion"))
+                .andExpect(content().string(containsString("휴지좀")))
+                .andExpect(content().string(containsString("1000")));
     }
 }
