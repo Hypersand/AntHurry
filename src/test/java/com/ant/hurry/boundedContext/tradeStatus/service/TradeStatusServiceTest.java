@@ -74,7 +74,7 @@ public class TradeStatusServiceTest {
         assertAll(
                 () -> assertThat(rsData.getResultCode()).isEqualTo("S_T-1"),
                 () -> assertThat(rsData.getMsg()).isEqualTo("거래상태페이지로 이동합니다."),
-                () -> assertThat(rsData.getData().size()).isEqualTo(2),
+                () -> assertThat(rsData.getData().size()).isEqualTo(3),
                 () -> assertThat(rsData.getData()).isSortedAccordingTo(Comparator.comparing((TradeStatus e) -> e.getId()).reversed())
 
         );
@@ -116,7 +116,7 @@ public class TradeStatusServiceTest {
         assertAll(
                 () -> assertThat(rsData.getResultCode()).isEqualTo("S_T-1"),
                 () -> assertThat(rsData.getMsg()).isEqualTo("거래상태페이지로 이동합니다."),
-                () -> assertThat(rsData.getData().size()).isEqualTo(1),
+                () -> assertThat(rsData.getData().size()).isEqualTo(2),
                 () -> assertThat(rsData.getData()).isSortedAccordingTo(Comparator.comparing((TradeStatus e) -> e.getId()).reversed())
 
         );
