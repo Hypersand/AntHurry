@@ -32,6 +32,10 @@ public class ChatMessage {
 
     private Member sender;
 
+    public String getChatRoomId() {
+        return chatRoom.getId();
+    }
+
     public void markAsRead() {
         readAt = LocalDateTime.now();
     }

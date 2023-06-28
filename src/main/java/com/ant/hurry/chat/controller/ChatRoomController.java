@@ -1,15 +1,13 @@
 package com.ant.hurry.chat.controller;
 
-import com.ant.hurry.base.code.BasicErrorCode;
+import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.chat.entity.ChatMessage;
+import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.service.ChatMessageService;
 import com.ant.hurry.chat.service.ChatRoomService;
-import com.ant.hurry.base.rq.Rq;
-import com.ant.hurry.chat.entity.ChatRoom;
-import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
-import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-import static com.ant.hurry.base.code.BasicErrorCode.*;
-
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/chat")
@@ -29,20 +25,29 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
-    private final TradeStatusService tradeStatusService;
     private final Rq rq;
 
     @GetMapping("/room/{id}")
     public String showRoom(@PathVariable String id, Model model) {
-        ChatRoom room = chatRoomService.findById(id).getData();
+        RsData<ChatRoom> rs = chatRoomService.findByIdAndVerify(id, rq.getMember());
+
+        if (rs.getData() == null) {
+            return rq.historyBack(rs.getMsg());
+        }
+
+        ChatRoom room = rs.getData();
+        Member otherMember = room.getMembers().stream().filter(m -> !m.equals(rq.getMember())).findFirst().get();
+        List<ChatMessage> chatMessages = chatMessageService.findByChatRoom(room).getData();
+
+        model.addAttribute("otherMember", otherMember);
+        model.addAttribute("chatMessages", chatMessages);
         model.addAttribute("room", room);
         return "chat/room";
     }
 
     @GetMapping("/myRooms")
-    public String findAll(Model model) {
-        List<TradeStatus> tradeStatuses = tradeStatusService.findByMember(rq.getMember());
-        List<ChatRoom> chatRooms = chatRoomService.findByTradeStatus(tradeStatuses).getData();
+    public String showMyRooms(Model model) {
+        List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData();
         model.addAttribute("chatRooms", chatRooms);
         return "chat/myRooms";
     }
@@ -54,20 +59,12 @@ public class ChatRoomController {
         return rq.redirectWithMsg("chat/room/%s".formatted(chatRoom.getId()), rs.getMsg());
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteSoft(@PathVariable String id) {
-        ChatRoom chatRoom = chatRoomService.findById(id).getData();
-        RsData rs = chatRoomService.deleteSoft(chatRoom);
+    @GetMapping("/exit/{id}")
+    public String exit(@PathVariable String id) {
+        ChatRoom chatRoom = chatRoomService.findByIdAndVerify(id, rq.getMember()).getData();
+        Member member = rq.getMember();
+        RsData rs = chatRoomService.exit(chatRoom, member);
         return rq.redirectWithMsg("chat/myRooms", rs.getMsg());
     }
 
-    @GetMapping("/delete/hard/{id}")
-    public String deleteHard(@PathVariable String id) {
-        if(!rq.getMember().getNickname().equals("admin")) {
-            return rq.historyBack(UNAUTHORIZED.getMessage());
-        }
-        ChatRoom chatRoom = chatRoomService.findById(id).getData();
-        RsData rs = chatRoomService.delete(chatRoom);
-        return rq.redirectWithMsg("chat/myRooms", rs.getMsg());
-    }
 }
