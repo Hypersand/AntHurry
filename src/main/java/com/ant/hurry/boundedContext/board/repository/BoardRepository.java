@@ -11,4 +11,6 @@ import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
     List<Board> findByRegCode(String code);
+
+    List<Board> findByRegCodeAndBoardType(String code, BoardType boardType);
 }

@@ -112,4 +112,8 @@ public class BoardService {
     public List<Board> findByCode(String code) {
         return boardRepository.findByRegCode(code);
     }
+
+    public List<Board> findByCodeAndBoard(String code, BoardType boardType) {
+        return boardRepository.findByRegCodeAndBoardType(code, boardType);
+    }
 }
