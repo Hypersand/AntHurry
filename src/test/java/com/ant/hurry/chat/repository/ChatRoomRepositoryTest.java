@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +39,7 @@ public class ChatRoomRepositoryTest {
     }
 
     @Test
-    @DisplayName("ReactiveMongoTemplate을 통해 채팅방을 저장합니다.")
+    @DisplayName("MongoTemplate을 통해 채팅방을 저장합니다.")
     void saveByMongoTemplate() {
         ChatRoom chatRoom = ChatRoom.builder().build();
         mongoTemplate.insert(chatRoom);
@@ -89,30 +88,6 @@ public class ChatRoomRepositoryTest {
         chatRoomRepository.insert(chatRoom2);
 
         assertThat(chatRoomRepository.findByTradeStatus(list)).hasSize(1);
-    }
-
-    @Test
-    @DisplayName("deletedAt 필드가 null인 채팅방만 조회합니다.")
-    void findAllAndDeletedAtIsNull() {
-        ChatRoom chatRoom1 = ChatRoom.builder().build();
-        ChatRoom chatRoom2 = ChatRoom.builder().deletedAt(LocalDateTime.now()).build();
-
-        chatRoomRepository.insert(chatRoom1);
-        chatRoomRepository.insert(chatRoom2);
-
-        assertThat(chatRoomRepository.findAllAndDeletedAtIsNull()).hasSize(1);
-    }
-
-    @Test
-    @DisplayName("채팅방을 저장하고 저장된 채팅방을 soft-delete합니다.(deletedAt 필드 값 생성)")
-    void save_deleteSoft() {
-        ChatRoom chatRoom = ChatRoom.builder().build();
-        ChatRoom insertChatRoom = chatRoomRepository.insert(chatRoom);
-
-        chatRoomRepository.deleteSoft(insertChatRoom);
-        Optional<ChatRoom> foundChatRoom = chatRoomRepository.findAll().stream().findFirst();
-        assertThat(foundChatRoom).isPresent();
-        assertThat(foundChatRoom.get().getDeletedAt()).isNotNull();
     }
 
 }

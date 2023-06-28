@@ -4,11 +4,11 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -16,9 +16,10 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-@SuperBuilder(toBuilder = true)
-@Document(collection = "chat_room")
-public class ChatRoom {
+@AllArgsConstructor
+@Builder
+@Document(collection = "deleted_room")
+public class DeletedChatRoom {
 
     @Id
     private String id;
@@ -26,17 +27,9 @@ public class ChatRoom {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
-
     private TradeStatus tradeStatus;
-
-    private ChatMessage latestMessage;
 
     @ManyToMany
     private List<Member> members;
 
-    public void setLatestMessage(ChatMessage message) {
-        this.latestMessage = message;
-    }
 }

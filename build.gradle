@@ -37,7 +37,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
-	// MongoDB
+	// 채팅
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.webjars:sockjs-client:1.5.1'
+	implementation 'org.webjars:stomp-websocket:2.3.4'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 

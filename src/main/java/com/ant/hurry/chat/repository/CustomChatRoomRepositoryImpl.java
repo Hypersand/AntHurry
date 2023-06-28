@@ -23,18 +23,4 @@ public class CustomChatRoomRepositoryImpl implements CustomChatRoomRepository {
         return mongoTemplate.find(query, ChatRoom.class);
     }
 
-    @Override
-    public List<ChatRoom> findAllAndDeletedAtIsNull() {
-        Criteria criteria = Criteria.where("deletedAt").isNull();
-        Query query = Query.query(criteria);
-        return mongoTemplate.find(query, ChatRoom.class);
-    }
-
-    @Override
-    public ChatRoom deleteSoft(ChatRoom chatRoom) {
-        Query query = new Query(Criteria.where("_id").is(chatRoom.getId()));
-        Update update = new Update().set("deletedAt", LocalDateTime.now());
-        return mongoTemplate.findAndModify(query, update, ChatRoom.class);
-    }
-
 }

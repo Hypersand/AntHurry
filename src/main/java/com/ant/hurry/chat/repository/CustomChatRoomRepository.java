@@ -8,8 +8,4 @@ import java.util.List;
 public interface CustomChatRoomRepository {
 
     List<ChatRoom> findByTradeStatus(List<TradeStatus> tradeStatuses);
-
-    List<ChatRoom> findAllAndDeletedAtIsNull();
-
-    ChatRoom deleteSoft(ChatRoom chatRoom);
 }

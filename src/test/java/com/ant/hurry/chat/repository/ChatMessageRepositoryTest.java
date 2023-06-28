@@ -41,7 +41,7 @@ public class ChatMessageRepositoryTest {
     }
 
     @Test
-    @DisplayName("ReactiveMongoTemplate을 통해 채팅 메시지를 생성하고 저장합니다.")
+    @DisplayName("MongoTemplate을 통해 채팅 메시지를 생성하고 저장합니다.")
     void saveByMongoTemplate() {
         ChatRoom chatRoom = chatRoomService.create(TradeStatus.builder().build()).getData();
         ChatMessage chatMessage = ChatMessage.builder().chatRoom(chatRoom).build();
@@ -60,7 +60,7 @@ public class ChatMessageRepositoryTest {
         assertThat(chatMessageRepository.findById(chatMessage.getId())).isNotNull();
 
         chatMessageRepository.delete(savedChatMessage);
-        assertThat(chatMessageRepository.findAll()).hasSize(0);
+        assertThat(chatMessageRepository.findAll()).isEmpty();
     }
 
 }

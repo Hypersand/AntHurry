@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-import static com.ant.hurry.base.code.BasicErrorCode.UNAUTHORIZED;
-
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/chat")
@@ -52,17 +50,8 @@ public class ChatRoomController {
     @GetMapping("/delete/{id}")
     public String deleteSoft(@PathVariable String id) {
         ChatRoom chatRoom = chatRoomService.findById(id).getData();
-        RsData rs = chatRoomService.deleteSoft(chatRoom);
-        return rq.redirectWithMsg("chat/myRooms", rs.getMsg());
-    }
-
-    @GetMapping("/delete/hard/{id}")
-    public String deleteHard(@PathVariable String id) {
-        if (!rq.getMember().getNickname().equals("admin")) {
-            return rq.historyBack(UNAUTHORIZED.getMessage());
-        }
-        ChatRoom chatRoom = chatRoomService.findById(id).getData();
         RsData rs = chatRoomService.delete(chatRoom);
         return rq.redirectWithMsg("chat/myRooms", rs.getMsg());
     }
+
 }
