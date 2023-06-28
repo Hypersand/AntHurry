@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="navbar-center">
-            <a class="font-black">코인 환전</a>
+            <a class="font-black">환전소</a>
         </div>
         <div class="navbar-end">
             <button class="btn btn-ghost btn-circle">
@@ -32,26 +32,63 @@
     <div class="flex flex-col max-w-2xl mx-auto w-11/12 border-t-4 border-pink-300">
         <div class="card shadow-xl">
             <div class="card-body">
-                <h2 class="card-title">코인 환전</h2>
-                <div class="mt-4 mb-2 flex flex-col gap-2">
-                    <div class="mt-3 flex justify">
-                        <span class="text-base font-black" th:text="${member.nickname} + '님이 현재 가지고 있는 코인 | '"></span>
-                        <span class="text-base pl-2 pr-1" th:text="${member.coin}"></span>
-                        <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1490/1490853.png" alt="text">
-                    </div>
-                    <div>
-                        <i class="fa-solid fa-coins"></i>
-                        환전할 금액을 입력해주세요. (1000원 = 1000coin)
-                    </div>
-                    <input type="text" id="money" class="form-input border-2 border-black" name="money" placeholder="0"
-                           onkeyup="formatCurrency(this)"/>
+                <h2 class="card-title">환전소</h2>
+                <div class="mt-3 flex justify">
+                    <span class="text-base font-black" th:text="${member.nickname} + '님이 현재 가지고 있는 코인 | '"></span>
+                    <span class="text-base pl-2 pr-1" th:text="${member.coin}"></span>
+                    <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1490/1490853.png" alt="text">
                 </div>
-                <button onclick="getPriceAndExecutePayment();" class="btn btn-sm btn-primary">환전</button>
+                <form method="POST" th:action="@{|/usr/member/${member.id}/exchange-success|}">
+                    <div class="mt-4 mb-2 flex flex-col gap-2">
+                        <div class="mt-3">
+
+                            <i class="fa-solid fa-coins"></i>
+                            환전할 금액을 입력해주세요. (1000원 = 1000coin)<br>
+
+                            <input type="text" id="money" class="form-input border-2 border-black" name="money"
+                                   placeholder="0"
+                                   onkeyup="formatCurrency(this)"/>
+                        </div>
+                        <div class="mt-3">
+                            <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1198/1198299.png" alt="text">
+                            <div class="dropdown inline-block relative">
+                                <button class="bg-gray-300 text-black font-semibold py-2 px-4 rounded inline-flex items-center">
+                                    <span id="dropdown-title" class="mr-1">카드사 선택</span>
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M5 8a.5.5 0 01.707 0L10 12.293l4.293-4.293A.5.5 0 0115 8v7a.5.5 0 01-.5.5h-9a.5.5 0 01-.5-.5V8z" clip-rule="evenodd"/></svg>
+                                </button>
+                                <ul id="dropdown-menu" class="dropdown-menu absolute hidden text-black pt-1">
+                                    <li class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                        <label><input type="radio" name="card" value="41">신한</label>
+                                    </li>
+                                    <li class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                        <label><input type="radio" name="card" value="11">국민</label>
+                                    </li>
+                                    <li class="rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                        <label><input type="radio" name="card" value="3K">기업</label>
+                                    </li>
+                                    <li class="rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                        <label><input type="radio" name="card" value="15">카카오뱅크</label>
+                                    </li>
+                                    <li class="rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                        <label><input type="radio" name="card" value="31">비씨</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/9394/9394508.png" alt="text">
+                            <input type="text" class="form-input border-2 border-black" name="name"
+                                   placeholder="예금주를 입력해주세요."/>
+                        </div>
+                    </div>
+                    <button type="submit" onclick="processExchange();" class="btn btn-sm"
+                            style="background-color: #FF626F; color: white;">환전
+                    </button>
+                </form>
             </div>
         </div>
     </div>
     <script th:inline="javascript">
-
         var userCoin = [[${member.coin}]];
 
         function formatCurrency(input) {
@@ -65,6 +102,40 @@
             }
             input.value = value.toLocaleString();
         }
+
+        function processExchange() {
+            const moneyInput = document.getElementById("money");
+            let selectedPrice = parseInt(moneyInput.value.replace(/,/g, ""), 10); // formatCurrency에서 숫자만 추출
+
+            if (selectedPrice === 0) {
+                alert("환전 금액을 입력해주세요.");
+                return;
+            }
+
+            if (selectedPrice > userCoin) {
+                alert("현재 가지고 있는 코인보다 높게 입력했습니다.");
+                return;
+            }
+        }
+
+        let dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach((dropdown) => {
+            dropdown.querySelector('button').addEventListener('click', (event) => {
+                event.preventDefault();
+                dropdown.querySelector('.dropdown-menu').classList.toggle('hidden');
+            });
+            document.addEventListener('click', (event) => {
+                if (event.target.closest('.dropdown') !== dropdown) {
+                    dropdown.querySelector('.dropdown-menu').classList.add('hidden');
+                }
+            });
+        });
+
+        let dropdownMenu = document.getElementById('dropdown-menu');
+        dropdownMenu.addEventListener('change', (event) => {
+            let title = document.getElementById('dropdown-title');
+            title.textContent = event.target.value;
+        });
     </script>
 </main>
 
