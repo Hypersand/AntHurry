@@ -5,12 +5,11 @@ import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
 @Getter
-public class EventAfterDeletedChatRoom extends ApplicationEvent {
+public class EventAfterDeletedChatRoom {
 
     private final ChatRoom chatRoom;
 
-    public EventAfterDeletedChatRoom(Object source, ChatRoom chatRoom) {
-        super(source);
+    public EventAfterDeletedChatRoom(ChatRoom chatRoom) {
         this.chatRoom = chatRoom;
     }
 }

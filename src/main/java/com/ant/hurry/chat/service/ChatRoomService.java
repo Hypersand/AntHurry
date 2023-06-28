@@ -111,7 +111,7 @@ public class ChatRoomService {
         deletedChatRoomRepository.insert(deletedChatRoom);
         chatRoomRepository.delete(chatRoom);
 
-        publisher.publishEvent(new EventAfterDeletedChatRoom(this, chatRoom));
+        publisher.publishEvent(new EventAfterDeletedChatRoom(chatRoom));
 
         return RsData.of(CHATROOM_DELETED);
     }
