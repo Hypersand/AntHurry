@@ -38,26 +38,7 @@ public class NotificationController {
 
         model.addAttribute("notificationList", notificationListRsData.getData());
 
-        //레이아웃 확인 데이터 생성
-//        Member member1 = Member.create("test1", "nickname1", "123", "01012345678", "kakao");
-//        Member member2= Member.create("test2", "nickname2", "123", "01034124123", "kakao");
-//        List<Notification> list = Stream.of(
-//                Notification.create("임시테스트1", "START", member1, member2),
-//                Notification.create("임시테스트2", "END", member1, member2),
-//                Notification.create("임시테스트3", "CANCEL", member1, member2),
-//                Notification.create("임시테스트4", "START", member1, member2),
-//                Notification.create("임시테스트5", "END", member1, member2),
-//                Notification.create("임시테스트6", "CANCEL", member1, member2)
-//        ).collect(Collectors.toList());
-
-
-//        model.addAttribute("notificationList", list);
-
         return "notification/list";
     }
-
-
-
-
 
 }
