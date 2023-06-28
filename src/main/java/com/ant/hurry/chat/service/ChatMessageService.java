@@ -36,7 +36,7 @@ public class ChatMessageService {
                 .content(dto.getContent())
                 .build();
         chatMessageRepository.save(message);
-        dto.getChatRoom().setLatestMessage(message);
+        message.getChatRoom().setLatestMessage(message);
         return RsData.of(MESSAGE_SENT, message);
     }
 

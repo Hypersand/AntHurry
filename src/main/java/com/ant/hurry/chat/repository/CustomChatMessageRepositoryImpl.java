@@ -19,6 +19,7 @@ public class CustomChatMessageRepositoryImpl implements CustomChatMessageReposit
     public ChatMessage deleteSoft(ChatMessage chatMessage) {
         Query query = new Query(Criteria.where("_id").is(chatMessage.getId()));
         Update update = new Update().set("deletedAt", LocalDateTime.now());
-        return mongoTemplate.findAndModify(query, update, ChatMessage.class);
+        mongoTemplate.findAndModify(query, update, ChatMessage.class);
+        return mongoTemplate.findOne(query, ChatMessage.class);
     }
 }
