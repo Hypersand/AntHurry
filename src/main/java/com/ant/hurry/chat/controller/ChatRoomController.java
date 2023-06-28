@@ -2,8 +2,8 @@ package com.ant.hurry.chat.controller;
 
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
-import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,6 @@ import java.util.List;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
-    private final TradeStatusService tradeStatusService;
     private final Rq rq;
 
     @GetMapping("/room/{id}")
@@ -33,9 +32,8 @@ public class ChatRoomController {
     }
 
     @GetMapping("/myRooms")
-    public String findAll(Model model) {
-        List<TradeStatus> tradeStatuses = tradeStatusService.findByMember(rq.getMember());
-        List<ChatRoom> chatRooms = chatRoomService.findByTradeStatus(tradeStatuses).getData();
+    public String showMyRooms(Model model) {
+        List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData();
         model.addAttribute("chatRooms", chatRooms);
         return "chat/myRooms";
     }
@@ -47,10 +45,11 @@ public class ChatRoomController {
         return rq.redirectWithMsg("chat/room/%s".formatted(chatRoom.getId()), rs.getMsg());
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteSoft(@PathVariable String id) {
+    @GetMapping("/exit/{id}")
+    public String exit(@PathVariable String id) {
         ChatRoom chatRoom = chatRoomService.findById(id).getData();
-        RsData rs = chatRoomService.delete(chatRoom);
+        Member member = rq.getMember();
+        RsData rs = chatRoomService.exit(chatRoom, member);
         return rq.redirectWithMsg("chat/myRooms", rs.getMsg());
     }
 

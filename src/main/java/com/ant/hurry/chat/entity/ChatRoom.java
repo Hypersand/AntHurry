@@ -36,6 +36,9 @@ public class ChatRoom {
     @ManyToMany
     private List<Member> members;
 
+    @ManyToMany
+    private List<Member> exitedMembers; // member 두 명 모두 extiedMembers에 들어가게 되면 채팅방은 삭제됩니다.
+
     public void setLatestMessage(ChatMessage message) {
         this.latestMessage = message;
     }

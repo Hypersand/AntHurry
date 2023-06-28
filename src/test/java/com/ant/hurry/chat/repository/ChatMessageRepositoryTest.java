@@ -1,5 +1,6 @@
 package com.ant.hurry.chat.repository;
 
+import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.entity.ChatRoom;
@@ -33,7 +34,10 @@ public class ChatMessageRepositoryTest {
     @Test
     @DisplayName("repository를 통해 채팅 메시지를 생성하고 저장합니다.")
     void saveByRepository() {
-        ChatRoom chatRoom = chatRoomService.create(TradeStatus.builder().build()).getData();
+        Member member1 = Member.builder().build();
+        Member member2 = Member.builder().build();
+        ChatRoom chatRoom = chatRoomService
+                .create(TradeStatus.builder().requester(member1).helper(member2).build()).getData();
         ChatMessage chatMessage = ChatMessage.builder().chatRoom(chatRoom).build();
         chatMessageRepository.save(chatMessage);
 
@@ -43,7 +47,10 @@ public class ChatMessageRepositoryTest {
     @Test
     @DisplayName("MongoTemplate을 통해 채팅 메시지를 생성하고 저장합니다.")
     void saveByMongoTemplate() {
-        ChatRoom chatRoom = chatRoomService.create(TradeStatus.builder().build()).getData();
+        Member member1 = Member.builder().build();
+        Member member2 = Member.builder().build();
+        ChatRoom chatRoom = chatRoomService
+                .create(TradeStatus.builder().requester(member1).helper(member2).build()).getData();
         ChatMessage chatMessage = ChatMessage.builder().chatRoom(chatRoom).build();
         mongoTemplate.save(chatMessage);
 
@@ -53,7 +60,10 @@ public class ChatMessageRepositoryTest {
     @Test
     @DisplayName("채팅 메시지를 저장한 후 조회하고, 삭제합니다.")
     void save_find_delete() {
-        ChatRoom chatRoom = chatRoomService.create(TradeStatus.builder().build()).getData();
+        Member member1 = Member.builder().build();
+        Member member2 = Member.builder().build();
+        ChatRoom chatRoom = chatRoomService
+                .create(TradeStatus.builder().requester(member1).helper(member2).build()).getData();
         ChatMessage chatMessage = ChatMessage.builder().chatRoom(chatRoom).build();
         ChatMessage savedChatMessage = chatMessageRepository.save(chatMessage);
 

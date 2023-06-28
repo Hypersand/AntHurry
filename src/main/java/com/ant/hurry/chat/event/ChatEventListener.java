@@ -17,4 +17,5 @@ public class ChatEventListener {
     public void listenEventDeletedChatRoom(EventAfterDeletedChatRoom event) {
         chatMessageService.whenAfterDeletedChatRoom(event.getChatRoom());
     }
+
 }
