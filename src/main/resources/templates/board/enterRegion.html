@@ -47,7 +47,7 @@
                             <span class="card-title" th:text="${board.title}"></span>
                             <span class="text-xs mt-1 ml-auto" th:text="${board.boardType}"></span>
                         </div>
-                        <span class="text-xs mb-1" th:text="${board.member.nickname}"></span>
+                        <span class="text-xs mb-1" th:if="${board.member != null}" th:text="${board.member.nickname}"></span>
                         <div class="flex">
                             <span th:text="${board.rewardCoin}" class="pr-1"></span>
                             <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1490/1490853.png"

@@ -22,6 +22,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -35,8 +36,6 @@ public class BoardControllerTests {
     @Autowired
     private RegionSearchService regionSearchService;
 
-    @Autowired
-    private
 
     @Test
     @DisplayName("게시판 작성 입력 폼")
@@ -175,8 +174,9 @@ public class BoardControllerTests {
 
     @Test
     @DisplayName("해당 지역의 게시판으로 들어가서 게시글 확인")
-    @WithMockUser("user3")
+    @WithUserDetails("user1")
     void checkEnterRegionBoard() throws Exception {
+        regionSearchService.selectPattern();
         //삼산동 게시판으로 들어가서 글 확인
         // WHEN
         ResultActions resultActions = mvc
@@ -187,7 +187,7 @@ public class BoardControllerTests {
 
         resultActions
                 .andExpect(handler().handlerType(BoardController.class))
-                .andExpect(handler().methodName("enterRegionBoard"))
+                .andExpect(handler().methodName("enterRegion"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(view().name("board/enterRegion"))
                 .andExpect(content().string(containsString("휴지좀")))
