@@ -1,0 +1,96 @@
+<html layout:decorate="~{usr/layout/layout.html}">
+
+<head>
+    <title>코인 충전</title>
+</head>
+
+<body>
+<header layout:fragment="header" class="sticky top-0 z-50">
+
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div>
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">코인 충전</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+
+</header>
+
+<main layout:fragment="main" class="flex-grow flex items-center justify-center">
+    <script src="https://js.tosspayments.com/v1"></script>
+    <div class="flex flex-col max-w-2xl mx-auto w-11/12 border-t-4 border-pink-300">
+        <div class="card shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">코인 충전</h2>
+                <div class="mt-4 mb-2 flex flex-col gap-2">
+                    <div>
+                        <i class="fa-solid fa-coins"></i>
+                        충전할 금액을 선택해주세요. (1000원 = 1000coin)
+                    </div>
+                    <div class="flex">
+                        <input type="radio" name="price" aria-label="1000" value="1000" class="btn" >
+                        <input type="radio" name="price" aria-label="5000" value="5000" class="btn" >
+                        <input type="radio" name="price" aria-label="10000" value="10000" class="btn" >
+                        <input type="radio" name="price" aria-label="50000" value="50000" class="btn" >
+                    </div>
+                </div>
+                <button onclick="getPriceAndExecutePayment();" class="btn btn-sm btn-primary">카드결제</button>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        const orderId = /*[[ ${member.id} ]]*/ null;
+        const buyerName = /*[[ ${member.nickname} ]]*/ null;
+
+        function getPriceAndExecutePayment() {
+            const priceInputs = document.getElementsByName("price");
+            let selectedPrice = null;
+            for (let i = 0; i < priceInputs.length; i++) {
+                if (priceInputs[i].checked) {
+                    selectedPrice = parseInt(priceInputs[i].value, 10);
+                    break;
+                }
+            }
+            if (selectedPrice === null) {
+                alert("충전 금액을 선택해주세요.");
+                return;
+            }
+
+            const orderPayPrice = selectedPrice;
+            payment(orderPayPrice);
+        }
+
+        const tossPayments = TossPayments("test_ck_OAQ92ymxN34waMajkEy8ajRKXvdk");
+
+        function payment(orderPayPrice) {
+            const method = "카드";
+
+            const paymentData = {
+                amount: orderPayPrice,
+                orderId: "order__" + orderId+"__" + new Date().getTime(), //임시로 테스트를 위해 주문번호를 랜덤으로 생성
+                orderName: "코인 충전",
+                customerName: buyerName,
+                successUrl: window.location.origin + "/usr/member/"+orderId+"/success",
+                failUrl: window.location.origin + "/usr/member/"+orderId+"/fail",
+            };
+
+            tossPayments.requestPayment(method, paymentData);
+        }
+    </script>
+
+</main>
+
+</body>
+
+</html>
