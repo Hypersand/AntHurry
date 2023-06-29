@@ -169,7 +169,7 @@ public class MemberService {
 
     public RsData canExchange(long money) {
         if(money == 0){
-            return RsData.of(NOT_EXCHANGE);
+            return RsData.of(CANNOT_EXCHANGE);
         }
         Member member = rq.getMember();
         if(member.getCoin() < money){
