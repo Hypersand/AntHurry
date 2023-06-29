@@ -21,7 +21,6 @@ public class CreateRequest {
     private BoardType boardType;
     @NotNull(message = "거래 유형을 선택해주세요.")
     private TradeType tradeType;
-    @NotBlank(message = "주소를 입력해주세요.")
     private String address;
     @NotNull(message = "보상코인을 입력해주세요.")
     private int rewardCoin;

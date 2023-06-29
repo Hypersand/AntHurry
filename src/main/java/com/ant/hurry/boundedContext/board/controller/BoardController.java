@@ -52,6 +52,9 @@ public class BoardController {
             model.addAttribute("bindingResult", bindingResult);
             return "board/create";
         }
+        if (createRequest.getAddress().isBlank()) {
+            return rq.historyBack("주소를 입력해주세요.");
+        }
         RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
         if(checkUserCoin.isFail()){
             return rq.historyBack(checkUserCoin);
@@ -99,7 +102,26 @@ public class BoardController {
         model.addAttribute("tradeTypes", TradeType.values());
 
         return "board/modify";
+    }
 
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify/{id}")
+    public String modify(@PathVariable Long id, @Valid CreateRequest createRequest, BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("bindingResult", bindingResult);
+            return "board/modify";
+        }
+
+        Board board = boardService.findById(id).orElseThrow();
+
+        RsData canModifyBoard = boardService.canModify(rq.getMember(), board);
+        if(canModifyBoard.isFail()){
+            return rq.historyBack(canModifyBoard);
+        }
+
+        RsData<Board> modifyBoard = boardService.modify(board, createRequest);
+
+        return rq.redirectWithMsg("/board/" + id, modifyBoard);
     }
 
 

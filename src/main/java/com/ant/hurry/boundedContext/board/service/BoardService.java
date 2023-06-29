@@ -88,7 +88,7 @@ public class BoardService {
     public RsData<Board> canDelete(Member member, Long id) {
         Board board = findById(id).orElse(null);
         if (board == null) {
-            return RsData.of("F-1", "이미 삭제되었습니다.");
+            return RsData.of("F-1", "없는 게시물입니다..");
         }
         if (!member.equals(board.getMember())) {
             return RsData.of("F-1", "삭제할 권한이 없습니다.");
@@ -121,5 +121,17 @@ public class BoardService {
             return RsData.of("F_B-3", "수정할 권한이 없습니다.");
         }
         return RsData.of("S_B-3", "수정 가능합니다.");
+    }
+
+    public RsData<Board> modify(Board board, CreateRequest createRequest) {
+
+        if (createRequest.getAddress().isBlank()) {
+            board.updateBoard(createRequest);
+        } else {
+            CreateConvertDTO createConvertDTO = addressConvert(createRequest);
+            board.updateBoard(createConvertDTO);
+        }
+
+        return RsData.of("S_B-4", "게시글이 수정되었습니다.");
     }
 }
