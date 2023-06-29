@@ -125,7 +125,8 @@ public class BoardService {
     }
 
     @Transactional
-    public RsData<Board> modify(Board board, CreateRequest createRequest) {
+    public RsData<Board> modify(Board board, CreateRequest createRequest, Member member) {
+        int coin = board.getRewardCoin(); //바뀌기 전
 
         if (createRequest.getAddress().isBlank()) {
             board.updateBoard(createRequest);
@@ -133,6 +134,9 @@ public class BoardService {
             CreateConvertDTO createConvertDTO = addressConvert(createRequest);
             board.updateBoard(createConvertDTO);
         }
+
+        member.increaseCoin(coin);
+        member.decreaseCoin(board.getRewardCoin()); //새 금액으로 차감
 
         return RsData.of("S_B-4", "게시글이 수정되었습니다.");
     }

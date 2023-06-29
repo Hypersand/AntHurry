@@ -10,6 +10,8 @@ import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.ant.hurry.base.region.entity.Region;
 import com.ant.hurry.base.region.service.RegionSearchService;
 import com.ant.hurry.boundedContext.board.service.BoardService;
+import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -119,7 +121,7 @@ public class BoardController {
             return rq.historyBack(canModifyBoard);
         }
 
-        RsData<Board> modifyBoard = boardService.modify(board, createRequest);
+        RsData<Board> modifyBoard = boardService.modify(board, createRequest, rq.getMember());
 
         return rq.redirectWithMsg("/board/" + id, modifyBoard);
     }
