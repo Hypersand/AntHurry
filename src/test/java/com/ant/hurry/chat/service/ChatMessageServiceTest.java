@@ -6,13 +6,12 @@ import com.ant.hurry.chat.dto.ChatMessageDto;
 import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.repository.ChatMessageRepository;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import static com.ant.hurry.chat.code.ChatMessageSuccessCode.MESSAGE_DELETED;
 import static com.ant.hurry.chat.code.ChatMessageSuccessCode.MESSAGE_SENT;
@@ -27,8 +26,7 @@ public class ChatMessageServiceTest {
     @Autowired
     ChatMessageRepository chatMessageRepository;
 
-    @AfterEach
-    @Transactional
+    @BeforeEach
     void refresh() {
         chatMessageRepository.deleteAll();
     }
