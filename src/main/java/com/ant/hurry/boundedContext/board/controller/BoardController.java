@@ -86,7 +86,7 @@ public class BoardController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    public String showModify(@PathVariable Long id, Model model){
+    public String showModify(@PathVariable Long id,  Model model){
         Board board = boardService.findById(id).orElseThrow();
 
         RsData canModifyBoard = boardService.canModify(rq.getMember(), board);
