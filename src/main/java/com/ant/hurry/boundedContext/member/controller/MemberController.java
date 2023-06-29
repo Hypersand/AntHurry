@@ -5,6 +5,7 @@ import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.dto.ProfileRequestDto;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
 import jakarta.validation.Valid;
@@ -40,6 +41,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Controller
@@ -71,7 +73,12 @@ public class MemberController {
         }
         Member member = rq.getMember();
         model.addAttribute("member", member);
-
+        Optional<ProfileImage> profileImage = memberService.findProfileImage(member);
+        if(profileImage.isPresent()){
+            model.addAttribute("profileImage", profileImage.get());
+        }else{
+            model.addAttribute("profileImage", null);
+        }
         return "usr/member/profile";
     }
 
