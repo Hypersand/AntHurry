@@ -52,9 +52,4 @@ public class CoinService {
                 .build();
         coinChargeLogRepository.save(coinChargeLog);
     }
-
-    public List<CoinChargeLog> getCoinList() {
-        Member member = rq.getMember();
-        return coinChargeLogRepository.findByMember(member);
-    }
 }

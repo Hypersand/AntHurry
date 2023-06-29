@@ -129,13 +129,4 @@ public class CoinController {
         coinService.applyExchange(exchangeRequest);
         return rq.redirectWithMsg("/usr/member/profile", "성공");
     }
-
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/list")
-    public String coinList(Model model){
-        List<CoinChargeLog> coinChargeLogs = coinService.getCoinList();
-        model.addAttribute("coinChargeLogs", coinChargeLogs);
-        return "coin/list";
-    }
-
 }
