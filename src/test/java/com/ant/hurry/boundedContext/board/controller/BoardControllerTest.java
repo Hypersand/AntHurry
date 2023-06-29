@@ -1,10 +1,8 @@
 package com.ant.hurry.boundedContext.board.controller;
 
 import com.ant.hurry.base.region.service.RegionSearchService;
-import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.BoardType;
 import com.ant.hurry.boundedContext.board.entity.TradeType;
-import com.ant.hurry.boundedContext.board.service.BoardService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @Transactional
 @ActiveProfiles("test")
-public class BoardControllerTests {
+public class BoardControllerTest {
 
     @Autowired
     private MockMvc mvc;
