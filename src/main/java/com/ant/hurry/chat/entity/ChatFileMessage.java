@@ -13,13 +13,15 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @SuperBuilder
-@Document(collection = "chat_message")
-public class ChatMessage {
+@Document(collection = "chat_image")
+public class ChatFileMessage {
 
     @Id
     private String id;
 
-    private String content;
+    private String uploadFilePath;
+
+    private String uploadFileId;
 
     private ChatRoom chatRoom;
 
@@ -28,19 +30,4 @@ public class ChatMessage {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    private LocalDateTime deletedAt;
-
-    private LocalDateTime readAt;
-
-    public String getChatRoomId() {
-        return chatRoom.getId();
-    }
-
-    public void markAsRead() {
-        readAt = LocalDateTime.now();
-    }
-
-    public boolean isNotRead() {
-        return readAt == null;
-    }
 }

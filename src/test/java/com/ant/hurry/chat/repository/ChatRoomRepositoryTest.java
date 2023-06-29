@@ -3,6 +3,7 @@ package com.ant.hurry.chat.repository;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.chat.entity.ChatRoom;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class ChatRoomRepositoryTest {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @BeforeEach
     @AfterEach
     @Transactional
     void refresh() {
