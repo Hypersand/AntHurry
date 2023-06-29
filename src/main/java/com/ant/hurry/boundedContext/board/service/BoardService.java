@@ -39,9 +39,9 @@ public class BoardService {
         if(ObjectUtils.isEmpty(member)){
             return RsData.of("F-1", "유저정보가 없습니다.");
         }
-//        if(member.getCoin() < rewardCoin){
-//            return RsData.of("F-1", "유저의 코인이 부족합니다.");
-//        }
+        if(member.getCoin() < rewardCoin){
+            return RsData.of("F-1", "유저의 코인이 부족합니다.");
+        }
         member.decreaseCoin(rewardCoin);
         return RsData.of("S-1", "충분한 코인을 가지고있습니다.");
     }
