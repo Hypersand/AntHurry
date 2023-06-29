@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import static jakarta.persistence.FetchType.LAZY;
@@ -25,4 +26,8 @@ public class Exchange  extends BaseEntity {
     private String holderName;
     private long money;
     private boolean status;
+
+    public void acceptExchange(boolean status){
+        this.status = status;
+    }
 }

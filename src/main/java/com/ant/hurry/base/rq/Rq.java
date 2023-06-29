@@ -50,11 +50,11 @@ public class Rq {
         }
     }
 
-//    public boolean isAdmin() {
-//        if (isLogout()) return false;
-//
-//        return getMember().isAdmin();
-//    }
+    public boolean isAdmin() {
+        if (isLogout()) return false;
+
+        return getMember().isAdmin();
+    }
 //
 //    public boolean isRefererAdminPage() {
 //        SavedRequest savedRequest = (SavedRequest) session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
