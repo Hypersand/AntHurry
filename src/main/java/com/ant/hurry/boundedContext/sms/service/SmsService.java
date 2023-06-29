@@ -29,16 +29,16 @@ import java.util.List;
 @Transactional
 public class SmsService {
 
-    @Value("${naver-cloud-sms.serviceId}")
+    @Value("${naver-cloud.serviceId}")
     private String serviceId;
 
-    @Value("${naver-cloud-sms.accessKey}")
+    @Value("${naver-cloud.accessKey}")
     private String accessKey;
 
-    @Value("${naver-cloud-sms.secretKey}")
+    @Value("${naver-cloud.secretKey}")
     private String secretKey;
 
-    @Value("${naver-cloud-sms.senderPhone}")
+    @Value("${naver-cloud.senderPhone}")
     private String senderPhone;
 
 

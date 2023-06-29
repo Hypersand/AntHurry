@@ -53,11 +53,17 @@ spring:
       location: ${custom.dev_fileLocation}
       enabled: true
 
-naver-cloud-sms:
-  accessKey: ${custom.naver-cloud-sms.accessKey}
-  secretKey: ${custom.naver-cloud-sms.secretKey}
-  serviceId: ${custom.naver-cloud-sms.serviceId}
-  senderPhone: ${custom.naver-cloud-sms.senderPhone}
+naver-cloud:
+  accessKey: ${custom.naver-cloud.accessKey}
+  secretKey: ${custom.naver-cloud.secretKey}
+  serviceId: ${custom.naver-cloud.serviceId}
+  senderPhone: ${custom.naver-cloud.senderPhone}
+  s3:
+    bucket: ${custom.naver-cloud.s3.bucket}
+    profileDir: ${custom.naver-cloud.s3.profileDir}
+    endpoint: https://kr.object.ncloudstorage.com
+  region:
+    static: ${custom.naver-cloud.region.static}
 
 logging:
   level:

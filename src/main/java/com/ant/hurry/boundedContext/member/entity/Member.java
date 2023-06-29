@@ -12,7 +12,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -90,6 +89,10 @@ public class Member extends BaseEntity {
     public void updateRating(double rating) {
         this.rating = rating;
         this.reviewCount += 1;
+    }
+
+    public void updateProfile(String nickname) {
+        this.nickname = nickname;
     }
 
 }
