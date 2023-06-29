@@ -35,6 +35,7 @@ public class DataLoader implements CommandLineRunner {
                 .phoneAuth(1)
                 .phoneNumber(phoneNumber)
                 .tmpPhoneNumber(phoneNumber)
+                .coin(10000)
                 .build();
 
         memberRepository.save(admin);
