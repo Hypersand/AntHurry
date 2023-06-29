@@ -84,6 +84,22 @@ public class BoardController {
         return rq.redirectWithMsg("/board/selectRegion", deleteBoard);
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify/{id}")
+    public String showModify(@PathVariable Long id, Model model){
+        Board board = boardService.findById(id).orElseThrow();
+
+        RsData canModifyBoard = boardService.canModify(rq.getMember(), board);
+        if(canModifyBoard.isFail()){
+            return rq.historyBack(canModifyBoard);
+        }
+
+        model.addAttribute("board", board);
+
+        return "board/modify";
+
+    }
+
 
 
     /**

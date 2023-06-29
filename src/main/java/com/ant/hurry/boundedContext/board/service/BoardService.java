@@ -1,14 +1,13 @@
 package com.ant.hurry.boundedContext.board.service;
 
+import com.ant.hurry.base.api.dto.AddressDTO;
 import com.ant.hurry.base.api.dto.KakaoApiResponseDTO;
 import com.ant.hurry.base.api.service.KakaoAddressSearchService;
-import com.ant.hurry.base.region.entity.Region;
 import com.ant.hurry.base.region.repository.RegionRepository;
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.board.dto.CreateConvertDTO;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
-import com.ant.hurry.base.api.dto.AddressDTO;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.entity.BoardType;
 import com.ant.hurry.boundedContext.board.repository.BoardRepository;
@@ -36,7 +35,7 @@ public class BoardService {
 
     public RsData hasEnoughCoin(int rewardCoin) {
         Member member = memberService.findById(rq.getMember().getId()).orElse(null);
-        if(ObjectUtils.isEmpty(member)){
+        if (ObjectUtils.isEmpty(member)) {
             return RsData.of("F-1", "유저정보가 없습니다.");
         }
         if(member.getCoin() < rewardCoin){
@@ -47,7 +46,7 @@ public class BoardService {
     }
 
     @Transactional
-    public RsData<Board> write(Member member, CreateConvertDTO createConvertDTO){
+    public RsData<Board> write(Member member, CreateConvertDTO createConvertDTO) {
         Board board = Board
                 .builder()
                 .boardType(createConvertDTO.getBoardType())
@@ -88,10 +87,10 @@ public class BoardService {
 
     public RsData<Board> canDelete(Member member, Long id) {
         Board board = findById(id).orElse(null);
-        if(board == null) {
+        if (board == null) {
             return RsData.of("F-1", "이미 삭제되었습니다.");
         }
-        if(!member.equals(board.getMember())){
+        if (!member.equals(board.getMember())) {
             return RsData.of("F-1", "삭제할 권한이 없습니다.");
         }
         return RsData.of("S-1", "삭제 가능합니다.");
@@ -105,7 +104,7 @@ public class BoardService {
         return RsData.of("S-1", "게시글이 삭제되었습니다.");
     }
 
-    public Optional<Board> findById(Long id){
+    public Optional<Board> findById(Long id) {
         return boardRepository.findById(id);
     }
 
@@ -115,5 +114,12 @@ public class BoardService {
 
     public List<Board> findByCodeAndBoard(String code, BoardType boardType) {
         return boardRepository.findByRegCodeAndBoardType(code, boardType);
+    }
+
+    public RsData canModify(Member member, Board board) {
+        if (!member.equals(board.getMember())) {
+            return RsData.of("F_B-3", "수정할 권한이 없습니다.");
+        }
+        return RsData.of("S_B-3", "수정 가능합니다.");
     }
 }
