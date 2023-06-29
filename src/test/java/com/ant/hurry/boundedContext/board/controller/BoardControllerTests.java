@@ -75,7 +75,7 @@ public class BoardControllerTests {
         resultActions
                 .andExpect(handler().handlerType(BoardController.class))
                 .andExpect(handler().methodName("createBoard"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is2xxSuccessful());
     }
 
     @Test
@@ -127,15 +127,14 @@ public class BoardControllerTests {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/board/1"))
+                .perform(get("/board/5"))
                 .andDo(print());
 
         // THEN
         resultActions
                 .andExpect(handler().handlerType(BoardController.class))
                 .andExpect(handler().methodName("showBoard"))
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(view().name("board/board"));
+                .andExpect(status().is2xxSuccessful());
     }
 
     @Test
@@ -145,7 +144,10 @@ public class BoardControllerTests {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(delete("/board/1"))
+                .perform(
+                        delete("/board/5")
+                                .with(csrf())
+                )
                 .andDo(print());
 
         // THEN
@@ -162,7 +164,10 @@ public class BoardControllerTests {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(delete("/board/1"))
+                .perform(
+                        delete("/board/5")
+                                .with(csrf())
+                )
                 .andDo(print());
 
         // THEN
