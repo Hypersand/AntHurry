@@ -1,10 +1,152 @@
-<!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{usr/layout/layout.html}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>게시글 수정</title>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
-<body>
 
+<body>
+<header layout:fragment="header">
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">게시글 수정</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle hidden">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main layout:fragment="main">
+    <div class="mb-8 px-5">
+        <form method="POST" th:action onsubmit="Validation__createBoard(this); return false;">
+            <div class="mt-2">
+                <input class="input input-sm w-full" name="title" type="text" placeholder="글 제목" th:value="${board.title}" required><br>
+            </div>
+            <hr class="border my-2">
+            <div class="mt-2">
+                <h2 class="font-black text-sm">게시판 유형</h2>
+            </div>
+            <div class="mt-2">
+                <label class="label cursor-pointer" th:each="type : ${boardTypes}">
+                    <span class="label-text cursor-pointer inline-block text-white px-4 py-2 rounded-full" style="background-color: #FF626F" name="boardType" th:value="${type}" th:text="${type}"></span>
+                    <input type="radio" name="boardType" class="radio checked:bg-red-500" th:value="${type}" th:checked="${type == board.boardType}" />
+                </label>
+            </div>
+            <hr class="border my-2">
+            <div class="mt-2">
+                <h2 class="font-black text-sm">거래 유형</h2>
+            </div>
+            <div class="mt-2">
+                <label class="label cursor-pointer" th:each="type : ${tradeTypes}">
+                    <span class="label-text cursor-pointer inline-block text-white px-4 py-2 rounded-full" style="background-color: #FF626F" name="tradeType" th:value="${type}" th:text="${type}"></span>
+                    <input type="radio" name="tradeType" class="radio checked:bg-red-500" th:value="${type}" th:checked="${type == board.tradeType}" />
+                </label>
+            </div>
+            <hr class="border my-2">
+            <div class="mt-2">
+                <textarea class="textarea textarea-md w-full" name="content" maxlength="30" placeholder="내용을 입력해주세요." th:text="${board.content}" required></textarea><br>
+            </div>
+            <hr class="border my-2">
+            <div class="mt-2">
+                <input class="input input-md w-full placeholder-gray-500 rounded-md py-2 px-3"
+                       type="number"
+                       id="rewardCoin"
+                       name="rewardCoin"
+                       placeholder="거래할 코인을 입력해주세요."
+                       th:value="${board.rewardCoin}"
+                       oninput="validateInput()"
+                       onkeydown="return numberOnly(event)">
+            </div>
+            <hr class="border my-2">
+            <div class="mt-2">
+                <input type="text" class="input w-full" id="address_kakao" name="address"
+                       placeholder="지역은 변경하지 않으면 이전 지역으로 등록됩니다!" readonly><br>
+            </div>
+            <hr class="border my-2">
+            <div class="text-center mt-5">
+                <input type="submit" value="작성" class="btn btn-active" style="background-color: #FF626F">
+            </div>
+        </form>
+    </div>
+
+    <script th:inline="javascript">
+        // 카카오 우편 서비스
+        window.onload = function() {
+            document.getElementById("address_kakao").addEventListener("click", function(){
+
+                new daum.Postcode({
+                    oncomplete: function(data) {
+                        document.getElementById("address_kakao").value = data.address;
+                    }
+                }).open();
+            });
+        }
+
+        function validateInput() {
+            var input = document.getElementById('rewardCoin');
+            if (input.value.startsWith('0')) {
+                input.value = input.value.slice(1);
+            }
+        }
+
+        function numberOnly(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            // 숫자와 특수키(백스페이스, 탭, 엔터 등)만 입력 가능하게 하는 조건
+            if ((charCode >= 48 && charCode <= 57) || (charCode >= 96 && charCode <= 105) || (charCode >= 35 && charCode <= 40) || charCode == 46 || charCode == 8 || charCode == 9 || charCode == 13 || charCode == 16 || charCode == 20)
+                return true;
+            else
+                return false;
+        }
+
+        function Validation__modifyBoard(form) {
+
+            if (form.title.value.trim().length == 0) {
+                toastWarning("제목을 입력해주세요.");
+                form.title.focus();
+                return;
+            }
+
+            const $checkedBoardTypeRadioButton = $(form).find("[name=boardType]:checked");
+
+            if ($checkedBoardTypeRadioButton.length === 0) {
+                toastWarning('게시글 유형을 선택해주세요.');
+                $(form).find("[name=boardType]:first").focus();
+                return;
+            }
+
+            const $checkedTradeTypeRadioButton = $(form).find("[name=tradeType]:checked");
+
+            if ($checkedTradeTypeRadioButton.length === 0) {
+                toastWarning('거래 유형을 선택해주세요.');
+                $(form).find("[name=tradeType]:first").focus();
+                return;
+            }
+
+            if (form.content.value.trim().length == 0) {
+                toastWarning("내용을 입력해주세요.");
+                form.content.focus();
+                return;
+            }
+
+            if (form.rewardCoin.value.trim().length == 0) {
+                toastWarning("보상코인을 입력해주세요.");
+                form.rewardCoin.focus();
+                return;
+            }
+
+
+            form.submit();
+        }
+    </script>
+</main>
 </body>
 </html>

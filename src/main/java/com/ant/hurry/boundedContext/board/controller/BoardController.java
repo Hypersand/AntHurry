@@ -95,6 +95,8 @@ public class BoardController {
         }
 
         model.addAttribute("board", board);
+        model.addAttribute("boardTypes", BoardType.values());
+        model.addAttribute("tradeTypes", TradeType.values());
 
         return "board/modify";
 
