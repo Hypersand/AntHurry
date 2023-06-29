@@ -37,8 +37,8 @@
                             <span class="text-xs text-gray-400 theme-bg inline-block px-1.5 py-0.5 rounded" th:text="'신청날짜: ' + ${#temporals.format(apply.createdAt, 'MM-dd HH:mm')}"></span>
                         </div>
 
-                        <form class="delete-notification-form" th:action th:method="POST">
-                            <button type="submit" class="text-main hover:bg-gray-50 active:bg-gray-100">
+                        <form class="post-adm-form" th:action="@{/adm/complete/{id}(id=${apply.id})}" th:method="POST">
+                            <button type="submit" class="text-main hover:bg-gray-50 active:bg-gray-100" onclick="return confirm('정말로 진행하시겠습니까?')">
                                 <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/5610/5610944.png" alt="text">
                             </button>
                         </form>
