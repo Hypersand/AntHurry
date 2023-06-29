@@ -4,7 +4,7 @@ import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.base.s3.S3ProfileUploader;
 import com.ant.hurry.boundedContext.coin.entity.CoinChargeLog;
-import com.ant.hurry.boundedContext.coin.service.CoinChargeService;
+import com.ant.hurry.boundedContext.coin.service.CoinService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.repository.MemberRepository;
@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Optional;
 
-import static com.ant.hurry.boundedContext.coin.code.ExchangeErrorCode.COIN_NOT_ENOUGH;
+import static com.ant.hurry.boundedContext.coin.code.ExchangeErrorCode.*;
 import static com.ant.hurry.boundedContext.coin.code.ExchangeSuccessCode.COIN_ENOUGH;
 
 @Service
@@ -28,7 +28,7 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
-    private final CoinChargeService coinChargeService;
+    private final CoinService coinService;
     private final Rq rq;
 
     private final S3ProfileUploader profileUploader;
@@ -66,7 +66,7 @@ public class MemberService {
 
     @Transactional
     public long addCoin(Member member, long price, String eventType) {
-        CoinChargeLog coinChargeLog = coinChargeService.addCoin(member, price, eventType);
+        CoinChargeLog coinChargeLog = coinService.addCoin(member, price, eventType);
 
         long newCoin = getCoin(member) + coinChargeLog.getPrice();
         member.setCoin(newCoin);
@@ -168,6 +168,9 @@ public class MemberService {
     }
 
     public RsData canExchange(long money) {
+        if(money == 0){
+            return RsData.of(CANNOT_EXCHANGE);
+        }
         Member member = rq.getMember();
         if(member.getCoin() < money){
             return RsData.of(COIN_NOT_ENOUGH);

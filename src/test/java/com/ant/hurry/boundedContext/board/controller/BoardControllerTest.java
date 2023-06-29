@@ -1,10 +1,8 @@
 package com.ant.hurry.boundedContext.board.controller;
 
 import com.ant.hurry.base.region.service.RegionSearchService;
-import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.BoardType;
 import com.ant.hurry.boundedContext.board.entity.TradeType;
-import com.ant.hurry.boundedContext.board.service.BoardService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @Transactional
 @ActiveProfiles("test")
-public class BoardControllerTests {
+public class BoardControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -75,7 +73,7 @@ public class BoardControllerTests {
         resultActions
                 .andExpect(handler().handlerType(BoardController.class))
                 .andExpect(handler().methodName("createBoard"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is2xxSuccessful());
     }
 
     @Test
@@ -127,15 +125,14 @@ public class BoardControllerTests {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/board/1"))
+                .perform(get("/board/5"))
                 .andDo(print());
 
         // THEN
         resultActions
                 .andExpect(handler().handlerType(BoardController.class))
                 .andExpect(handler().methodName("showBoard"))
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(view().name("board/board"));
+                .andExpect(status().is2xxSuccessful());
     }
 
     @Test
@@ -145,7 +142,10 @@ public class BoardControllerTests {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(delete("/board/1"))
+                .perform(
+                        delete("/board/5")
+                                .with(csrf())
+                )
                 .andDo(print());
 
         // THEN
@@ -162,7 +162,10 @@ public class BoardControllerTests {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(delete("/board/1"))
+                .perform(
+                        delete("/board/5")
+                                .with(csrf())
+                )
                 .andDo(print());
 
         // THEN

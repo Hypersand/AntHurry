@@ -6,12 +6,14 @@ import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.service.ChatRoomService;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,14 +28,16 @@ public class ChatMessageRepositoryTest {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @BeforeEach
     @AfterEach
+    @Transactional
     void refresh() {
         chatMessageRepository.deleteAll();
     }
 
     @Test
     @DisplayName("repository를 통해 채팅 메시지를 생성하고 저장합니다.")
-    void saveByRepository() {
+    void chatMessage_saveChatRoomByRepository() {
         Member member1 = Member.builder().build();
         Member member2 = Member.builder().build();
         ChatRoom chatRoom = chatRoomService
@@ -46,7 +50,7 @@ public class ChatMessageRepositoryTest {
 
     @Test
     @DisplayName("MongoTemplate을 통해 채팅 메시지를 생성하고 저장합니다.")
-    void saveByMongoTemplate() {
+    void chatMessage_saveByMongoTemplate() {
         Member member1 = Member.builder().build();
         Member member2 = Member.builder().build();
         ChatRoom chatRoom = chatRoomService
@@ -59,7 +63,7 @@ public class ChatMessageRepositoryTest {
 
     @Test
     @DisplayName("채팅 메시지를 저장한 후 조회하고, 삭제합니다.")
-    void save_find_delete() {
+    void chatMessage_save_find_delete() {
         Member member1 = Member.builder().build();
         Member member2 = Member.builder().build();
         ChatRoom chatRoom = chatRoomService

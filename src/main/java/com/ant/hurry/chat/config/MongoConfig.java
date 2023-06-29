@@ -38,4 +38,5 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     public MongoTemplate mongoTemplate() {
         return new MongoTemplate(new SimpleMongoClientDatabaseFactory(mongoClient(), getDatabaseName()));
     }
+
 }
