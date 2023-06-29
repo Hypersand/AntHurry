@@ -1,7 +1,6 @@
 package com.ant.hurry.boundedContext.coin.service;
 
 import com.ant.hurry.base.rq.Rq;
-import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.coin.dto.ExchangeRequest;
 import com.ant.hurry.boundedContext.coin.entity.CoinChargeLog;
 import com.ant.hurry.boundedContext.coin.entity.Exchange;
@@ -15,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 
-public class CoinChargeService {
+public class CoinService {
     private final CoinChargeLogRepository coinChargeLogRepository;
     private final Rq rq;
     private final ExchangeRepository exchangeRepository;
