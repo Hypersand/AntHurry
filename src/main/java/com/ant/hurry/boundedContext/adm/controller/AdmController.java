@@ -18,12 +18,12 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/adm")
+@PreAuthorize("hasAuthority('admin')")
 public class AdmController {
 
     private final AdmService admService;
     private final Rq rq;
 
-    @PreAuthorize("isAuthenticated() and hasAuthority('admin')")
     @GetMapping("/list")
     public String showApplyList(Model model){
         List<Exchange> applyList = admService.getApplyList();
@@ -31,7 +31,6 @@ public class AdmController {
         return "adm/home/applyList";
     }
 
-    @PreAuthorize("isAuthenticated() and hasAuthority('admin')")
     @PostMapping("/complete/{id}")
     public String acceptApplication(@PathVariable Long id){
         RsData rsData = admService.accept(id);

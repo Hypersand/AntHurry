@@ -25,6 +25,9 @@ public class Exchange  extends BaseEntity {
     private String accountNumber;
     private String holderName;
     private long money;
-    @Setter
     private boolean status;
+
+    public void acceptExchange(boolean status){
+        this.status = status;
+    }
 }

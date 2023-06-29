@@ -10,7 +10,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
-import static com.ant.hurry.boundedContext.adm.code.AdmErrorCode.APPLY_NO_EXISTS;
+import static com.ant.hurry.boundedContext.adm.code.AdmErrorCode.APPLY_NOT_EXISTS;
 import static com.ant.hurry.boundedContext.adm.code.AdmSuccessCode.ACCEPT_APPLY;
 
 @Service
@@ -28,9 +28,9 @@ public class AdmService {
     public RsData accept(Long id) {
         Exchange apply = exchangeRepository.findById(id).orElse(null);
         if(ObjectUtils.isEmpty(apply)){
-            return RsData.of(APPLY_NO_EXISTS);
+            return RsData.of(APPLY_NOT_EXISTS);
         }
-        apply.setStatus(true);
+        apply.acceptExchange(true);
         return RsData.of(ACCEPT_APPLY);
     }
 }
