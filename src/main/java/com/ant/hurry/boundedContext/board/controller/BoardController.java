@@ -10,6 +10,8 @@ import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.ant.hurry.base.region.entity.Region;
 import com.ant.hurry.base.region.service.RegionSearchService;
 import com.ant.hurry.boundedContext.board.service.BoardService;
+import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -52,6 +54,9 @@ public class BoardController {
             model.addAttribute("bindingResult", bindingResult);
             return "board/create";
         }
+        if (createRequest.getAddress().isBlank()) {
+            return rq.historyBack("주소를 입력해주세요.");
+        }
         RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
         if(checkUserCoin.isFail()){
             return rq.historyBack(checkUserCoin);
@@ -82,6 +87,40 @@ public class BoardController {
         }
         RsData<Board> deleteBoard = boardService.delete(id);
         return rq.redirectWithMsg("/board/selectRegion", deleteBoard);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify/{id}")
+    public String showModify(@PathVariable Long id,  Model model){
+
+        RsData<Board> canModifyBoard = boardService.canModify(rq.getMember(), id);
+        if(canModifyBoard.isFail()){
+            return rq.historyBack(canModifyBoard);
+        }
+
+        model.addAttribute("board", canModifyBoard.getData());
+        model.addAttribute("boardTypes", BoardType.values());
+        model.addAttribute("tradeTypes", TradeType.values());
+
+        return "board/modify";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify/{id}")
+    public String modify(@PathVariable Long id, @Valid CreateRequest createRequest, BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("bindingResult", bindingResult);
+            return "board/modify";
+        }
+
+
+        RsData<Board> modifyBoard = boardService.modify(id, createRequest, rq.getMember());
+        if(modifyBoard.isFail()){
+            return rq.historyBack(modifyBoard);
+        }
+
+
+        return rq.redirectWithMsg("/board/" + id, modifyBoard);
     }
 
 
