@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static com.ant.hurry.boundedContext.coin.code.ExchangeErrorCode.COIN_NOT_ENOUGH;
+import static com.ant.hurry.boundedContext.coin.code.ExchangeSuccessCode.COIN_ENOUGH;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -129,5 +132,13 @@ public class MemberService {
             return RsData.of("F_M-3", "로그인한 회원과 충전할 회원이 일치하지 않습니다.");
         }
         return RsData.of("S_M-3", "충전 가능합니다.");
+    }
+
+    public RsData canExchange(long money) {
+        Member member = rq.getMember();
+        if(member.getCoin() < money){
+            return RsData.of(COIN_NOT_ENOUGH);
+        }
+        return RsData.of(COIN_ENOUGH);
     }
 }
