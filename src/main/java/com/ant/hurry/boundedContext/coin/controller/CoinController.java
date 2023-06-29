@@ -67,7 +67,7 @@ public class CoinController {
             @PathVariable Long id,
             @RequestParam String paymentKey, @RequestParam String orderId, @RequestParam Long amount,
             Model model) throws Exception {
-        System.out.println(paymentKey);
+
         RsData rsData = memberService.checkCanCharge(id, orderId);
 
         if(rsData.isFail()){
