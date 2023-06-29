@@ -89,12 +89,12 @@ public class BoardService {
     public RsData<Board> canDelete(Member member, Long id) {
         Board board = findById(id).orElse(null);
         if (board == null) {
-            return RsData.of("F-1", "없는 게시물입니다..");
+            return RsData.of("F_B-1", "존재하지 않는 게시물입니다.");
         }
         if (!member.equals(board.getMember())) {
-            return RsData.of("F-1", "삭제할 권한이 없습니다.");
+            return RsData.of("F_B-2", "삭제할 권한이 없습니다.");
         }
-        return RsData.of("S-1", "삭제 가능합니다.");
+        return RsData.of("S_B-1", "삭제 가능합니다.");
     }
 
     @Transactional
