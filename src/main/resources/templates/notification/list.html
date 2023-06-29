@@ -25,28 +25,49 @@
     </header>
 
 <main layout:fragment="main">
-    <div class="text-center" style="overflow-y: auto;">
-        <ul class="w-full max-w-lg mx-auto p-4 mb-4 bg-base-100 shadow-md rounded-lg" th:each="notification : ${notificationList}">
-            <li class="flex items-center">
-                <div class="alert"
-                     th:classappend="${notification.type.name() == 'START'} ? 'alert-info' : (${notification.type.name() == 'END'} ? 'alert-success' : 'alert-error')"
-                     style="flex-direction: row; position: relative;">
-                    <form class="delete-notification-form" th:action="@{/notification/delete/{id}(id=${notification.id})}" th:method="DELETE">
-                        <div class="flex items-center" style="position: absolute; top: 0; right: 0;">
-                            <button class="bg-transparent text-white text-xs ml-2"
-                                    style="height: 1.5rem; width: 2rem;">
+    <div class="min-h-screen flex justify-center">
+        <div class="w-full max-w-lg p-4 space-y-4 bg-base-100 rounded-lg shadow-xl">
+            <ul class="space-y-3" th:each="notification : ${notificationList}">
+                <li class="bg-white rounded-lg shadow-lg p-4 border-t-4"
+                    th:classappend="${notification.type.name() == 'START'} ? 'border-blue-500' : (${notification.type.name() == 'END'} ? 'border-green-500' : 'border-red-500')">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-lg font-semibold text-gray-800" th:text="${notification.message}"></p>
+                            <span class="text-xs text-gray-400 theme-bg inline-block px-1.5 py-0.5 rounded" th:text="${#temporals.format(notification.createdAt, 'MM-dd HH:mm')}"></span>
+                        </div>
+
+                        <form class="delete-notification-form" th:action="@{/notification/delete/{id}(id=${notification.id})}" th:method="DELETE">
+                            <button type="submit" class="text-main">
                                 <i class="fas fa-times fa-xl"></i>
                             </button>
-                        </div>
-                    </form>
-                    <div class="flex-grow flex flex-col justify-between">
-                        <p class="text-lg text-white self-start mt-1" th:text="${notification.message}"></p>
+                        </form>
                     </div>
-                    <span class="text-xs text-white justify-self-end" th:text="${#temporals.format(notification.createdAt, 'MM-dd HH:mm')}"></span>
-                </div>
-            </li>
-        </ul>
+                </li>
+            </ul>
+        </div>
     </div>
+<!--    <div class="text-center" style="overflow-y: auto;">-->
+<!--        <ul class="w-full max-w-lg mx-auto p-3 mb-4 bg-base-100 shadow-md rounded-lg" th:each="notification : ${notificationList}">-->
+<!--            <li class="flex items-center">-->
+<!--                <div class="alert py-1 px-2 sm:py-2 sm:px-4"-->
+<!--                     th:classappend="${notification.type.name() == 'START'} ? 'alert-info' : (${notification.type.name() == 'END'} ? 'alert-success' : 'alert-error')"-->
+<!--                     style="flex-direction: row; position: relative;">-->
+<!--                    <form class="delete-notification-form" th:action="@{/notification/delete/{id}(id=${notification.id})}" th:method="DELETE">-->
+<!--                        <div class="flex items-center" style="position: absolute; top: 0; right: 0;">-->
+<!--                            <button class="bg-transparent text-white text-xs ml-2"-->
+<!--                                    style="height: 1.5rem; width: 2rem;">-->
+<!--                                <i class="fas fa-times fa-xl"></i>-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                    <div class="flex-grow flex flex-col justify-between">-->
+<!--                        <p class="text-lg text-white self-start py-1" th:text="${notification.message}"></p>-->
+<!--                    </div>-->
+<!--                    <span class="text-xs text-white align-self-end justify-self-end" th:text="${#temporals.format(notification.createdAt, 'MM-dd HH:mm')}"></span>-->
+<!--                </div>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </div>-->
 </main>
 
 </body>
