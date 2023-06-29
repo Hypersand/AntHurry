@@ -92,11 +92,11 @@ public class NotificationService {
         String message;
 
         if (member.equals(requester)) {
-            message = helper.getNickname() + "님 과의 거래가 파기되었습니다.";
+            message = helper.getNickname() + "님 과의 거래가 취소되었습니다.";
         }
 
         else {
-            message = requester.getNickname() + "님 과의 거래가 파기되었습니다.";
+            message = requester.getNickname() + "님 과의 거래가 취소되었습니다.";
         }
 
         //알림 엔티티 생성
