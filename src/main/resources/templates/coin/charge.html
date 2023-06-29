@@ -81,8 +81,8 @@
                 orderId: "order__" + orderId+"__" + new Date().getTime(), //임시로 테스트를 위해 주문번호를 랜덤으로 생성
                 orderName: "코인 충전",
                 customerName: buyerName,
-                successUrl: window.location.origin + "/usr/member/"+orderId+"/success",
-                failUrl: window.location.origin + "/usr/member/"+orderId+"/fail",
+                successUrl: window.location.origin + "/coin/"+orderId+"/success",
+                failUrl: window.location.origin + "/coin/"+orderId+"/fail",
             };
 
             tossPayments.requestPayment(method, paymentData);
