@@ -24,16 +24,16 @@ import java.util.concurrent.TimeUnit;
 public class PhoneAuthService {
 
 
-    @Value("${naver-cloud-sms.serviceId}")
+    @Value("${naver-cloud.serviceId}")
     private String SERVICE_ID;
 
-    @Value("${naver-cloud-sms.accessKey}")
+    @Value("${naver-cloud.accessKey}")
     private String ACCESS_KEY;
 
-    @Value("${naver-cloud-sms.secretKey}")
+    @Value("${naver-cloud.secretKey}")
     private String SECRET_KEY;
 
-    @Value("${naver-cloud-sms.senderPhone}")
+    @Value("${naver-cloud.senderPhone}")
     private String SENDER_NUMBER;
 
     private final StringRedisTemplate redisTemplate;

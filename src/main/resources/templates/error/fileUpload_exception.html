@@ -1,0 +1,18 @@
+<html layout:decorate="~{common/layout.html}">
+
+<head>
+    <title>파일 용량 초과</title>
+</head>
+
+<body>
+
+<main layout:fragment="main" class="flex-grow flex items-center justify-center">
+    <div class="card glass compact w-full max-w-md py-8 px-6 text-center">
+        <h2 class="text-3xl font-semibold text-red-600">Error: File Size Limit Exceeded!</h2>
+        <p class="mt-4 text-gray-600" th:text="${message}"></p>
+        <a href="/" class="btn btn-primary mt-6">Return Home</a>
+    </div>
+</main>
+</body>
+
+</html>

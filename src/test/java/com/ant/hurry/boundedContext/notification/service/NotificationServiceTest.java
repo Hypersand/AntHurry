@@ -75,10 +75,11 @@ class NotificationServiceTest {
         when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 
         //when
-        notificationService.notifyNew(requester, helper);
+        notification = notificationService.notifyNew(requester, helper);
 
         //then
         verify(publisher, times(1)).publishEvent(any(NotifyNewMessageEvent.class));
+        assertThat(notification.getMessage()).isEqualTo(requester.getNickname() +  "님 과의 채팅이 시작되었습니다.");
     }
 
     @Test
@@ -92,16 +93,17 @@ class NotificationServiceTest {
         when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 
         //when
-        notificationService.notifyEnd(requester, helper);
+        notification = notificationService.notifyEnd(requester, helper);
 
         //then
         verify(publisher, times(1)).publishEvent(any(NotifyEndMessageEvent.class));
+        assertThat(notification.getMessage()).isEqualTo(helper.getNickname() +  "님 과의 거래가 종료되었습니다.");
 
 
     }
 
     @Test
-    @DisplayName("거래를 파기하면 알림 엔티티가 생성되고 알림 이벤트가 발생한다.")
+    @DisplayName("거래를 취소하면 알림 엔티티가 생성되고 알림 이벤트가 발생한다.")
     void notifyCancel() {
 
         //given
@@ -115,6 +117,7 @@ class NotificationServiceTest {
 
         //then
         verify(publisher, times(1)).publishEvent(any(NotifyCancelMessageEvent.class));
+        assertThat(notification.getMessage()).isEqualTo(helper.getNickname() +  "님 과의 거래가 취소되었습니다.");
     }
 
 
