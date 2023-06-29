@@ -1,0 +1,133 @@
+<html layout:decorate="~{usr/layout/layout.html}">
+<head>
+    <title>거래 현황</title>
+</head>
+
+<body>
+<header layout:fragment="header">
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">거래 현황</a>
+        </div>
+        <div class="navbar-end">
+            <div class="dropdown dropdown-bottom dropdown-end">
+                <label tabindex="0" class="btn btn-ghost btn-circle">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </label>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main layout:fragment="main">
+    <nav class="flex justify-center">
+        <div class="grid grid-cols-4 gap-x-4 justify-items-center">
+            <button  id ="BEFORE">거래 전</button>
+            <button id="INPROGRESS">거래 중</button>
+            <button id="COMPLETE">거래 완료</button>
+            <button id="CANCELED">거래 파기</button>
+        </div>
+    </nav>
+
+    <div id="trade-list-container"></div>
+
+    <script>
+        async function fetchData(status) {
+            const apiUrl = `/trade/list/select?status=${status}`;
+            try {
+                const response = await fetch(apiUrl);
+                const json = await response.json();
+                const tradeStatusList = json.tradeStatusList;
+                const statusMsg = json.statusMsg;
+
+                const tradeListElement = document.getElementById('trade-list-container');
+                tradeListElement.innerHTML = '';
+
+                tradeStatusList.forEach(tradeStatus => {
+                    const tradeStatusElement = createTradeStatusElement(tradeStatus, statusMsg);
+                    tradeListElement.appendChild(tradeStatusElement);
+                });
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchData();
+
+        function createTradeStatusElement(tradeStatus, statusMsg) {
+            let tradeStatusElement = document.createElement("div");
+            tradeStatusElement.className = "bg-white rounded-lg overflow-hidden shadow";
+
+            let template = `
+            <div class="px-4 py-3 border-b border-gray-200">
+                <div class="flex items-center justify-between space-x-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <i class="fa-solid fa-user fa-xl bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center"></i>
+                        </div>
+                        <div>
+                            <div class="flex-1 font-bold text-gray-700">큰모래</div>
+                            <div class="py-3">
+                                <div class="text-gray-700">${statusMsg}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <div class="text-gray-400 text-sm mb-2">${tradeStatus.createdAt ? new Date(tradeStatus.createdAt).toLocaleString() : ''}</div>
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <button class="btn btn-error text-white btn-wide" ${tradeStatus.status !== 'COMPLETE' ? 'disabled' : ''}>거래 후기 작성</button>
+                </div>
+            </div>`;
+            tradeStatusElement.innerHTML = template;
+            return tradeStatusElement;
+        }
+
+        function changeActiveButton(buttonId) {
+            // 모든 버튼에서 border-gray-300 클래스 추가하고 border-black 클래스 제거
+            buttons.forEach(status => {
+                const button = document.getElementById(status);
+                button.classList.add('border-gray-300');
+                button.classList.remove('border-black');
+                button.style.borderBottom = "none"; // 변경한 부분
+            });
+
+            // 선택된 버튼에서 border-gray-300 클래스 제거하고 border-black 클래스 추가
+            const activeButton = document.getElementById(buttonId);
+            activeButton.classList.remove('border-gray-300');
+            activeButton.classList.add('border-black');
+            activeButton.style.borderBottom = "3px solid gray"; // 추가한 부분
+        }
+
+        const buttons = ['BEFORE', 'INPROGRESS', 'COMPLETE', 'CANCELED'];
+
+        // 처음 페이지를 로드할 때 기본 데이터 로드
+        fetchData('COMPLETE');
+        changeActiveButton('COMPLETE');
+
+        // #버튼 이벤트 리스너
+        document.addEventListener('DOMContentLoaded', () => {
+            buttons.forEach(status => {
+                const button = document.getElementById(status);
+                button.addEventListener('click', () => {
+                    fetchData(status);
+                    changeActiveButton(status);
+                });
+            });
+        });
+    </script>
+</main>
+
+</body>
+</html>

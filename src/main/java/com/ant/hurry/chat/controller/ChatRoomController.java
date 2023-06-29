@@ -1,10 +1,13 @@
 package com.ant.hurry.chat.controller;
 
-import com.ant.hurry.chat.service.ChatRoomService;
 import com.ant.hurry.base.rq.Rq;
-import com.ant.hurry.chat.entity.ChatRoom;
+import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
-import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
+import com.ant.hurry.chat.entity.ChatMessage;
+import com.ant.hurry.chat.entity.ChatRoom;
+import com.ant.hurry.chat.service.ChatMessageService;
+import com.ant.hurry.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,28 +24,47 @@ import java.util.List;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
-    private final TradeStatusService tradeStatusService;
+    private final ChatMessageService chatMessageService;
     private final Rq rq;
 
     @GetMapping("/room/{id}")
     public String showRoom(@PathVariable String id, Model model) {
-        ChatRoom room = chatRoomService.findById(id);
+        RsData<ChatRoom> rs = chatRoomService.findByIdAndVerify(id, rq.getMember());
+
+        if (rs.getData() == null) {
+            return rq.historyBack(rs.getMsg());
+        }
+
+        ChatRoom room = rs.getData();
+        Member otherMember = room.getMembers().stream().filter(m -> !m.equals(rq.getMember())).findFirst().get();
+        List<ChatMessage> chatMessages = chatMessageService.findByChatRoom(room).getData();
+
+        model.addAttribute("otherMember", otherMember);
+        model.addAttribute("chatMessages", chatMessages);
         model.addAttribute("room", room);
         return "chat/room";
     }
 
     @GetMapping("/myRooms")
-    public String findAll(Model model) {
-        List<TradeStatus> tradeStatuses = tradeStatusService.findByMember(rq.getMember());
-        List<ChatRoom> chatRooms = chatRoomService.findByTradeStatus(tradeStatuses);
+    public String showMyRooms(Model model) {
+        List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData();
         model.addAttribute("chatRooms", chatRooms);
         return "chat/myRooms";
     }
 
     @PostMapping("/create")
     public String create(TradeStatus tradeStatus) {
-        ChatRoom chatRoom = chatRoomService.create(tradeStatus);
-        return "redirect:/room/%d".formatted(chatRoom.getId());
+        RsData<ChatRoom> rs = chatRoomService.create(tradeStatus);
+        ChatRoom chatRoom = rs.getData();
+        return rq.redirectWithMsg("chat/room/%s".formatted(chatRoom.getId()), rs.getMsg());
+    }
+
+    @GetMapping("/exit/{id}")
+    public String exit(@PathVariable String id) {
+        ChatRoom chatRoom = chatRoomService.findByIdAndVerify(id, rq.getMember()).getData();
+        Member member = rq.getMember();
+        RsData rs = chatRoomService.exit(chatRoom, member);
+        return rq.redirectWithMsg("chat/myRooms", rs.getMsg());
     }
 
 }

@@ -1,7 +1,10 @@
 package com.ant.hurry.boundedContext.member.service;
 
+import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.base.s3.S3ProfileUploader;
+import com.ant.hurry.boundedContext.coin.entity.CoinChargeLog;
+import com.ant.hurry.boundedContext.coin.service.CoinChargeService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.repository.MemberRepository;
@@ -10,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -22,6 +25,8 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+    private final CoinChargeService coinChargeService;
+    private final Rq rq;
 
     private final S3ProfileUploader profileUploader;
     private final ProfileImageRepository profileImageRepository;
@@ -44,7 +49,7 @@ public class MemberService {
         Member member = Member
                 .builder()
                 .username(username)
-                .nickname(username.substring(0,19)) //소셜 로그인 초기 닉네임은 username 과 동일
+                .nickname(username.substring(0,17)) //소셜 로그인 초기 닉네임은 username 과 동일
                 .password(passwordEncoder.encode(password))
                 .phoneNumber(phone)
                 .providerTypeCode(providerTypeCode)
@@ -54,6 +59,21 @@ public class MemberService {
 
         Member savedMember = memberRepository.save(member);
         return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
+    }
+
+    @Transactional
+    public long addCoin(Member member, long price, String eventType) {
+        CoinChargeLog coinChargeLog = coinChargeService.addCoin(member, price, eventType);
+
+        long newCoin = getCoin(member) + coinChargeLog.getPrice();
+        member.setCoin(newCoin);
+        memberRepository.save(member);
+
+        return newCoin;
+    }
+
+    public long getCoin(Member member) {
+        return member.getCoin();
     }
 
     public Optional<Member> findByUsername(String username) {
@@ -128,5 +148,19 @@ public class MemberService {
 
     public Optional<ProfileImage> findProfileImage(Member member) {
         return profileImageRepository.findByMember(member);
+    }
+    public Member getMember() {
+        return rq.getMember();
+    }
+
+    public RsData checkCanCharge( Long id, String orderId) {
+        Member member = rq.getMember();
+        Long orderIdInput = Long.parseLong(orderId.split("__")[1]);
+
+        if(id != orderIdInput || member.getId() != id){
+            return RsData.of("F_M-3", "로그인한 회원과 충전할 회원이 일치하지 않습니다.");
+        }
+        return RsData.of("S_M-3", "충전 가능합니다.");
+
     }
 }

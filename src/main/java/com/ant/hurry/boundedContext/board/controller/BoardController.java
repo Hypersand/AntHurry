@@ -49,6 +49,7 @@ public class BoardController {
         model.addAttribute("boardTypes", BoardType.values());
         model.addAttribute("tradeTypes", TradeType.values());
         if (bindingResult.hasErrors()) {
+            model.addAttribute("bindingResult", bindingResult);
             return "board/create";
         }
         RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
@@ -62,12 +63,28 @@ public class BoardController {
 
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public String showBoard(Model model,  @PathVariable("id") Long id) {
-        Board board = boardService.getBoard(id);
+        Board board = boardService.findById(id).orElse(null);
+        if(board == null){
+            return rq.historyBack("존재하지 않는 게시판 입니다.");
+        }
         model.addAttribute("board", board);
         return "/board/board";
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{id}")
+    public String deleteBoard(@PathVariable("id") Long id) {
+        RsData<Board> canDeleteBoard = boardService.canDelete(rq.getMember(), id);
+        if(canDeleteBoard.isFail()){
+            return rq.historyBack(canDeleteBoard);
+        }
+        RsData<Board> deleteBoard = boardService.delete(id);
+        return rq.redirectWithMsg("/board/selectRegion", deleteBoard);
+    }
+
+
 
     /**
      *지역 검색하면 나오는 지역 리스트를 보여준다.
@@ -88,7 +105,14 @@ public class BoardController {
     @GetMapping("/enterRegion")
     public String enterRegion(@RequestParam("code")String code, Model model) {
         Region region = regionService.findByCode(code).orElseThrow();
+
+        List<Board> board1 = boardService.findByCodeAndBoard(code, BoardType.나급해요);
+        List<Board> board2 = boardService.findByCodeAndBoard(code, BoardType.나잘해요);
+
+
         model.addAttribute("region", region);
+        model.addAttribute("board1", board1);
+        model.addAttribute("board2", board2);
         return "board/enterRegion";
     }
 

@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -18,9 +19,12 @@ public class ChatMessage {
     @Id
     private String id;
 
+    @CreatedDate
     private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
+
+    private LocalDateTime readAt;
 
     private String content;
 
@@ -28,4 +32,15 @@ public class ChatMessage {
 
     private Member sender;
 
+    public String getChatRoomId() {
+        return chatRoom.getId();
+    }
+
+    public void markAsRead() {
+        readAt = LocalDateTime.now();
+    }
+
+    public boolean isNotRead() {
+        return readAt == null;
+    }
 }
