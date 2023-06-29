@@ -1,10 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{usr/layout/layout.html}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>환전 신청 목록</title>
 </head>
+
 <body>
+<header layout:fragment="header">
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">환전 신청 목록</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle hidden">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main layout:fragment="main">
+    <div class="min-h-screen flex justify-center">
+        <div class="w-full max-w-lg p-4 space-y-4 bg-base-100 rounded-lg shadow-xl">
+            <ul class="space-y-3" th:each="apply : ${applyList}">
+                <li class="bg-white rounded-lg shadow-lg p-4 border-t-4 border-green-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-lg font-semibold text-gray-800" th:text="'예금주: ' + ${apply.holderName}"></p>
+                            <p class="text-lg font-semibold text-gray-800" th:text="'은행: ' + ${apply.bankType}"></p>
+                            <p class="text-lg font-semibold text-gray-800" th:text="'환전금액: ' + ${apply.money}"></p>
+                            <span class="text-xs text-gray-400 theme-bg inline-block px-1.5 py-0.5 rounded" th:text="'신청날짜: ' + ${#temporals.format(apply.createdAt, 'MM-dd HH:mm')}"></span>
+                        </div>
+
+                        <form class="delete-notification-form" th:action th:method="POST">
+                            <button type="submit" class="text-main hover:bg-gray-50 active:bg-gray-100">
+                                <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/5610/5610944.png" alt="text">
+                            </button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</main>
 
 </body>
+
 </html>

@@ -20,9 +20,9 @@
                             <span>메인</span>
                         </a>
                     </li>
-                    <li th:if="${@rq.getMember().isAdmin()}">
+                    <li th:if="${@rq.isAdmin()}">
                         <a th:href="@{|/adm/list|}">
-                            <span>환전 신청 리스트</span>
+                            <span>환전 신청 목록</span>
                         </a>
                     </li>
                     <li th:if="${@rq.logout}">
