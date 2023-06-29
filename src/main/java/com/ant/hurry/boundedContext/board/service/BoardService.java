@@ -123,6 +123,7 @@ public class BoardService {
         return RsData.of("S_B-3", "수정 가능합니다.");
     }
 
+    @Transactional
     public RsData<Board> modify(Board board, CreateRequest createRequest) {
 
         if (createRequest.getAddress().isBlank()) {
