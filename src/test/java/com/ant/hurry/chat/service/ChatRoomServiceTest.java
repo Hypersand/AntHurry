@@ -7,6 +7,7 @@ import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.repository.ChatRoomRepository;
 import com.ant.hurry.chat.repository.DeletedChatRoomRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class ChatRoomServiceTest {
     @Autowired
     DeletedChatRoomRepository deletedChatRoomRepository;
 
+    @BeforeEach
     @AfterEach
     @Transactional
     void refresh() {

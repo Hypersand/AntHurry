@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum BasicErrorCode implements Code {
 
-    UNAUTHORIZED("F_B-1", "접근 권한이 없습니다.");
+    UNAUTHORIZED("F_C-1", "접근 권한이 없습니다.");
 
     public String code;
     public String message;
