@@ -38,14 +38,16 @@
             <div class="mb-2 text-start">
                 <span style="padding: 0;" th:if="${@rq.getMember() == chatRoom.getTradeStatus().getRequester()}" th:text="|${chatRoom.getTradeStatus().getHelperUsername()} 님|" class="font-black text-lg"></span>
                 <span style="padding: 0;" th:if="${@rq.getMember() == chatRoom.getTradeStatus().getHelper()}" th:text="|${chatRoom.getTradeStatus().getRequesterUsername()} 님|" class="font-black text-lg"></span>
-                <span th:if="${chatRoom.latestMessage.createdAt.isEqual(#dates.createNow())}" th:utext="${#temporals.format(chatRoom.latestMessage.createdAt, 'HH:mm')}" class="ml-2 text-gray-400"></span>
-                <span th:if="${!chatRoom.latestMessage.createdAt.isEqual(#dates.createNow())}" th:utext="${#temporals.format(chatRoom.latestMessage.createdAt, 'MM월 dd일')}" class="ml-2 text-gray-400"></span>
+                <span th:if="${chatRoom.getLatestMessage() != null && #temporals.format(#dates.createNow(), 'MM-dd').equals(#temporals.format(chatRoom.getLatestMessage().getCreatedAt(), 'MM-dd'))}"
+                      th:text="${#temporals.format(chatRoom.getLatestMessage().getCreatedAt(), 'HH:mm')}" class="ml-2 text-gray-400"></span>
+                <span th:if="${chatRoom.getLatestMessage() != null && !(#temporals.format(#dates.createNow(), 'MM-dd').equals(#temporals.format(chatRoom.getLatestMessage().getCreatedAt(), 'MM-dd')))}"
+                      th:text="${#temporals.format(chatRoom.getLatestMessage().getCreatedAt(), 'MM월 dd일')}" class="ml-2 text-gray-400"></span>
             </div>
 
             <p th:if="${chatRoom.getLatestMessage() != null}" th:text="${chatRoom.getLatestMessage().getContent()}" class="text-lg text-start"></p>
             <p th:if="${chatRoom.getLatestMessage() == null}" class="text-lg text-start">채팅을 시작해보세요!</p>
         </div>
-        <div th:if="${@rq.getMember() != chatRoom.getLatestMessage().getSender() && chatRoom.getLatestMessage().isNotRead()}" class="bg-[#ff626f] w-16 text-white font-semibold rounded-xl">new</div>
+        <div th:if="${chatRoom.getLatestMessage() != null && @rq.getMember() != chatRoom.getLatestMessage().getSender() && chatRoom.getLatestMessage().isNotRead()}" class="bg-[#ff626f] w-16 text-white font-semibold rounded-xl">new</div>
     </button>
     </div>
 </main>

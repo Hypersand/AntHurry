@@ -4,6 +4,7 @@ import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
+import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.service.ChatMessageService;
@@ -25,6 +26,7 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
+    private final TradeStatusService tradeStatusService;
     private final Rq rq;
 
     @GetMapping("/room/{id}")
@@ -45,18 +47,19 @@ public class ChatRoomController {
         return "chat/room";
     }
 
+    @PostMapping("/room/{id}")
+    public String create(@PathVariable("id") Long tradeStatusId) {
+        TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId);
+        RsData<ChatRoom> rs = chatRoomService.create(tradeStatus);
+        ChatRoom chatRoom = rs.getData();
+        return rq.redirectWithMsg("chat/room/%s".formatted(chatRoom.getId()), rs.getMsg());
+    }
+
     @GetMapping("/myRooms")
     public String showMyRooms(Model model) {
         List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData();
         model.addAttribute("chatRooms", chatRooms);
         return "chat/myRooms";
-    }
-
-    @PostMapping("/create")
-    public String create(TradeStatus tradeStatus) {
-        RsData<ChatRoom> rs = chatRoomService.create(tradeStatus);
-        ChatRoom chatRoom = rs.getData();
-        return rq.redirectWithMsg("chat/room/%s".formatted(chatRoom.getId()), rs.getMsg());
     }
 
     @GetMapping("/exit/{id}")
