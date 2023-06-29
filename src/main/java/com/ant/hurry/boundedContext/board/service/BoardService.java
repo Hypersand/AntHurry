@@ -38,7 +38,7 @@ public class BoardService {
         if (ObjectUtils.isEmpty(member)) {
             return RsData.of("F-1", "유저정보가 없습니다.");
         }
-        if(member.getCoin() < rewardCoin){
+        if (member.getCoin() < rewardCoin) {
             return RsData.of("F-1", "유저의 코인이 부족합니다.");
         }
         member.decreaseCoin(rewardCoin);
@@ -117,15 +117,27 @@ public class BoardService {
         return boardRepository.findByRegCodeAndBoardType(code, boardType);
     }
 
-    public RsData canModify(Member member, Board board) {
+    public RsData<Board> canModify(Member member, Long id) {
+        Board board = findById(id).orElse(null);
+        if (board == null) {
+            return RsData.of("F_B-1", "존재하지 않는 게시물입니다.");
+        }
+
         if (!member.equals(board.getMember())) {
             return RsData.of("F_B-3", "수정할 권한이 없습니다.");
         }
-        return RsData.of("S_B-3", "수정 가능합니다.");
+        return RsData.of("S_B-3", "수정 가능합니다.", board);
     }
 
     @Transactional
-    public RsData<Board> modify(Board board, CreateRequest createRequest, Member member) {
+    public RsData<Board> modify(Long id, CreateRequest createRequest, Member member) {
+
+        RsData<Board> boardRsData = canModify(member, id);
+        if (boardRsData.isFail()) {
+            return boardRsData;
+        }
+        Board board = boardRsData.getData();
+
         int coin = board.getRewardCoin(); //바뀌기 전
 
         if (createRequest.getAddress().isBlank()) {

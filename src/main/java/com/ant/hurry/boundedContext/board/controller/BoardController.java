@@ -92,14 +92,13 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
     public String showModify(@PathVariable Long id,  Model model){
-        Board board = boardService.findById(id).orElseThrow();
 
-        RsData canModifyBoard = boardService.canModify(rq.getMember(), board);
+        RsData<Board> canModifyBoard = boardService.canModify(rq.getMember(), id);
         if(canModifyBoard.isFail()){
             return rq.historyBack(canModifyBoard);
         }
 
-        model.addAttribute("board", board);
+        model.addAttribute("board", canModifyBoard.getData());
         model.addAttribute("boardTypes", BoardType.values());
         model.addAttribute("tradeTypes", TradeType.values());
 
@@ -114,14 +113,12 @@ public class BoardController {
             return "board/modify";
         }
 
-        Board board = boardService.findById(id).orElseThrow();
 
-        RsData canModifyBoard = boardService.canModify(rq.getMember(), board);
-        if(canModifyBoard.isFail()){
-            return rq.historyBack(canModifyBoard);
+        RsData<Board> modifyBoard = boardService.modify(id, createRequest, rq.getMember());
+        if(modifyBoard.isFail()){
+            return rq.historyBack(modifyBoard);
         }
 
-        RsData<Board> modifyBoard = boardService.modify(board, createRequest, rq.getMember());
 
         return rq.redirectWithMsg("/board/" + id, modifyBoard);
     }
