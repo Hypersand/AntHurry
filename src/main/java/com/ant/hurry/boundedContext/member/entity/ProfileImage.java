@@ -24,7 +24,23 @@ public class ProfileImage {
 
     private String fullPath;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private Member member;
 
+
+    public ProfileImage(String uploadFileName, String storedFileName, String fullPath) {
+        this.uploadFileName = uploadFileName;
+        this.storedFileName = storedFileName;
+        this.fullPath = fullPath;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public void updateProfile(ProfileImage changeProfile) {
+        this.uploadFileName = changeProfile.getUploadFileName();
+        this.storedFileName = changeProfile.getStoredFileName();
+        this.fullPath = changeProfile.getFullPath();
+    }
 }

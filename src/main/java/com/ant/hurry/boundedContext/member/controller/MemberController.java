@@ -4,6 +4,7 @@ import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.dto.ProfileRequestDto;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
 import jakarta.validation.Valid;
@@ -19,10 +20,12 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -135,7 +138,7 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/profile_edit")
     public String updateProfile(@ModelAttribute @Valid ProfileRequestDto profileRequestDto, BindingResult bindingResult,
-                                MultipartFile file) {
+                                MultipartFile file) throws IOException {
         if (bindingResult.hasErrors()) {
             return "/usr/member/profile_edit";
         }

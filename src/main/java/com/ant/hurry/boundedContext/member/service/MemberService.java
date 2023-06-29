@@ -1,8 +1,11 @@
 package com.ant.hurry.boundedContext.member.service;
 
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.base.s3.S3ProfileUploader;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.repository.MemberRepository;
+import com.ant.hurry.boundedContext.member.repository.ProfileImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -18,6 +22,9 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+
+    private final S3ProfileUploader profileUploader;
+    private final ProfileImageRepository profileImageRepository;
 
 
 
@@ -100,7 +107,26 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateProfile(Member member,String nickname, MultipartFile file) {
+    public void updateProfile(Member member,String nickname, MultipartFile file) throws IOException {
         member.updateProfile(nickname);
+        System.out.println(file);
+        if(!file.isEmpty()){
+            //기존에 프로필 이미지가 있으면 기존거 삭제하고 업로드
+            Optional<ProfileImage> findProfileImage = profileImageRepository.findByMember(member);
+            if(findProfileImage.isPresent()){
+                ProfileImage existProfileImage = findProfileImage.get();
+                ProfileImage changeProfile = profileUploader.updateFile(existProfileImage.getStoredFileName(), file);
+                existProfileImage.updateProfile(changeProfile);
+            }
+            else{
+                ProfileImage profileImage = profileUploader.uploadFile(file);
+                profileImage.setMember(member);
+                profileImageRepository.save(profileImage);
+            }
+        }
+    }
+
+    public Optional<ProfileImage> findProfileImage(Member member) {
+        return profileImageRepository.findByMember(member);
     }
 }

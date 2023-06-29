@@ -1,4 +1,4 @@
-package com.ant.hurry;
+package com.ant.hurry.base.s3;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

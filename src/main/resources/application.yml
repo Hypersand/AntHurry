@@ -60,6 +60,7 @@ naver-cloud:
   senderPhone: ${custom.naver-cloud.senderPhone}
   s3:
     bucket: ${custom.naver-cloud.s3.bucket}
+    profileDir: ${custom.naver-cloud.s3.profileDir}
     endpoint: https://kr.object.ncloudstorage.com
   region:
     static: ${custom.naver-cloud.region.static}

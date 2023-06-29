@@ -66,7 +66,7 @@
 
 <main layout:fragment="main">
   <div class="flex-grow flex justify-center align-center">
-    <form th:action th:method="POST" th:object="${profileRequestDto}" id="profileUpdateForm" class="flex flex-col">
+    <form th:action th:method="POST" th:object="${profileRequestDto}" enctype="multipart/form-data" id="profileUpdateForm" class="flex flex-col">
 
       <div class="input-group mt-3">
         <label for="nickname">닉네임</label>
