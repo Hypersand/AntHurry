@@ -114,7 +114,7 @@ public class CoinController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/exchange")
-    public String confirmExchange(Model model, ExchangeRequest exchangeRequest) {
+    public String progressExchange(Model model, ExchangeRequest exchangeRequest) {
         RsData canExchange = memberService.canExchange(exchangeRequest.getMoney());
         if(canExchange.isFail()){
             return rq.redirectWithMsg("/coin/exchange", canExchange);

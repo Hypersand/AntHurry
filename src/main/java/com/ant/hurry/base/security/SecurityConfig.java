@@ -34,7 +34,7 @@ public class SecurityConfig {
                                 logout.logoutUrl("/usr/member/logout")
                 );
 
-        http.addFilterBefore(new PhoneAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(new PhoneAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
 
