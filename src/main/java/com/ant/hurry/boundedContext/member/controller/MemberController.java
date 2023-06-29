@@ -74,11 +74,7 @@ public class MemberController {
         Member member = rq.getMember();
         model.addAttribute("member", member);
         Optional<ProfileImage> profileImage = memberService.findProfileImage(member);
-        if(profileImage.isPresent()){
-            model.addAttribute("profileImage", profileImage.get());
-        }else{
-            model.addAttribute("profileImage", null);
-        }
+        model.addAttribute("profileImage", profileImage.orElse(null));
         return "usr/member/profile";
     }
 
