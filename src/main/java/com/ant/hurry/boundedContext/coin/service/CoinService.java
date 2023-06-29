@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 
@@ -49,5 +51,10 @@ public class CoinService {
                 .eventType("환전")
                 .build();
         coinChargeLogRepository.save(coinChargeLog);
+    }
+
+    public List<CoinChargeLog> getCoinList() {
+        Member member = rq.getMember();
+        return coinChargeLogRepository.findByMember(member);
     }
 }

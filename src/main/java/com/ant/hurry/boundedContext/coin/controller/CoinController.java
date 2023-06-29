@@ -4,6 +4,7 @@ import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.coin.dto.ExchangeRequest;
 import com.ant.hurry.boundedContext.coin.entity.BankType;
+import com.ant.hurry.boundedContext.coin.entity.CoinChargeLog;
 import com.ant.hurry.boundedContext.coin.service.CoinService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
@@ -24,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -126,6 +128,14 @@ public class CoinController {
         }
         coinService.applyExchange(exchangeRequest);
         return rq.redirectWithMsg("/usr/member/profile", "성공");
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/list")
+    public String coinList(Model model){
+        List<CoinChargeLog> coinChargeLogs = coinService.getCoinList();
+        model.addAttribute("coinChargeLogs", coinChargeLogs);
+        return "coin/list";
     }
 
 }
