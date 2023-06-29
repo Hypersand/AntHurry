@@ -82,6 +82,9 @@ public class ChatMessageService {
         if (file.isEmpty()) {
             return RsData.of(FILE_NOT_EXISTS);
         }
+        if(file.getSize() > 10 * 1024 * 1024) {
+            return RsData.of(FILE_TOO_BIG);
+        }
 
         GridFSBucket gridBucket =
                 GridFSBuckets.create(mongoConfig.mongoClient().getDatabase(databaseName));
