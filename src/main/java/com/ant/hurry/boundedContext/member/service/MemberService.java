@@ -134,9 +134,9 @@ public class MemberService {
         return RsData.of("S_M-3", "충전 가능합니다.");
     }
 
-    public RsData canExchange(String money) {
+    public RsData canExchange(long money) {
         Member member = rq.getMember();
-        if(member.getCoin() < Integer.parseInt(money)){
+        if(member.getCoin() < money){
             return RsData.of(COIN_NOT_ENOUGH);
         }
         return RsData.of(COIN_ENOUGH);

@@ -21,4 +21,7 @@ public class CoinChargeLog extends BaseEntity {
     private Member member;
     private long price; // 충전하거나 나중에 환불할때도 사용
     private String eventType;
+
+    @ManyToOne(fetch = LAZY)
+    private Exchange exchange;
 }

@@ -3,6 +3,8 @@ package com.ant.hurry.boundedContext.coin.controller;
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.coin.dto.ExchangeRequest;
+import com.ant.hurry.boundedContext.coin.entity.BankType;
+import com.ant.hurry.boundedContext.coin.service.CoinChargeService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.standard.util.Ut;
@@ -32,6 +34,7 @@ public class CoinController {
     private final Rq rq;
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper;
+    private final CoinChargeService coinChargeService;
 
     @Value("${custom.toss-payments.secretKey}")
     private String SECRET_KEY;
@@ -109,6 +112,7 @@ public class CoinController {
     public String exchangePoint(Model model){
         Member member = memberService.getMember();
         model.addAttribute("member", member);
+        model.addAttribute("bankTypes", BankType.values());
         return "coin/exchange";
     }
 
@@ -116,9 +120,11 @@ public class CoinController {
     @PostMapping("/exchange")
     public String progressExchange(Model model, ExchangeRequest exchangeRequest) {
         RsData canExchange = memberService.canExchange(exchangeRequest.getMoney());
+        model.addAttribute("bankTypes", BankType.values());
         if(canExchange.isFail()){
             return rq.redirectWithMsg("/coin/exchange", canExchange);
         }
+        coinChargeService.applyExchange(exchangeRequest);
         return rq.redirectWithMsg("/usr/member/profile", "성공");
     }
 
