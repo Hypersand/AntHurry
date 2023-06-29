@@ -1,7 +1,6 @@
 package com.ant.hurry.boundedContext.member.controller;
 
 import com.ant.hurry.base.rq.Rq;
-
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.dto.ProfileRequestDto;
 import com.ant.hurry.boundedContext.member.entity.Member;
@@ -15,9 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,17 +25,13 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.ResponseErrorHandler;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.client.ResponseErrorHandler;
-
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,12 +45,6 @@ public class MemberController {
     private final MemberService memberService;
     private final PhoneAuthService phoneAuthService;
     private final Rq rq;
-    private final RestTemplate restTemplate = new RestTemplate();
-    private final ObjectMapper objectMapper;
-
-    @Value("${custom.toss-payments.secretKey}")
-    private String SECRET_KEY;
-
 
     @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
@@ -140,6 +128,7 @@ public class MemberController {
         }
         return ResponseEntity.status(HttpStatus.OK).body("인증 성공");
     }
+
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile_edit")
@@ -236,4 +225,5 @@ public class MemberController {
         return "usr/member/fail";
 
     }
+
 }

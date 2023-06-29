@@ -19,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Optional;
 
+import static com.ant.hurry.boundedContext.coin.code.ExchangeErrorCode.COIN_NOT_ENOUGH;
+import static com.ant.hurry.boundedContext.coin.code.ExchangeSuccessCode.COIN_ENOUGH;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -162,5 +165,13 @@ public class MemberService {
         }
         return RsData.of("S_M-3", "충전 가능합니다.");
 
+    }
+
+    public RsData canExchange(long money) {
+        Member member = rq.getMember();
+        if(member.getCoin() < money){
+            return RsData.of(COIN_NOT_ENOUGH);
+        }
+        return RsData.of(COIN_ENOUGH);
     }
 }
