@@ -2,15 +2,11 @@ package com.ant.hurry.chat.repository;
 
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.chat.entity.ChatRoom;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ChatRoomRepositoryTest {
 
     @Autowired
@@ -27,8 +24,7 @@ public class ChatRoomRepositoryTest {
     private MongoTemplate mongoTemplate;
 
     @BeforeEach
-    @AfterEach
-    @Transactional
+    @AfterAll
     void refresh() {
         chatRoomRepository.deleteAll();
     }
