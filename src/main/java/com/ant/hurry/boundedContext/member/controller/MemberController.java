@@ -165,58 +165,6 @@ public class MemberController {
         return "usr/member/charge";
     }
 
-    @PostConstruct
-    private void init() {
-        restTemplate.setErrorHandler(new ResponseErrorHandler() {
-            @Override
-            public boolean hasError(ClientHttpResponse response) {
-                return false;
-            }
-
-            @Override
-            public void handleError(ClientHttpResponse response) {
-            }
-        });
-    }
-
-
-    @RequestMapping("/{id}/success")
-    public String confirmPayment(
-            @PathVariable Long id,
-            @RequestParam String paymentKey, @RequestParam String orderId, @RequestParam Long amount,
-            Model model) throws Exception {
-
-        RsData rsData = memberService.checkCanCharge(id, orderId);
-
-        if(rsData.isFail()){
-            return rq.redirectWithMsg("/usr/member/charge", rsData);
-        }
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString((SECRET_KEY + ":").getBytes()));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        Map<String, String> payloadMap = new HashMap<>();
-        payloadMap.put("orderId", orderId);
-        payloadMap.put("amount", String.valueOf(amount));
-
-        HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(payloadMap), headers);
-
-        ResponseEntity<JsonNode> responseEntity = restTemplate.postForEntity(
-                "https://api.tosspayments.com/v1/payments/" + paymentKey, request, JsonNode.class);
-
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            JsonNode successNode = responseEntity.getBody();
-            model.addAttribute("orderId", successNode.get("orderId").asText());
-            memberService.addCoin(memberService.getMember(), amount, "코인충전");
-            return "redirect:/usr/member/profile?msg=%s".formatted(Ut.url.encode(rsData.getMsg()));
-        } else {
-            JsonNode failNode = responseEntity.getBody();
-            model.addAttribute("message", failNode.get("message").asText());
-            model.addAttribute("code", failNode.get("code").asText());
-            return "usr/member/fail";
-        }
-    }
 
     @RequestMapping("/{id}/fail")
     public String failPayment(@RequestParam String message, @RequestParam String code, Model model) {
