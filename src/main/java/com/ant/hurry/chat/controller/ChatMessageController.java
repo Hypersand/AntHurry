@@ -14,7 +14,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,7 +48,7 @@ public class ChatMessageController {
         ChatRoom chatRoom = chatRoomService.findById(roomId).getData();
         RsData<ChatFileMessage> rs = chatMessageService.sendFile(file, rq.getMember(), chatRoom);
 
-        if(rs.getData() == null) {
+        if (rs.getData() == null) {
             rq.historyBack(rs.getMsg());
         }
 
@@ -63,7 +62,7 @@ public class ChatMessageController {
             @PathVariable("messageId") String messageId
     ) {
         RsData<ChatFileMessage> findRs = chatMessageService.findFileMessageById(messageId);
-        if(findRs.getData() == null) {
+        if (findRs.getData() == null) {
             return ResponseEntity.notFound().build();
         }
 

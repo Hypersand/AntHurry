@@ -142,7 +142,7 @@ public class ChatMessageService {
             Path filePath = Paths.get(message.getUploadFilePath()).normalize();
             Resource urlResource = new UrlResource(filePath.toUri());
 
-            if (resource.exists()) resource = urlResource;
+            if (urlResource.exists()) resource = urlResource;
         } catch (MalformedURLException e) {
             return RsData.of(URL_MALFORMED);
         }
