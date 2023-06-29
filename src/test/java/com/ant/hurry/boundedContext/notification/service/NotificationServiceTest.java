@@ -1,6 +1,7 @@
 package com.ant.hurry.boundedContext.notification.service;
 
 
+import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.repository.MemberRepository;
@@ -36,19 +37,22 @@ import static org.mockito.Mockito.*;
 class NotificationServiceTest {
 
     @Mock
-    MemberService memberService;
+    private MemberService memberService;
 
     @Mock
-    NotificationRepository notificationRepository;
+    private NotificationRepository notificationRepository;
 
     @Mock
-    ApplicationEventPublisher publisher;
+    private ApplicationEventPublisher publisher;
+
+    @Mock
+    private Rq rq;
 
     @InjectMocks
     private NotificationService notificationService;
 
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     private Member requester;
     private Member helper;
@@ -67,6 +71,7 @@ class NotificationServiceTest {
         //given
         Notification notification = new Notification();
         when(memberService.findByUsername(anyString())).thenReturn(Optional.of(requester));
+        when(rq.getMember()).thenReturn(helper);
         when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 
         //when
@@ -83,6 +88,7 @@ class NotificationServiceTest {
         //given
         Notification notification = new Notification();
         when(memberService.findByUsername(anyString())).thenReturn(Optional.of(requester));
+        when(rq.getMember()).thenReturn(requester);
         when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 
         //when
@@ -101,6 +107,7 @@ class NotificationServiceTest {
         //given
         Notification notification = new Notification();
         when(memberService.findByUsername(anyString())).thenReturn(Optional.of(requester));
+        when(rq.getMember()).thenReturn(requester);
         when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 
         //when
@@ -153,6 +160,23 @@ class NotificationServiceTest {
                 () -> assertThat(rsData.getResultCode()).isEqualTo("S_N-1"),
                 () -> assertThat(rsData.getMsg()).isEqualTo("알림목록페이지로 이동합니다."),
                 () -> assertThat(rsData.getData().get(0).getMessage()).isEqualTo("첫번째알림메시지")
+        );
+    }
+
+    @Test
+    @DisplayName("알림 삭제 요청")
+    void notification_delete() {
+
+        // given
+        when(memberService.findByUsername(anyString())).thenReturn(Optional.of(requester));
+
+        // when
+        RsData<Notification> rsData = notificationService.delete(requester.getId(), requester.getUsername());
+
+        // then
+        assertAll(
+                () -> assertThat(rsData.getResultCode()).isEqualTo("S_N-2"),
+                () -> assertThat(rsData.getMsg()).isEqualTo("성공적으로 알림이 삭제되었습니다.")
         );
     }
 

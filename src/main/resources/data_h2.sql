@@ -5,14 +5,19 @@ INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, prov
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('admin', 'Admin', 'password123', '01056789012', 1, 'kakao', 0, 0, 0);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('KAKAO__2861814792', 'bigsand', 'password12311', '01053833333', 1, 'kakao', 0, 0, 0);
 
-INSERT INTO NOTIFICATION (requester_id, helper_id, message, type) VALUES (1, 2, '채팅시작테스트', 'START');
-INSERT INTO NOTIFICATION (requester_id, helper_id, message, type) VALUES (1, 3, '거래파기테스트', 'CANCEL');
-INSERT INTO NOTIFICATION (requester_id, helper_id, message, type) VALUES (3, 4, '거래완료테스트', 'END');
+INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (1, 2, '채팅시작테스트', 'START', NOW());
+INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (1, 3, '거래파기테스트', 'CANCEL', NOW());
+INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (3, 4, '거래완료테스트', 'END', NOW());
+INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (6, 1, '큰모래님과의 채팅이 시작되었습니다.', 'START', NOW());
+INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (2, 6, '큰모래님과의 거래가 파기되었습니다.', 'CANCEL', NOW());
+INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (6, 3, '큰모래님과의 거래가 완료되었습니다.', 'END', NOW());
 
 INSERT INTO BOARD (title, content, board_type, x, y, reward_coin, reg_code) VALUES ('제목1', '내용1', '나급해요', 123.127, 37.123, 0, 12345678);
 INSERT INTO BOARD (title, content, board_type, x, y, reward_coin, reg_code) VALUES ('제목2', '내용2', '나급해요', 123.127, 37.123, 0, 12345678);
 INSERT INTO BOARD (title, content, board_type, x, y, reward_coin, reg_code) VALUES ('제목3', '내용3', '나급해요', 123.127, 37.123, 0, 12345678);
 INSERT INTO BOARD (title, content, board_type, x, y, reward_coin, reg_code) VALUES ('제목4', '내용4', '나급해요', 123.127, 37.123, 0, 12345678);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type) VALUES
+    (1000, 126.732240699017, 37.5110124805355, '나급해요', 'asdffdasd4', '2823710500', '휴지좀 주세요', '오프라인');
 
 -- INSERT INTO BOARD (title, content, board_type, trade_type, x, y, reward_coin, reg_code, member_id) VALUES ('제목1', '내용1', '나급해요', '온라인' 127.011390388152, 37.5171300437436, 0, '1165010600', 1);
 -- INSERT INTO BOARD (title, content, board_type, trade_type, x, y, reward_coin, reg_code, member_id) VALUES ('제목2', '내용2', '나급해요', '온라인' 127.072375689053, 37.6334020217527, 0, '1135010400', 1);

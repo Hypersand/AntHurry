@@ -84,6 +84,8 @@ public class BoardController {
         return rq.redirectWithMsg("/board/selectRegion", deleteBoard);
     }
 
+
+
     /**
      *지역 검색하면 나오는 지역 리스트를 보여준다.
      **/
@@ -103,7 +105,14 @@ public class BoardController {
     @GetMapping("/enterRegion")
     public String enterRegion(@RequestParam("code")String code, Model model) {
         Region region = regionService.findByCode(code).orElseThrow();
+
+        List<Board> board1 = boardService.findByCodeAndBoard(code, BoardType.나급해요);
+        List<Board> board2 = boardService.findByCodeAndBoard(code, BoardType.나잘해요);
+
+
         model.addAttribute("region", region);
+        model.addAttribute("board1", board1);
+        model.addAttribute("board2", board2);
         return "board/enterRegion";
     }
 
