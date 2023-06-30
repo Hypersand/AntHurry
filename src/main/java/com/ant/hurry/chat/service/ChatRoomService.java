@@ -25,7 +25,6 @@ import static com.ant.hurry.chat.code.ChatRoomSuccessCode.*;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
@@ -61,7 +60,6 @@ public class ChatRoomService {
         return RsData.of(CHATROOM_FOUND, chatRooms);
     }
 
-    @Transactional
     public RsData<ChatRoom> create(TradeStatus tradeStatus) {
         List<Member> members = new ArrayList<>();
         members.add(tradeStatus.getRequester());
@@ -78,7 +76,6 @@ public class ChatRoomService {
         return RsData.of(CHATROOM_CREATED, insertChatRoom);
     }
 
-    @Transactional
     public RsData exit(ChatRoom chatRoom, Member member) {
         List<Member> members = chatRoom.getMembers();
         members.remove(member);
@@ -102,7 +99,6 @@ public class ChatRoomService {
      * 모든 멤버가 채팅방을 나가면 ChatRoom을 삭제하고 DeletedChatRoom으로 변환하여 저장합니다.
      * 이벤트 리스너를 통해 삭제된 채팅방에 대한 채팅 메시지를 soft-delete합니다.
      */
-    @Transactional
     public RsData delete(ChatRoom chatRoom) {
         DeletedChatRoom deletedChatRoom = DeletedChatRoom.builder()
                 .tradeStatus(chatRoom.getTradeStatus())

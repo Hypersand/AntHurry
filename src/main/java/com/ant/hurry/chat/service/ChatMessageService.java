@@ -41,7 +41,6 @@ import static com.ant.hurry.chat.code.ChatMessageSuccessCode.*;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ChatMessageService {
 
     private final ChatMessageRepository chatMessageRepository;
@@ -51,14 +50,12 @@ public class ChatMessageService {
     @Value("${spring.data.mongodb.database}")
     private String databaseName;
 
-    @Transactional(readOnly = true)
     public RsData<ChatFileMessage> findFileMessageById(String id) {
         Optional<ChatFileMessage> message = chatFileMessageRepository.findById(id);
         return message.map(chatFileMessage -> RsData.of(MESSAGE_FOUND, chatFileMessage))
                 .orElseGet(() -> RsData.of(MESSAGE_NOT_EXISTS));
     }
 
-    @Transactional(readOnly = true)
     public RsData<List<ChatMessage>> findByChatRoom(ChatRoom chatRoom) {
         List<ChatMessage> chatMessages = chatMessageRepository.findChatMessageByChatRoom(chatRoom);
         return RsData.of(MESSAGE_FOUND, chatMessages);
