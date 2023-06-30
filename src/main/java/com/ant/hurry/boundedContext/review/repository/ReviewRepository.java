@@ -14,6 +14,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Optional<Review> findByWriterAndTradeStatus(Member writer, TradeStatus tradeStatus);
 
-    @Query("select r from Review r join fetch r.writer w where w = :writer")
-    List<Review> findByWriter(@Param("writer") Member writer);
+    List<Review> findByReceiver(Member receiver);
 }
