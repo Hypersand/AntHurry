@@ -116,9 +116,9 @@ public class CoinController {
     @GetMapping("/exchange")
     public String exchangePoint(Model model){
         Member member = memberService.getMember();
-        List<Exchange> exchangeLists = coinService.getExchangeList(member);
+        List<Exchange> exchangeList = coinService.getExchangeList(member);
         model.addAttribute("member", member);
-        model.addAttribute("exchangeLists", exchangeLists);
+        model.addAttribute("exchangeList", exchangeList);
         model.addAttribute("bankTypes", BankType.values());
         return "coin/exchange";
     }
