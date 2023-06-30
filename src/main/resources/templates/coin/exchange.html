@@ -28,27 +28,27 @@
 </header>
 
 <main layout:fragment="main" class="flex-grow flex items-center justify-center">
-    <script src="https://js.tosspayments.com/v1"></script>
-    <div class="flex flex-col max-w-2xl mx-auto w-11/12 border-t-4 border-pink-300">
-        <div class="card shadow-xl">
-            <div class="card-body">
-                <h2 class="card-title">환전소</h2>
-                <div class="mt-3 flex justify">
-                    <span class="text-base font-black" th:text="${member.nickname} + '님이 현재 가지고 있는 코인 | '"></span>
-                    <span class="text-base pl-2 pr-1" th:text="${member.coin}"></span>
-                    <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1490/1490853.png" alt="text">
-                </div>
-                <form method="POST" th:action onsubmit="Validation__exchange(this); return false;">
-                    <div class="mt-4 mb-2 flex flex-col gap-2">
-                        <div class="mt-3">
-                            <div>
-                                <i class="fa-solid fa-coins"></i>
-                                환전할 금액을 입력해주세요. (1000원 = 1000coin)
-                            </div>
-                            <input type="text" id="money" class="form-input border-2 border-black" name="money"
-                                   placeholder="0"
-                                   onkeyup="formatCurrency(this)"/>
-                            <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1198/1198299.png"
+    <div class="flex flex-col">
+        <div class="flex flex-col max-w-2xl mx-auto w-11/12 border-t-4">
+            <div class="card shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">환전소</h2>
+                    <div class="mt-3 flex justify">
+                        <span class="text-base font-black" th:text="${member.nickname} + '님이 현재 가지고 있는 코인 | '"></span>
+                        <span class="text-base pl-2 pr-1" th:text="${member.coin}"></span>
+                        <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1490/1490853.png" alt="text">
+                    </div>
+                    <form method="POST" th:action onsubmit="Validation__exchange(this); return false;">
+                        <div class="mt-4 mb-2 flex flex-col gap-2">
+                            <div class="mt-3">
+                                <div>
+                                    <i class="fa-solid fa-coins"></i>
+                                    환전할 금액을 입력해주세요. (1000원 = 1000coin)
+                                </div>
+                                <input type="text" id="money" class="form-input border-2 border-black" name="money"
+                                       placeholder="0"
+                                       onkeyup="formatCurrency(this)"/>
+                                <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1198/1198299.png"
                                  alt="text">
                             <div class="dropdown inline-block relative">
                                 <button class="bg-gray-300 text-black font-semibold py-2 px-4 rounded inline-flex items-center">
@@ -69,23 +69,91 @@
                         <div class="mt-3">
 
                             <p>계좌번호를 입력해주세요.</p>
-                            <input type="text" id="accountNumber" class="form-input border-2 border-black" name="accountNumber"
+                            <input type="text" id="accountNumber" class="form-input border-2 border-black"
+                                   name="accountNumber"
                                    placeholder="계좌번호를 입력해주세요." maxlength="20"/>
                         </div>
-                        <div class="mt-3">
-                            <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/9394/9394508.png"
-                                 alt="text">
-                            <input type="text" class="form-input border-2 border-black" name="holderName"
-                                   placeholder="예금주를 입력해주세요."/>
+                            <div class="mt-3">
+                                <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/9394/9394508.png"
+                                     alt="text">
+                                <input type="text" class="form-input border-2 border-black" name="holderName"
+                                       placeholder="예금주를 입력해주세요."/>
+                            </div>
                         </div>
-                    </div>
-                    <button type="submit" onclick="processExchange();" class="btn btn-sm"
-                            style="background-color: #FF626F; color: white;">환전
-                    </button>
-                </form>
+                        <button type="submit" onclick="processExchange();" class="btn btn-sm"
+                                style="background-color: #FF626F; color: white;">환전
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
+        <div class="flex flex-col max-w-2xl mx-auto w-11/12 border-t-4 mt-6">
+            <div class="w-full max-w-lg p-4 space-y-4 bg-base-100 rounded-lg shadow-xl">
+                <h2 class="card-title">환전 신청 목록</h2>
+                <ul class="space-y-3" th:each="exchangeList : ${exchangeLists}">
+                    <li class="bg-white rounded-lg shadow-lg p-4 border-t-4 border-red-500"
+                        th:if="${exchangeList.status == false}">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-lg font-semibold text-gray-800" th:text="'환전 금액 : ' + ${exchangeList.money}"></p>
+                                <span class="text-xs text-gray-400 theme-bg inline-block px-1.5 py-0.5 rounded"
+                                      th:text="'신청일자 : ' + ${#temporals.format(exchangeList.createdAt, 'MM-dd HH:mm')}"></span>
+                            </div>
+                            <div class="flex space-x-2 justify-end">
+                                <form class="delete-notification-form" th:action th:method="PATCH">
+                                    <button type="submit" class="text-main">
+                                        수정
+                                    </button>
+                                </form>
+                                <form class="delete-notification-form" th:action th:method="DELETE">
+                                    <button type="submit" class="text-main">
+                                        삭제
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="bg-white rounded-lg shadow-lg p-4 border-t-4 border-blue-500"
+                        th:if="${exchangeList.status == true}">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-lg font-semibold text-gray-800" th:text="${exchangeList.money}"></p>
+                                <span class="text-xs text-gray-400 theme-bg inline-block px-1.5 py-0.5 rounded"
+                                      th:text="'수락일자 : ' + ${#temporals.format(exchangeList.updateddAt, 'MM-dd HH:mm')}"></span>
+                            </div>
+
+                            <form class="delete-notification-form" th:action th:method="DELETE">
+                                <button type="submit" class="text-main">
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!--            <div class="card shadow-xl">-->
+            <!--                <div class="card-body">-->
+            <!--                    <h2 class="card-title">환전 현황 목록</h2>-->
+            <!--                    <div class="mt-3 flex justify">-->
+            <!--                        <span class="text-base font-black" th:text="${member.nickname} + '님이 현재 가지고 있는 코인 | '"></span>-->
+            <!--                        <span class="text-base pl-2 pr-1" th:text="${member.coin}"></span>-->
+            <!--                        <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1490/1490853.png" alt="text">-->
+            <!--                    </div>-->
+            <!--                    <div class="mt-4 mb-2 flex flex-col gap-2">-->
+            <!--                        <div class="mt-3">-->
+            <!--                            <div>-->
+            <!--                                <i class="fa-solid fa-coins"></i>-->
+            <!--                                환전할 금액을 입력해주세요. (1000원 = 1000coin)-->
+            <!--                            </div>-->
+            <!--                            <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1198/1198299.png"-->
+            <!--                                 alt="text">-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+
+            <!--                </div>-->
+            <!--            </div>-->
+        </div>
     </div>
+
     <script th:inline="javascript">
         var userCoin = [[${member.coin}]];
 

@@ -5,6 +5,7 @@ import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.coin.dto.ExchangeRequest;
 import com.ant.hurry.boundedContext.coin.entity.BankType;
 import com.ant.hurry.boundedContext.coin.entity.CoinChargeLog;
+import com.ant.hurry.boundedContext.coin.entity.Exchange;
 import com.ant.hurry.boundedContext.coin.service.CoinService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
@@ -113,7 +114,9 @@ public class CoinController {
     @GetMapping("/exchange")
     public String exchangePoint(Model model){
         Member member = memberService.getMember();
+        List<Exchange> exchangeLists = coinService.getExchangeList(member);
         model.addAttribute("member", member);
+        model.addAttribute("exchangeLists", exchangeLists);
         model.addAttribute("bankTypes", BankType.values());
         return "coin/exchange";
     }

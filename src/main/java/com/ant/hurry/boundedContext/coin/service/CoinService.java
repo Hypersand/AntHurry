@@ -44,12 +44,9 @@ public class CoinService {
                 .money(exchangeRequest.getMoney())
                 .build();
         exchangeRepository.save(exchange);
+    }
 
-        CoinChargeLog coinChargeLog = CoinChargeLog.builder()
-                .member(member)
-                .price(exchangeRequest.getMoney())
-                .eventType("환전")
-                .build();
-        coinChargeLogRepository.save(coinChargeLog);
+    public List<Exchange> getExchangeList(Member member) {
+        return exchangeRepository.findByMember(member);
     }
 }
