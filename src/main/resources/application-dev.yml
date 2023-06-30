@@ -1,7 +1,7 @@
-#spring:
-#  jpa:
-#    defer-datasource-initialization: true
-#  sql:
-#    init:
-#      data-locations: classpath:data_mysql.sql
-#      mode: always
+spring:
+  jpa:
+    defer-datasource-initialization: true
+  sql:
+    init:
+      data-locations: classpath:data_h2.sql
+      mode: always

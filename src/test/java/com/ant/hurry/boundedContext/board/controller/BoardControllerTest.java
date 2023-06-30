@@ -54,7 +54,7 @@ public class BoardControllerTest {
 
     @Test
     @DisplayName("게시판 작성 완료")
-    @WithMockUser("user3")
+    @WithMockUser("user1")
     void shouldCreateBoard() throws Exception {
         regionSearchService.selectPattern();
         // WHEN
@@ -65,7 +65,7 @@ public class BoardControllerTest {
                         .param("content", "게시판 내용입니다.")
                         .param("boardType", String.valueOf(BoardType.나잘해요))
                         .param("tradeType", String.valueOf(TradeType.온라인))
-                        .param("address", "")
+                        .param("address", "서울 성동구 마조로 42")
                         .param("rewardCoin", "100"))
                 .andDo(print());
 
@@ -73,7 +73,7 @@ public class BoardControllerTest {
         resultActions
                 .andExpect(handler().handlerType(BoardController.class))
                 .andExpect(handler().methodName("createBoard"))
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test

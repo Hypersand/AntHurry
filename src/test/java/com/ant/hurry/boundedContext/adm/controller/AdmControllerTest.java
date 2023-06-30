@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -65,7 +66,8 @@ public class AdmControllerTest {
     void shouldAcceptApply() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/adm/complete/1"))
+                .perform(post("/adm/complete/1")
+                        .with(csrf()))
                 .andDo(print());
 
         // THEN
@@ -81,7 +83,8 @@ public class AdmControllerTest {
     void shouldFailAcceptApplyDueToNotAdmin() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/adm/complete/1"))
+                .perform(post("/adm/complete/1")
+                        .with(csrf()))
                 .andDo(print());
 
         // THEN
@@ -97,7 +100,8 @@ public class AdmControllerTest {
     void shouldFailAcceptApplyDueToNotExistsApply() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/adm/complete/3"))
+                .perform(post("/adm/complete/5")
+                        .with(csrf()))
                 .andDo(print());
 
         // THEN

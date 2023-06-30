@@ -4,6 +4,8 @@ import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.coin.dto.ExchangeRequest;
 import com.ant.hurry.boundedContext.coin.entity.BankType;
+import com.ant.hurry.boundedContext.coin.entity.CoinChargeLog;
+import com.ant.hurry.boundedContext.coin.entity.Exchange;
 import com.ant.hurry.boundedContext.coin.service.CoinService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
@@ -12,6 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
@@ -24,8 +27,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/coin")
@@ -111,7 +116,9 @@ public class CoinController {
     @GetMapping("/exchange")
     public String exchangePoint(Model model){
         Member member = memberService.getMember();
+        List<Exchange> exchangeList = coinService.getExchangeList(member);
         model.addAttribute("member", member);
+        model.addAttribute("exchangeList", exchangeList);
         model.addAttribute("bankTypes", BankType.values());
         return "coin/exchange";
     }
@@ -124,8 +131,47 @@ public class CoinController {
         if(canExchange.isFail()){
             return rq.historyBack(canExchange);
         }
-        coinService.applyExchange(exchangeRequest);
-        return rq.redirectWithMsg("/usr/member/profile", "성공");
+        RsData rsData = coinService.applyExchange(exchangeRequest);
+        return rq.redirectWithMsg("/coin/exchange", rsData.getMsg());
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/exchange/{exchangeId}")
+    public String editApplyExchange(Model model, ExchangeRequest exchangeRequest, @PathVariable Long exchangeId) {
+        RsData canExchange = memberService.canExchange(exchangeRequest.getMoney());
+        model.addAttribute("bankTypes", BankType.values());
+        if(canExchange.isFail()){
+            return rq.historyBack(canExchange);
+        }
+        RsData rsData = coinService.modifyApplyExchange(exchangeRequest, exchangeId);
+        if(rsData.isFail()){
+            return rq.historyBack(rsData);
+        }
+
+        return rq.redirectWithMsg("/coin/exchange", rsData.getMsg());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/exchange/{exchangeId}")
+    public String cancelApplyExchange(Model model, @PathVariable Long exchangeId) {
+        RsData canCancelExchange = coinService.canCancelExchange(exchangeId);
+        model.addAttribute("bankTypes", BankType.values());
+        if(canCancelExchange.isFail()){
+            return rq.historyBack(canCancelExchange);
+        }
+        RsData rsData = coinService.cancelExchange((Exchange) canCancelExchange.getData());
+        return rq.redirectWithMsg("/coin/exchange", rsData.getMsg());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/exchange/info/{exchangeId}")
+    public String deleteApplyExchange(Model model, @PathVariable Long exchangeId) {
+        RsData canCancelExchange = coinService.canCancelExchange(exchangeId);
+        model.addAttribute("bankTypes", BankType.values());
+        if(canCancelExchange.isFail()){
+            return rq.historyBack(canCancelExchange);
+        }
+        RsData rsData = coinService.deleteExchangeInfo((Exchange) canCancelExchange.getData());
+        return rq.redirectWithMsg("/coin/exchange", rsData.getMsg());
+    }
 }
