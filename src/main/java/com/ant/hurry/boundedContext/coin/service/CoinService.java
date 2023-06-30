@@ -16,6 +16,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.List;
 
 import static com.ant.hurry.boundedContext.adm.code.AdmErrorCode.APPLY_NOT_EXISTS;
+import static com.ant.hurry.boundedContext.coin.code.ExchangeErrorCode.NOT_EXISTS_APPLY_EXCHANGE;
 import static com.ant.hurry.boundedContext.coin.code.ExchangeSuccessCode.*;
 
 @Service
