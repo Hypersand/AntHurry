@@ -48,21 +48,41 @@
   </header>
 
   <main layout:fragment="main">
-    <div class="flex-grow flex justify-center align-center">
-      <form id="profileUpdateForm" class="flex flex-col">
-        <div class="input-group mt-3">
-          <label for="phoneNumber">전화번호</label>
-          <input type="tel" id="phoneNumber" name="phoneNumber" value="" class="mx-1"placeholder="전화번호를 입력해주세요." />
-          <button type="button" id="phoneAuthButton">인증번호 전송</button>
+    <div class="flex-grow flex justify-center items-center align-center">
+      <div class="card  compact w-full max-w-md py-8 px-6">
+        <h2 class="text-3xl font-semibold text-center">휴대폰 인증</h2>
+
+        <div class="form-control mt-8">
+          <label class="label" for="phoneNumber">
+            <span class="label-text">전화번호</span>
+          </label>
+          <div class="input-group">
+            <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="'-' 를 제외한 전화번호를 입력해주세요" class="input input-bordered w-full">
+            <button id="phoneAuthButton" class="btn btn-neutral">전송</button>
+          </div>
         </div>
-        <div class="input-group mt-3">
-          <label for="checkNumber">인증번호</label>
-          <input type="tel" id="checkNumber" name="checkNumber" value="" class="mx-1"placeholder="인증번호를 입력해주세요." />
-          <button type="button" id="checkAuthCode">인증번호 확인</button>
+
+        <div class="form-control mt-4">
+          <label class="label" for="checkNumber">
+            <span class="label-text">인증번호</span>
+          </label>
+          <div class="input-group">
+            <input type="text" id="checkNumber" name="checkNumber" placeholder="인증번호를 입력해주세요." class="input input-bordered w-full">
+            <button class="btn btn-active btn-neutral" id="checkAuthCode">인증</button>
+          </div>
         </div>
-        <div id="timerDisplay" class="flex-center">03:00</div>
-        <button type="button" class="mt-3" id="certBtn" value="인증완료">인증완료</button>
-      </form>
+
+        <div class="form-control mt-4">
+          <label class="label">
+            <span class="label-text">Remaining Time</span>
+          </label>
+          <div class="input-group">
+            <span id="timerDisplay" class="input input-bordered w-full">03:00</span>
+          </div>
+        </div>
+
+        <button class="btn btn- mt-6" id="certBtn">인증완료</button>
+      </div>
     </div>
 
     <script>
@@ -83,6 +103,13 @@
         $('#phoneAuthButton').click( function(e) {
           e.preventDefault();
           var phoneNumber = $("#phoneNumber").val();
+
+          // 입력된 전화번호가 비어 있거나 형식에 맞지 않는 경우
+          var phoneRegEx = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/; // 수정: 전화번호 형식 정규 표현식
+          if (!phoneNumber || !phoneRegEx.test(phoneNumber)) {
+            alert('유효한 전화번호를 입력하세요.');
+            return; // 중요: 유효하지 않은 전화번호를 입력한 경우 요청을 중단합니다.
+          }
 
           $.ajax({
             url: '/usr/member/phoneAuth/send',
