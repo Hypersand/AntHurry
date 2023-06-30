@@ -7,8 +7,10 @@ import com.ant.hurry.chat.dto.ChatMessageDto;
 import com.ant.hurry.chat.entity.ChatFileMessage;
 import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.entity.ChatRoom;
+import com.ant.hurry.chat.entity.LatestMessage;
 import com.ant.hurry.chat.repository.ChatFileMessageRepository;
 import com.ant.hurry.chat.repository.ChatMessageRepository;
+import com.ant.hurry.chat.repository.LatestMessageRepository;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
 import com.mongodb.client.gridfs.GridFSDownloadStream;
@@ -19,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -45,8 +46,9 @@ public class ChatMessageService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final ChatFileMessageRepository chatFileMessageRepository;
+    private final LatestMessageRepository latestMessageRepository;
+    private final LatestMessageService latestMessageService;
     private final MongoConfig mongoConfig;
-    private final ResourceLoader resourceLoader;
 
     @Value("${spring.data.mongodb.database}")
     private String databaseName;
@@ -71,7 +73,15 @@ public class ChatMessageService {
                 .content(dto.getContent())
                 .build();
         chatMessageRepository.save(message);
-        message.getChatRoom().setLatestMessage(message);
+
+        LatestMessage latestMessage = latestMessageService.findByChatRoom(dto.getChatRoom()).getData();
+        LatestMessage updateLatestMessage = latestMessage.toBuilder()
+                .message(message)
+                .fileMessage(null)
+                .createdAt(LocalDateTime.now())
+                .build();
+        latestMessageRepository.save(updateLatestMessage);
+
         return RsData.of(MESSAGE_SENT, message);
     }
 
@@ -80,7 +90,7 @@ public class ChatMessageService {
         if (file.isEmpty()) {
             return RsData.of(FILE_NOT_EXISTS);
         }
-        if(file.getSize() > 10 * 1024 * 1024) {
+        if (file.getSize() > 10 * 1024 * 1024) {
             return RsData.of(FILE_TOO_BIG);
         }
 
@@ -105,6 +115,14 @@ public class ChatMessageService {
                 .createdAt(LocalDateTime.now())
                 .build();
         chatFileMessageRepository.insert(chatFileMessage);
+
+        LatestMessage latestMessage = latestMessageService.findByChatRoom(chatRoom).getData();
+        LatestMessage updateLatestMessage = latestMessage.toBuilder()
+                .message(null)
+                .fileMessage(chatFileMessage)
+                .createdAt(LocalDateTime.now())
+                .build();
+        latestMessageRepository.save(updateLatestMessage);
 
         return RsData.of(MESSAGE_SENT, chatFileMessage);
     }
@@ -139,7 +157,7 @@ public class ChatMessageService {
 
         GridFSFile file = gridBucket.find(Filters.eq("_id", new ObjectId(fileId))).first();
 
-        if(file == null) {
+        if (file == null) {
             return ResponseEntity.notFound().build();
         }
 

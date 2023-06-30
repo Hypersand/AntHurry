@@ -8,6 +8,7 @@ import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.repository.ChatFileMessageRepository;
 import com.ant.hurry.chat.repository.ChatMessageRepository;
+import com.ant.hurry.chat.repository.LatestMessageRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -35,6 +36,8 @@ public class ChatMessageServiceTest {
     ChatMessageRepository chatMessageRepository;
     @Autowired
     ChatFileMessageRepository chatFileMessageRepository;
+    @Autowired
+    LatestMessageRepository latestMessageRepository;
 
     private Member member;
     private ChatRoom chatRoom;
@@ -58,10 +61,12 @@ public class ChatMessageServiceTest {
         );
     }
 
-    @AfterEach
+    @BeforeEach
+    @AfterAll
     void refresh() {
         chatMessageRepository.deleteAll();
         chatFileMessageRepository.deleteAll();
+        latestMessageRepository.deleteAll();
     }
 
     @Test
@@ -70,7 +75,7 @@ public class ChatMessageServiceTest {
         RsData<ChatMessage> rs = chatMessageService.send(dto);
         assertThat(rs.getResultCode()).isEqualTo(MESSAGE_SENT.getCode());
         assertThat(chatMessageRepository.findAll()).hasSize(1);
-        assertThat(chatRoom.getLatestMessage().getContent()).isEqualTo("안녕하세요.");
+        assertThat(latestMessageRepository.findAll()).hasSize(1);
     }
 
     @Test
@@ -88,6 +93,7 @@ public class ChatMessageServiceTest {
     void chatFileMessage_sendFile() throws IOException {
         RsData<ChatFileMessage> rs = chatMessageService.sendFile(file, member, chatRoom);
         assertThat(rs.getResultCode()).isEqualTo(MESSAGE_SENT.getCode());
+        assertThat(latestMessageRepository.findAll()).hasSize(1);
 
         String fileId = rs.getData().getUploadFileId();
         ChatFileMessage savedMessage = chatFileMessageRepository.findByUploadFileId(fileId).orElse(null);

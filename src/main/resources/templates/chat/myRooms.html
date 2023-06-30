@@ -29,26 +29,39 @@
 </header>
 
 <main layout:fragment="main" class="flex-grow flex flex-col items-center justify-center w-screen p-4">
-    <div th:if="${#lists.isEmpty(chatRooms)}" class="text-lg text-gray-400 pt-12">
+    <div th:if="${#lists.isEmpty(latestMessages)}" class="text-lg text-gray-400 pt-12">
         채팅 중인 대화방이 없습니다.<i class="fa-regular fa-face-sad-tear ml-2"></i>
     </div>
-    <div th:if="${!#lists.isEmpty(chatRooms)}">
-    <button th:each="chatRoom : ${chatRooms}" class="hover:bg-gray-50 active:bg-gray-100 border-2 border-solid border-gray-100 rounded-lg w-screen px-8 py-6 mb-6 flex justify-between items-center">
-        <div>
-            <div class="mb-2 text-start">
-                <span style="padding: 0;" th:if="${@rq.getMember() == chatRoom.getTradeStatus().getRequester()}" th:text="|${chatRoom.getTradeStatus().getHelperUsername()} 님|" class="font-black text-lg"></span>
-                <span style="padding: 0;" th:if="${@rq.getMember() == chatRoom.getTradeStatus().getHelper()}" th:text="|${chatRoom.getTradeStatus().getRequesterUsername()} 님|" class="font-black text-lg"></span>
-                <span th:if="${chatRoom.getLatestMessage() != null && #temporals.format(#dates.createNow(), 'MM-dd').equals(#temporals.format(chatRoom.getLatestMessage().getCreatedAt(), 'MM-dd'))}"
-                      th:text="${#temporals.format(chatRoom.getLatestMessage().getCreatedAt(), 'HH:mm')}" class="ml-2 text-gray-400"></span>
-                <span th:if="${chatRoom.getLatestMessage() != null && !(#temporals.format(#dates.createNow(), 'MM-dd').equals(#temporals.format(chatRoom.getLatestMessage().getCreatedAt(), 'MM-dd')))}"
-                      th:text="${#temporals.format(chatRoom.getLatestMessage().getCreatedAt(), 'MM월 dd일')}" class="ml-2 text-gray-400"></span>
-            </div>
+    <div th:if="${!#lists.isEmpty(latestMessages)}">
+        <button th:each="message : ${latestMessages}"
+                class="hover:bg-gray-50 active:bg-gray-100 border-2 border-solid border-gray-100 rounded-lg w-screen px-8 py-6 mb-6 flex justify-between items-center">
+            <div>
+                <div class="mb-2 text-start">
+                    <span style="padding: 0;" th:if="${@rq.getMember() == message.chatRoom.members.get(0)}"
+                          th:text="|${message.chatRoom.members.get(1)} 님|"
+                          class="font-black text-lg"></span>
+                    <span style="padding: 0;"
+                          th:if="${@rq.getMember() == message.chatRoom.members.get(1)}"
+                          th:text="|${message.chatRoom.members.get(0)} 님|"
+                          class="font-black text-lg"></span>
+                    <span th:if="${#temporals.format(#dates.createNow(), 'MM-dd').equals(#temporals.format(message.createdAt, 'MM-dd'))}"
+                          th:text="${#temporals.format(message.createdAt, 'HH:mm')}" class="ml-2 text-gray-400"></span>
+                    <span th:if="${!(#temporals.format(#dates.createNow(), 'MM-dd').equals(#temporals.format(message.createdAt, 'MM-dd')))}"
+                          th:text="${#temporals.format(message.createdAt, 'MM월 dd일')}"
+                          class="ml-2 text-gray-400"></span>
+                </div>
 
-            <p th:if="${chatRoom.getLatestMessage() != null}" th:text="${chatRoom.getLatestMessage().getContent()}" class="text-lg text-start"></p>
-            <p th:if="${chatRoom.getLatestMessage() == null}" class="text-lg text-start">채팅을 시작해보세요!</p>
-        </div>
-        <div th:if="${chatRoom.getLatestMessage() != null && @rq.getMember() != chatRoom.getLatestMessage().getSender() && chatRoom.getLatestMessage().isNotRead()}" class="bg-[#ff626f] w-16 text-white font-semibold rounded-xl">new</div>
-    </button>
+                <p th:if="${message.message != null}" th:text="${message.message.content}"
+                   class="text-lg text-start"></p>
+                <p th:if="${message.fileMessage != null}" class="text-lg text-start">파일을 다운로드할 수 있습니다.</p>
+            </div>
+            <div th:if="${message.message != null && @rq.getMember() != message.message.getSender() && message.message.isNotRead()}"
+                 class="bg-[#ff626f] w-16 text-white font-semibold rounded-xl">new
+            </div>
+            <div th:if="${message.fileMessage != null && @rq.getMember() != message.fileMessage.getSender() && message.fileMessage.isNotRead()}"
+                 class="bg-[#ff626f] w-16 text-white font-semibold rounded-xl">new
+            </div>
+        </button>
     </div>
 </main>
 

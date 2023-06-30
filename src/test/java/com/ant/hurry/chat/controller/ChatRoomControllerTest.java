@@ -4,8 +4,6 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
-import com.ant.hurry.chat.repository.ChatRoomRepository;
-import com.ant.hurry.chat.service.ChatRoomService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +32,7 @@ public class ChatRoomControllerTest {
     @Autowired
     ChatRoomController chatRoomController;
     @Autowired
-    ChatRoomService chatRoomService;
-    @Autowired
     MemberService memberService;
-    @Autowired
-    ChatRoomRepository chatRoomRepository;
     @Autowired
     MockMvc mvc;
 

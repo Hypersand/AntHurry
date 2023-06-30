@@ -32,18 +32,16 @@ public class ChatMessageController {
     private final SimpMessageSendingOperations messagingTemplate;
     private final Rq rq;
 
-    @MessageMapping("/room/{id}/message")
-    public void sendMessage(@PathVariable("id") String roomId, ChatMessageDto dto) {
+    @MessageMapping("/message")
+    public void sendMessage(ChatMessageDto dto) {
         RsData<ChatMessage> rs = chatMessageService.send(dto);
         ChatMessage message = rs.getData();
-        messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(roomId), message);
+        messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(dto.getChatRoom().getId()), message);
     }
 
     @MessageMapping("/room/{id}/file/message")
-    public void sendFile(
-            @PathVariable("id") String roomId,
-            @RequestPart("file") MultipartFile file
-    ) throws IOException {
+    public void sendFileMessage(@PathVariable("id") String roomId, @RequestPart("file") MultipartFile file)
+            throws IOException {
         ChatRoom chatRoom = chatRoomService.findById(roomId).getData();
         RsData<ChatFileMessage> rs = chatMessageService.sendFile(file, rq.getMember(), chatRoom);
         ChatFileMessage message = rs.getData();

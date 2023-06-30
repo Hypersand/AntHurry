@@ -7,8 +7,10 @@ import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.entity.ChatRoom;
+import com.ant.hurry.chat.entity.LatestMessage;
 import com.ant.hurry.chat.service.ChatMessageService;
 import com.ant.hurry.chat.service.ChatRoomService;
+import com.ant.hurry.chat.service.LatestMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +29,7 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
     private final TradeStatusService tradeStatusService;
+    private final LatestMessageService latestMessageService;
     private final Rq rq;
 
     @GetMapping("/room/{id}")
@@ -57,8 +60,10 @@ public class ChatRoomController {
 
     @GetMapping("/myRooms")
     public String showMyRooms(Model model) {
-        List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData();
-        model.addAttribute("chatRooms", chatRooms);
+        RsData<List<LatestMessage>> rs = latestMessageService.findByMember(rq.getMember());
+        List<LatestMessage> latestMessages = rs.getData().stream()
+                .filter(lm -> lm != null && (lm.getMessage() != null || lm.getFileMessage() != null)).toList();
+        model.addAttribute("latestMessages", latestMessages);
         return "chat/myRooms";
     }
 
