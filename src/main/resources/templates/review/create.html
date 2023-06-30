@@ -1,8 +1,8 @@
 <html layout:decorate="~{usr/layout/layout.html}">
 <head>
     <title>후기 작성</title>
-<!--    <meta name="_csrf" th:content="${_csrf.token}"/>-->
-<!--    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>-->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 
 <body>
@@ -58,6 +58,12 @@
             <input type="hidden" th:value="*{receiverName}" th:field="*{receiverName}">
 
             <button type="submit" class="btn btn-wide mt-5 bg-[#FF626F]">제출</button>
+
+            <script>
+                var token = $("meta[name='_csrf']").attr("content");
+                var header = $("meta[name='_csrf_header']").attr("content");
+                $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+            </script>
         </form>
     </div>
 
