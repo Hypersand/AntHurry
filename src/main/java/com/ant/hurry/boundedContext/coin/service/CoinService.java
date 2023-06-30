@@ -16,7 +16,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.List;
 
 import static com.ant.hurry.boundedContext.adm.code.AdmErrorCode.APPLY_NOT_EXISTS;
-import static com.ant.hurry.boundedContext.coin.code.ExchangeSuccessCode.CAN_EDIT_APPLY_EXCHANGE;
+import static com.ant.hurry.boundedContext.coin.code.ExchangeSuccessCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,9 +37,9 @@ public class CoinService {
     }
 
     @Transactional
-    public void applyExchange(ExchangeRequest exchangeRequest) {
+    public RsData applyExchange(ExchangeRequest exchangeRequest) {
         Member member = rq.getMember();
-        member.decreaseCoin((int) exchangeRequest.getMoney());
+        member.decreaseCoin(exchangeRequest.getMoney());
         Exchange exchange = Exchange.builder()
                 .member(member)
                 .status(false)
@@ -49,6 +49,7 @@ public class CoinService {
                 .money(exchangeRequest.getMoney())
                 .build();
         exchangeRepository.save(exchange);
+        return RsData.of(SUCCESS_APPLY_EXCHANGE);
     }
 
     public List<Exchange> getExchangeList(Member member) {
@@ -64,6 +65,27 @@ public class CoinService {
         int difference = exchange.getMoney() - exchangeRequest.getMoney();
         exchange.getMember().increaseCoin(difference);
         exchange.update(exchangeRequest);
-        return RsData.of(CAN_EDIT_APPLY_EXCHANGE);
+        return RsData.of(EDIT_APPLY_EXCHANGE);
+    }
+
+    public RsData canCancelExchange(Long exchangeId) {
+        Exchange exchange = exchangeRepository.findByIdWithMember(exchangeId).orElse(null);
+        if(ObjectUtils.isEmpty(exchange)){
+            return RsData.of(APPLY_NOT_EXISTS);
+        }
+        return RsData.of(NOT_EXISTS_APPLY_EXCHANGE, exchange);
+    }
+
+    @Transactional
+    public RsData cancelExchange(Exchange exchange) {
+        exchange.getMember().increaseCoin(exchange.getMoney());
+        exchangeRepository.delete(exchange);
+        return RsData.of(CANCEL_APPLY_EXCHANGE);
+    }
+
+    @Transactional
+    public RsData deleteExchangeInfo(Exchange exchange) {
+        exchangeRepository.delete(exchange);
+        return RsData.of(SUCCESS_DELETE_APPLY_EXCHANGE);
     }
 }

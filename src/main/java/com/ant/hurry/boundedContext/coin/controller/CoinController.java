@@ -131,17 +131,13 @@ public class CoinController {
         if(canExchange.isFail()){
             return rq.historyBack(canExchange);
         }
-        coinService.applyExchange(exchangeRequest);
-        return rq.redirectWithMsg("/usr/member/profile", "성공");
+        RsData rsData = coinService.applyExchange(exchangeRequest);
+        return rq.redirectWithMsg("/coin/exchange", rsData.getMsg());
     }
 
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/exchange/{exchangeId}")
     public String editApplyExchange(Model model, ExchangeRequest exchangeRequest, @PathVariable Long exchangeId) {
-        log.info("은행 = {}", exchangeRequest.getBankType());
-        log.info("계좌번호 = {}", exchangeRequest.getAccountNumber());
-        log.info("예금주 = {}", exchangeRequest.getHolderName());
-        log.info("환전금액 = {}", exchangeRequest.getMoney());
         RsData canExchange = memberService.canExchange(exchangeRequest.getMoney());
         model.addAttribute("bankTypes", BankType.values());
         if(canExchange.isFail()){
@@ -152,18 +148,30 @@ public class CoinController {
             return rq.historyBack(rsData);
         }
 
-        return rq.redirectWithMsg("/coin/exchange", "성공");
+        return rq.redirectWithMsg("/coin/exchange", rsData.getMsg());
     }
 
-//    @PreAuthorize("isAuthenticated()")
-//    @DeleteMapping("/exchange")
-//    public String cancelApplyExchange(Model model, ExchangeRequest exchangeRequest) {
-//        RsData canExchange = memberService.canExchange(exchangeRequest.getMoney());
-//        model.addAttribute("bankTypes", BankType.values());
-//        if(canExchange.isFail()){
-//            return rq.historyBack(canExchange);
-//        }
-//        coinService.applyExchange(exchangeRequest);
-//        return rq.redirectWithMsg("/coin/exchange", "성공");
-//    }
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/exchange/{exchangeId}")
+    public String cancelApplyExchange(Model model, @PathVariable Long exchangeId) {
+        RsData canCancelExchange = coinService.canCancelExchange(exchangeId);
+        model.addAttribute("bankTypes", BankType.values());
+        if(canCancelExchange.isFail()){
+            return rq.historyBack(canCancelExchange);
+        }
+        RsData rsData = coinService.cancelExchange((Exchange) canCancelExchange.getData());
+        return rq.redirectWithMsg("/coin/exchange", rsData.getMsg());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/exchange/info/{exchangeId}")
+    public String deleteApplyExchange(Model model, @PathVariable Long exchangeId) {
+        RsData canCancelExchange = coinService.canCancelExchange(exchangeId);
+        model.addAttribute("bankTypes", BankType.values());
+        if(canCancelExchange.isFail()){
+            return rq.historyBack(canCancelExchange);
+        }
+        RsData rsData = coinService.deleteExchangeInfo((Exchange) canCancelExchange.getData());
+        return rq.redirectWithMsg("/coin/exchange", rsData.getMsg());
+    }
 }

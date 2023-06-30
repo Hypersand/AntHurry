@@ -9,7 +9,11 @@ import lombok.Getter;
 public enum ExchangeSuccessCode implements Code {
 
     COIN_ENOUGH("S_E-1", "충분한 코인을 가지고있습니다."),
-    CAN_EDIT_APPLY_EXCHANGE("S_E-2", "성공적으로 수정되었습니다.");
+    SUCCESS_APPLY_EXCHANGE("S_E-2", "환전신청 되었습니다."),
+    EDIT_APPLY_EXCHANGE("S_E-3", "수정되었습니다."),
+    NOT_EXISTS_APPLY_EXCHANGE("S_E-4", "존재하지 않는 환전신청입니다."),
+    CANCEL_APPLY_EXCHANGE("S_E-5", "취소되었습니다."),
+    SUCCESS_DELETE_APPLY_EXCHANGE("S_E-6", "삭제되었습니다.");
 
     public String code;
     public String message;

@@ -34,6 +34,9 @@ public class Exchange  extends BaseEntity {
     }
 
     public void update(ExchangeRequest exchangeRequest){
-        BeanUtils.copyProperties(exchangeRequest, this);
+        this.bankType = exchangeRequest.getBankType();
+        this.accountNumber = exchangeRequest.getAccountNumber();
+        this.holderName = exchangeRequest.getHolderName();
+        this.money = exchangeRequest.getMoney();
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Profile( {"dev", "prod"} )
+@Profile( {"prod"} )
 public class DataLoader implements CommandLineRunner {
 
     @Value("${custom.admin.username}")
