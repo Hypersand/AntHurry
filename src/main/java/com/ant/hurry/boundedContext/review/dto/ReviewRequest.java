@@ -6,8 +6,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReviewRequest {
@@ -16,6 +18,13 @@ public class ReviewRequest {
     private String content;
 
     @Min(value = 1, message = "별점을 선택해주세요!")
-    private double rating;
+    private double rating = 5.0;
+
+    private String receiverName;
+
+
+    public void updateReceiverName(String nickname) {
+        this.receiverName = nickname;
+    }
 
 }

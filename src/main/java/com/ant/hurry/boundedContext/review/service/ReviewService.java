@@ -27,9 +27,14 @@ public class ReviewService {
     public RsData<Review> save(ReviewRequest reviewRequest, String username, Long tradeStatusId) {
 
         Member member = memberService.findByUsername(username).orElse(null);
+        Member receiver = memberService.findByNickname(reviewRequest.getReceiverName()).orElse(null);
         TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId);
 
         if (member == null) {
+            return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
+        }
+
+        if (receiver == null) {
             return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
         }
 
@@ -37,7 +42,7 @@ public class ReviewService {
             return RsData.of("F_T-1", "존재하지 않는 거래입니다.");
         }
 
-        Review review = Review.create(reviewRequest.getContent(), reviewRequest.getRating(), tradeStatus, member);
+        Review review = Review.create(reviewRequest.getContent(), reviewRequest.getRating(), tradeStatus, member, receiver);
         reviewRepository.save(review);
 
         double opponentRating;
@@ -72,6 +77,8 @@ public class ReviewService {
         int reviewCount = opponent.getReviewCount();
 
         double avgRating = (opponentRating * reviewCount + rating) / (reviewCount + 1);
+
+        avgRating = Math.round(avgRating * 10) / 10.0;
 
         return avgRating;
     }
@@ -108,7 +115,7 @@ public class ReviewService {
             return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
         }
 
-        List<Review> myReviews = reviewRepository.findByWriter(member);
+        List<Review> myReviews = reviewRepository.findByReceiver(member);
 
         return RsData.of("S_R-3", "후기목록페이지로 이동합니다.", myReviews);
     }

@@ -112,7 +112,7 @@ class ReviewServiceTest {
 
         //given
         String username = "member_not_exists";
-        ReviewRequest reviewRequest = new ReviewRequest("content", 5.0);
+        ReviewRequest reviewRequest = new ReviewRequest("content", 5.0, "User2");
         Long tradeStatusId = 1L;
 
         //when
@@ -133,7 +133,7 @@ class ReviewServiceTest {
 
         //given
         Member member = memberRepository.findByUsername("user1").orElse(null);
-        ReviewRequest reviewRequest = new ReviewRequest("content", 4.0);
+        ReviewRequest reviewRequest = new ReviewRequest("content", 4.0, "User4");
         Long tradeStatusId = 100L;
 
         //when
@@ -153,7 +153,7 @@ class ReviewServiceTest {
 
         //given
         Member member = memberRepository.findByUsername("user1").orElse(null);
-        ReviewRequest reviewRequest = new ReviewRequest("content", 5.0);
+        ReviewRequest reviewRequest = new ReviewRequest("content", 5.0, "User2");
         Long tradeStatusId = 1L;
 
         //when
@@ -175,7 +175,7 @@ class ReviewServiceTest {
 
         //given
         Member member = memberRepository.findByUsername("user1").orElse(null);
-        ReviewRequest reviewRequest = new ReviewRequest("content", 5.0);
+        ReviewRequest reviewRequest = new ReviewRequest("content", 5.0, "User3");
         Long tradeStatusId = 2L;
 
         //when
@@ -216,8 +216,8 @@ class ReviewServiceTest {
         assertAll(
                 () -> assertThat(rsData.getResultCode()).isEqualTo("S_R-3"),
                 () -> assertThat(rsData.getMsg()).isEqualTo("후기목록페이지로 이동합니다."),
-                () -> assertThat(rsData.getData().get(0).getContent()).isEqualTo("내용1"),
-                () -> assertThat(rsData.getData().get(0).getRating()).isEqualTo(1.0)
+                () -> assertThat(rsData.getData().get(0).getContent()).isEqualTo("내용3"),
+                () -> assertThat(rsData.getData().get(0).getRating()).isEqualTo(2.0)
         );
 
     }
