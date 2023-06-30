@@ -67,6 +67,10 @@ public class TradeStatusController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> showListByResponseBody(@RequestParam(defaultValue = "COMPLETE") String status, @AuthenticationPrincipal User user, Model model) {
 
+        if (status.equals("undefined")) {
+            status = "COMPLETE";
+        }
+
         RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), Status.valueOf(status));
 
         Map<String, Object> map = new HashMap<>();
