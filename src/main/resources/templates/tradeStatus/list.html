@@ -40,7 +40,7 @@
 
     <div id="trade-list-container"></div>
 
-    <script>
+    <script th:inline="javascript">
         async function fetchData(status) {
             const apiUrl = `/trade/list/select?status=${status}`;
             try {
@@ -68,6 +68,15 @@
             let tradeStatusElement = document.createElement("div");
             tradeStatusElement.className = "bg-white rounded-lg overflow-hidden shadow";
 
+            let myNickname = [[${@rq.getMember().nickname}]];
+            let opponentNickname = '';
+
+            if (myNickname !== tradeStatus.requester.nickname) {
+                opponentNickname = tradeStatus.requester.nickname;
+            } else {
+                opponentNickname = tradeStatus.helper.nickname;
+            }
+
             let template = `
             <div class="px-4 py-3 border-b border-gray-200">
                 <div class="flex items-center justify-between space-x-4">
@@ -76,7 +85,7 @@
                             <i class="fa-solid fa-user fa-xl bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center"></i>
                         </div>
                         <div>
-                            <div class="flex-1 font-bold text-gray-700">큰모래</div>
+                            <div class="flex-1 font-bold text-gray-700">${opponentNickname}</div>
                             <div class="py-3">
                                 <div class="text-gray-700">${statusMsg}</div>
                             </div>
@@ -86,11 +95,21 @@
                         <div class="text-gray-400 text-sm mb-2">${tradeStatus.createdAt ? new Date(tradeStatus.createdAt).toLocaleString() : ''}</div>
                     </div>
                 </div>
+
                 <div class="flex justify-center">
-                    <button class="btn btn-error text-white btn-wide" ${tradeStatus.status !== 'COMPLETE' ? 'disabled' : ''}>거래 후기 작성</button>
+                    <a id="reviewBtn" class="btn btn-error text-white btn-wide" ${tradeStatus.status !== 'COMPLETE' ? 'disabled' : ''}>거래 후기 작성</a>
                 </div>
+
             </div>`;
             tradeStatusElement.innerHTML = template;
+
+            let reviewBtn = tradeStatusElement.querySelector("#reviewBtn");
+            reviewBtn.href = `/review/create/${tradeStatus.id}`;
+            if (tradeStatus.status !== "COMPLETE") {
+                reviewBtn.setAttribute("disabled", true);
+            }
+
+
             return tradeStatusElement;
         }
 
