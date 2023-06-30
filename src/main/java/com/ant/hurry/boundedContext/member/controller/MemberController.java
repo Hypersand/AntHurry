@@ -7,6 +7,7 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
+import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import jakarta.validation.Valid;
 import com.ant.hurry.standard.util.Ut;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -167,8 +169,20 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/profile_edit")
     @ResponseBody
-    public ResponseEntity updateProfile(ProfileRequestDto profileRequestDto,
+    public ResponseEntity updateProfile(@ModelAttribute @Valid ProfileRequestDto profileRequestDto,
+                                BindingResult result,
                                 MultipartFile file) throws IOException {
+        //입력필드 검증
+        Map<String, String> errors = new HashMap<>();
+        if (result.hasErrors()) {
+            result.getFieldErrors().forEach((error) -> {
+                String fieldName = ((FieldError) error).getField();
+                String errorMessage = error.getDefaultMessage();
+                errors.put(fieldName, errorMessage);
+            });
+
+            return new ResponseEntity<>(errors, HttpStatusCode.valueOf(HTTPResponse.SC_BAD_REQUEST));
+        }
         Member member = rq.getMember();
         memberService.updateProfile(member, profileRequestDto.getNickname(), file);
 

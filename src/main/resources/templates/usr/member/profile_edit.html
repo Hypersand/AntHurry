@@ -104,15 +104,15 @@
       var formData = new FormData();
 
       // 닉네임을 FormData에 추가합니다.
-      var nickname = document.getElementById('nickname').value;
+      var nickname = $('#nickname').val();
       if (!isValidNickname(nickname)) {
-        alert("닉네임은 4~10글자로, 특수문자를 제외한 영어,한글,숫자를 사용해주세요.");
+        alert("닉네임은 특수문자를 제외한 4~12자리여야 합니다.");
         return false;
       }
       formData.append('nickname', nickname);
 
       // 프로필 사진을 FormData에 추가합니다.
-      var profilePicture = document.getElementById('profilePictureUpload').files[0];
+      var profilePicture = $('#profilePictureUpload')[0].files[0];
       formData.append('file', profilePicture);
 
       $.ajax({
@@ -126,6 +126,11 @@
           window.location.href= window.location.origin + "/usr/member/profile";
         },
         error: function(jqXHR, textStatus, errorThrown) {
+          var responseJSON = jqXHR.responseJSON;
+          for (var field in responseJSON) {
+            if(field === "nickname")
+              alert(responseJSON[field]);
+          }
           alert('An error occurred. Please try again.');
         }
       });
@@ -145,7 +150,7 @@
 
     function isValidNickname(nickname) {
       // 4~10글자의 영어,한글,숫자를 검사하는 정규 표현식
-      var regex = /^[a-zA-Z0-9가-힣]{4,10}$/;
+      var regex = /^[a-zA-Z0-9가-힣-_]{4,12}$/;
       return regex.test(nickname);
     }
   </script>
