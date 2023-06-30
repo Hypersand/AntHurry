@@ -10,6 +10,7 @@ import com.ant.hurry.boundedContext.board.dto.CreateConvertDTO;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.entity.BoardType;
+import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.ant.hurry.boundedContext.board.repository.BoardRepository;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
@@ -151,5 +152,9 @@ public class BoardService {
         member.decreaseCoin(board.getRewardCoin()); //새 금액으로 차감
 
         return RsData.of("S_B-4", "게시글이 수정되었습니다.");
+    }
+
+    public List<Board> findByTradeTypeAndBoardType(TradeType tradeType, BoardType boardType) {
+        return boardRepository.findByTradeTypeAndBoardType(tradeType, boardType);
     }
 }

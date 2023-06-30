@@ -58,7 +58,7 @@ public class BoardController {
             return rq.historyBack("주소를 입력해주세요.");
         }
         RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
-        if(checkUserCoin.isFail()){
+        if (checkUserCoin.isFail()) {
             return rq.historyBack(checkUserCoin);
         }
         CreateConvertDTO boardInfo = boardService.addressConvert(createRequest);
@@ -69,9 +69,9 @@ public class BoardController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
-    public String showBoard(Model model,  @PathVariable("id") Long id) {
+    public String showBoard(Model model, @PathVariable("id") Long id) {
         Board board = boardService.findById(id).orElse(null);
-        if(board == null){
+        if (board == null) {
             return rq.historyBack("존재하지 않는 게시판 입니다.");
         }
         model.addAttribute("board", board);
@@ -82,7 +82,7 @@ public class BoardController {
     @DeleteMapping("/{id}")
     public String deleteBoard(@PathVariable("id") Long id) {
         RsData<Board> canDeleteBoard = boardService.canDelete(rq.getMember(), id);
-        if(canDeleteBoard.isFail()){
+        if (canDeleteBoard.isFail()) {
             return rq.historyBack(canDeleteBoard);
         }
         RsData<Board> deleteBoard = boardService.delete(id);
@@ -91,10 +91,10 @@ public class BoardController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    public String showModify(@PathVariable Long id,  Model model){
+    public String showModify(@PathVariable Long id, Model model) {
 
         RsData<Board> canModifyBoard = boardService.canModify(rq.getMember(), id);
-        if(canModifyBoard.isFail()){
+        if (canModifyBoard.isFail()) {
             return rq.historyBack(canModifyBoard);
         }
 
@@ -107,7 +107,7 @@ public class BoardController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
-    public String modify(@PathVariable Long id, @Valid CreateRequest createRequest, BindingResult bindingResult, Model model){
+    public String modify(@PathVariable Long id, @Valid CreateRequest createRequest, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("bindingResult", bindingResult);
             return "board/modify";
@@ -115,7 +115,7 @@ public class BoardController {
 
 
         RsData<Board> modifyBoard = boardService.modify(id, createRequest, rq.getMember());
-        if(modifyBoard.isFail()){
+        if (modifyBoard.isFail()) {
             return rq.historyBack(modifyBoard);
         }
 
@@ -124,13 +124,12 @@ public class BoardController {
     }
 
 
-
     /**
-     *지역 검색하면 나오는 지역 리스트를 보여준다.
+     * 지역 검색하면 나오는 지역 리스트를 보여준다.
      **/
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/selectRegion")
-    public String showRegion(Model model){
+    public String showRegion(Model model) {
         List<Region> regions = regionService.findAll();
         model.addAttribute("regions", regions);
         return "board/selectRegion";
@@ -142,7 +141,7 @@ public class BoardController {
      **/
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/enterRegion")
-    public String enterRegion(@RequestParam("code")String code, Model model) {
+    public String enterRegion(@RequestParam("code") String code, Model model) {
         Region region = regionService.findByCode(code).orElseThrow();
 
         List<Board> board1 = boardService.findByCodeAndBoard(code, BoardType.나급해요);
@@ -155,6 +154,13 @@ public class BoardController {
         return "board/enterRegion";
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/online")
+    public String showOnlineBoard(Model model) {
+        List<Board> board = boardService.findByTradeTypeAndBoardType(TradeType.온라인, BoardType.나급해요);
 
+        model.addAttribute("board", board);
+        return "board/online";
+    }
 }
 
