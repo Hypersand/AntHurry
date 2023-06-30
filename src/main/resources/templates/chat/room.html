@@ -36,7 +36,8 @@
                 <div class="w-10 rounded-full bg-pink-400"></div>
             </div>
             <div class="chat-header" th:text="${message.getSender().username}">
-                <time class="text-xs opacity-50" th:utext="${#temporals.format(message.getCreatedAt(), 'HH:mm')}"></time>
+                <time class="text-xs opacity-50"
+                      th:utext="${#temporals.format(message.getCreatedAt(), 'HH:mm')}"></time>
             </div>
             <div class="chat-bubble" th:text="${message.getContent()}"></div>
         </div>
@@ -46,7 +47,8 @@
                 <div class="w-10 rounded-full bg-pink-400"></div>
             </div>
             <div class="chat-header">
-                <time class="text-xs opacity-50" th:utext="${#temporals.format(message.getCreatedAt(), 'HH:mm')}"></time>
+                <time class="text-xs opacity-50"
+                      th:utext="${#temporals.format(message.getCreatedAt(), 'HH:mm')}"></time>
             </div>
             <div class="chat-bubble" th:text="${message.getContent()}"></div>
         </div>

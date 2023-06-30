@@ -23,11 +23,14 @@ public class ChatMessageRepositoryTest {
     @Autowired
     ChatMessageRepository chatMessageRepository;
     @Autowired
+    ChatRoomRepository chatRoomRepository;
+    @Autowired
     private MongoTemplate mongoTemplate;
 
     @BeforeEach
     @AfterAll
     void refresh() {
+        chatRoomRepository.deleteAll();
         chatMessageRepository.deleteAll();
     }
 
