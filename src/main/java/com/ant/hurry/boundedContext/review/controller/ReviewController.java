@@ -5,6 +5,7 @@ import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.review.dto.ReviewRequest;
 import com.ant.hurry.boundedContext.review.entity.Review;
 import com.ant.hurry.boundedContext.review.service.ReviewService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,7 +14,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,33 +32,34 @@ public class ReviewController {
     public String showCreate(Model model, @PathVariable Long tradeStatusId,
                              @AuthenticationPrincipal User user) {
 
-        model.addAttribute("reviewRequest", new ReviewRequest());
-
         RsData<Object> rsData = reviewService.validateTradeStatusAndMember(tradeStatusId, user.getUsername());
 
         if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
 
-        model.addAttribute("opponentNickname", rsData.getData());
-
+        ReviewRequest reviewRequest = new ReviewRequest();
+        reviewRequest.updateReceiverName((String) rsData.getData());
+        model.addAttribute("reviewRequest", reviewRequest);
+        model.addAttribute("tradeStatusId", tradeStatusId);
         return "review/create";
     }
 
     @PostMapping("/create/{tradeStatusId}")
     @PreAuthorize("isAuthenticated()")
-    public String create(@ModelAttribute @Validated ReviewRequest reviewRequest,
+    public String create(@AuthenticationPrincipal User user ,@Valid @ModelAttribute ReviewRequest reviewRequest,
                          BindingResult bindingResult, Model model,
-                         @PathVariable Long tradeStatusId,
-                         @AuthenticationPrincipal User user) {
+                         @PathVariable Long tradeStatusId) {
 
         log.info("내용 = {}", reviewRequest.getContent());
         log.info("별점 = {}", reviewRequest.getRating());
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("bindingResult", bindingResult);
-            return "review/create";
+            return rq.historyBack("다시 작성해주세요!");
         }
+
+        log.info("받는사람= {}", reviewRequest.getReceiverName());
 
         RsData<Review> reviewRsData = reviewService.save(reviewRequest, user.getUsername(), tradeStatusId);
 
