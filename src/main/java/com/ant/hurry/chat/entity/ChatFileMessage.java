@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @SuperBuilder
-@Document(collection = "chat_image")
+@Document(collection = "chat_file")
 public class ChatFileMessage {
 
     @Id

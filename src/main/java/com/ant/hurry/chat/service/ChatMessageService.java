@@ -1,5 +1,6 @@
 package com.ant.hurry.chat.service;
 
+import com.amazonaws.util.IOUtils;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.chat.config.MongoConfig;
@@ -11,6 +12,7 @@ import com.ant.hurry.chat.repository.ChatFileMessageRepository;
 import com.ant.hurry.chat.repository.ChatMessageRepository;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
+import com.mongodb.client.gridfs.GridFSDownloadStream;
 import com.mongodb.client.gridfs.GridFSUploadStream;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
@@ -20,9 +22,13 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -46,6 +52,7 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatFileMessageRepository chatFileMessageRepository;
     private final MongoConfig mongoConfig;
+    private final ResourceLoader resourceLoader;
 
     @Value("${spring.data.mongodb.database}")
     private String databaseName;
@@ -62,7 +69,7 @@ public class ChatMessageService {
     }
 
     // 일반 메시지 전송
-    public RsData<ChatMessage> create(ChatMessageDto dto) {
+    public RsData<ChatMessage> send(ChatMessageDto dto) {
         ChatMessage message = ChatMessage.builder()
                 .id(UUID.randomUUID().toString())
                 .chatRoom(dto.getChatRoom())
@@ -123,28 +130,34 @@ public class ChatMessageService {
                 GridFSBuckets.create(mongoConfig.mongoClient().getDatabase(databaseName));
 
         GridFSUploadOptions uploadOptions = new GridFSUploadOptions().chunkSizeBytes(1024).metadata(doc);
-        GridFSUploadStream uploadStream = gridBucket.openUploadStream(file.getOriginalFilename(), uploadOptions);
-        uploadStream.write(inputStream.readAllBytes());
+        ObjectId fileId = gridBucket.uploadFromStream(file.getOriginalFilename(), inputStream, uploadOptions);
         inputStream.close();
-
-        ObjectId fileId = uploadStream.getObjectId();
 
         return RsData.of(FILE_SAVED, fileId);
     }
 
     // 파일 불러오기
-    public RsData<Resource> findFileByChatFileMessage(ChatFileMessage message) {
-        Resource resource = null;
-        try {
-            Path filePath = Paths.get(message.getUploadFilePath()).normalize();
-            Resource urlResource = new UrlResource(filePath.toUri());
+    public ResponseEntity<byte[]> getFile(ChatFileMessage message) throws IOException {
+        String fileId = message.getUploadFileId();
 
-            if (urlResource.exists()) resource = urlResource;
-        } catch (MalformedURLException e) {
-            return RsData.of(URL_MALFORMED);
+        GridFSBucket gridBucket =
+                GridFSBuckets.create(mongoConfig.mongoClient().getDatabase(databaseName));
+
+        GridFSFile file = gridBucket.find(Filters.eq("_id", new ObjectId(fileId))).first();
+
+        if(file == null) {
+            return ResponseEntity.notFound().build();
         }
 
-        return RsData.of(FILE_DOWNLOADED, resource);
+        GridFSDownloadStream downloadStream = gridBucket.openDownloadStream(file.getObjectId());
+        byte[] bytes = IOUtils.toByteArray(downloadStream);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(file.getMetadata().getString("content_type")));
+        headers.setContentLength(file.getLength());
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename(file.getFilename()).build());
+
+        return ResponseEntity.ok().headers(headers).body(bytes);
     }
 
     public RsData deleteSoft(ChatMessage chatMessage) {
