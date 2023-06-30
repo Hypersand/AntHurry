@@ -139,22 +139,40 @@ public class MemberController {
         Member member = rq.getMember();
         ProfileRequestDto profileRequestDto = new ProfileRequestDto();
         profileRequestDto.setNickname(member.getNickname());
+
+        //이미지 경로 세팅
+        Optional<ProfileImage> profileImage = memberService.findProfileImage(member);
+        if(profileImage.isPresent())
+            profileRequestDto.setImagePath(profileImage.get().getFullPath());
+        else
+            profileRequestDto.setImagePath(null);
         model.addAttribute("profileRequestDto", profileRequestDto);
 
         return "usr/member/profile_edit";
     }
 
+//    @PreAuthorize("isAuthenticated()")
+//    @PostMapping("/profile_edit")
+//    public String updateProfile(@ModelAttribute @Valid ProfileRequestDto profileRequestDto, BindingResult bindingResult,
+//                                MultipartFile file) throws IOException {
+//        if (bindingResult.hasErrors()) {
+//            return "/usr/member/profile_edit";
+//        }
+//        Member member = rq.getMember();
+//        memberService.updateProfile(member, profileRequestDto.getNickname(), file);
+//
+//        return "redirect:/usr/member/profile";
+//    }
+
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/profile_edit")
-    public String updateProfile(@ModelAttribute @Valid ProfileRequestDto profileRequestDto, BindingResult bindingResult,
+    @ResponseBody
+    public ResponseEntity updateProfile(ProfileRequestDto profileRequestDto,
                                 MultipartFile file) throws IOException {
-        if (bindingResult.hasErrors()) {
-            return "/usr/member/profile_edit";
-        }
         Member member = rq.getMember();
         memberService.updateProfile(member, profileRequestDto.getNickname(), file);
 
-        return "redirect:/usr/member/profile";
+        return ResponseEntity.status(HttpStatus.OK).body("성공");
     }
 
     @PreAuthorize("isAuthenticated()")

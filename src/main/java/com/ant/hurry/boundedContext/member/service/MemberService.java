@@ -133,7 +133,7 @@ public class MemberService {
     public void updateProfile(Member member,String nickname, MultipartFile file) throws IOException {
         member.updateProfile(nickname);
         System.out.println(file);
-        if(!file.isEmpty()){
+        if(file != null && !file.isEmpty()){
             //기존에 프로필 이미지가 있으면 기존거 삭제하고 업로드
             Optional<ProfileImage> findProfileImage = profileImageRepository.findByMember(member);
             if(findProfileImage.isPresent()){
