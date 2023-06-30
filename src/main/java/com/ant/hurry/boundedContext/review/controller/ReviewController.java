@@ -48,15 +48,10 @@ public class ReviewController {
     @PostMapping("/create/{tradeStatusId}")
     @PreAuthorize("isAuthenticated()")
     public String create(@AuthenticationPrincipal User user ,@Valid @ModelAttribute ReviewRequest reviewRequest,
-                         BindingResult bindingResult, Model model,
-                         @PathVariable Long tradeStatusId) {
-
-        log.info("내용 = {}", reviewRequest.getContent());
-        log.info("별점 = {}", reviewRequest.getRating());
+                         BindingResult bindingResult, @PathVariable Long tradeStatusId) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("bindingResult", bindingResult);
-            return rq.historyBack("다시 작성해주세요!");
+            return rq.historyBack(bindingResult.getFieldError().getDefaultMessage());
         }
 
         log.info("받는사람= {}", reviewRequest.getReceiverName());
