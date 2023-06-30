@@ -95,16 +95,61 @@
                         th:if="${exchangeList.status == false}">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-lg font-semibold text-gray-800" th:text="'환전 금액 : ' + ${exchangeList.money}"></p>
+                                <p class="text-lg font-semibold text-gray-800"
+                                   th:text="'환전 금액 : ' + ${exchangeList.money}"></p>
+                                <p class="text-lg font-semibold text-gray-800"
+                                   th:text="'은행 : ' + ${exchangeList.bankType}"></p>
+                                <p class="text-lg font-semibold text-gray-800"
+                                   th:text="'예금주 : ' + ${exchangeList.holderName}"></p>
                                 <span class="text-xs text-gray-400 theme-bg inline-block px-1.5 py-0.5 rounded"
                                       th:text="'신청일자 : ' + ${#temporals.format(exchangeList.createdAt, 'MM-dd HH:mm')}"></span>
                             </div>
                             <div class="flex space-x-2 justify-end">
-                                <form class="delete-notification-form" th:action th:method="PATCH">
-                                    <button type="submit" class="text-main">
-                                        수정
-                                    </button>
-                                </form>
+                                <label for="my_modal_6" class="btn">수정</label>
+
+                                <!-- Put this part before </body> tag -->
+                                <input type="checkbox" id="my_modal_6" class="modal-toggle"/>
+                                <div class="modal">
+                                    <div class="modal-box">
+                                        <form th:action th:method="PATCH">
+                                            <input type="text" class="form-input border-2 border-black" name="money"
+                                                   placeholder="0"
+                                                   onkeyup="formatCurrency(this)"/>
+                                            <input type="text" class="form-input border-2 border-black"
+                                                   name="accountNumber"
+                                                   placeholder="계좌번호를 입력해주세요." maxlength="20"/>
+                                            <input type="text" class="form-input border-2 border-black"
+                                                   name="holderName"
+                                                   placeholder="예금주를 입력해주세요."/>
+                                            <div class="dropdown inline-block relative">
+                                                <button class="bg-gray-300 text-black font-semibold py-2 px-4 rounded inline-flex items-center">
+                                                    <span id="dropdown-titles" class="mr-1">카드사 선택</span>
+                                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                                         viewBox="0 0 20 20">
+                                                        <path d="M5 8a.5.5 0 01.707 0L10 12.293l4.293-4.293A.5.5 0 0115 8v7a.5.5 0 01-.5.5h-9a.5.5 0 01-.5-.5V8z"
+                                                              clip-rule="evenodd"/>
+                                                    </svg>
+                                                </button>
+                                                <ul id="dropdown-menus" class="dropdown-menu absolute hidden text-black pt-1">
+                                                    <li class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" th:each="type : ${bankTypes}">
+                                                        <label><input type="radio" name="bankType" th:value="${type}" th:text="${type}"></label>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <button type="submit" onclick="processExchange();" class="btn btn-sm"
+                                                    style="background-color: #FF626F; color: white;">환전
+                                            </button>
+                                            <div class="modal-action">
+                                                <label for="my_modal_6" class="btn">Close!</label>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!--                                <form class="delete-notification-form" th:action th:method="PATCH">-->
+                                <!--                                    <button type="submit" class="text-main">-->
+                                <!--                                        수정-->
+                                <!--                                    </button>-->
+                                <!--                                </form>-->
                                 <form class="delete-notification-form" th:action th:method="DELETE">
                                     <button type="submit" class="text-main">
                                         삭제
@@ -197,6 +242,12 @@
         let dropdownMenu = document.getElementById('dropdown-menu');
         dropdownMenu.addEventListener('change', (event) => {
             let title = document.getElementById('dropdown-title');
+            title.textContent = event.target.value;
+        });
+
+        let dropdownMenu = document.getElementById('dropdown-menus');
+        dropdownMenu.addEventListener('change', (event) => {
+            let title = document.getElementById('dropdown-titles');
             title.textContent = event.target.value;
         });
 
