@@ -62,7 +62,7 @@ public class ChatRoomController {
     public String showMyRooms(Model model) {
         RsData<List<LatestMessage>> rs = latestMessageService.findByMember(rq.getMember());
         List<LatestMessage> latestMessages = rs.getData().stream()
-                .filter(lm -> lm != null && (lm.getMessage() != null || lm.getFileMessage() != null)).toList();
+                        .filter(lm -> lm != null && lm.getMessage() != null).toList();
         model.addAttribute("latestMessages", latestMessages);
         return "chat/myRooms";
     }

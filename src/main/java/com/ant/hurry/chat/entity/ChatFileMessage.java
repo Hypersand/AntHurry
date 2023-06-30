@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 @Document(collection = "chat_file")
-public class ChatFileMessage extends BaseMessage {
+public class ChatFileMessage extends BaseMessage implements Message {
 
     private String uploadFilePath;
 

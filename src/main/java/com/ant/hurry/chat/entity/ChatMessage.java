@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 @Document(collection = "chat_message")
-public class ChatMessage extends BaseMessage {
+public class ChatMessage extends BaseMessage implements Message {
 
     private String content;
 

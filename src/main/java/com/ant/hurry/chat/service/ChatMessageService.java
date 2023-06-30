@@ -77,7 +77,6 @@ public class ChatMessageService {
         LatestMessage latestMessage = latestMessageService.findByChatRoom(dto.getChatRoom()).getData();
         LatestMessage updateLatestMessage = latestMessage.toBuilder()
                 .message(message)
-                .fileMessage(null)
                 .createdAt(LocalDateTime.now())
                 .build();
         latestMessageRepository.save(updateLatestMessage);
@@ -118,8 +117,7 @@ public class ChatMessageService {
 
         LatestMessage latestMessage = latestMessageService.findByChatRoom(chatRoom).getData();
         LatestMessage updateLatestMessage = latestMessage.toBuilder()
-                .message(null)
-                .fileMessage(chatFileMessage)
+                .message(chatFileMessage)
                 .createdAt(LocalDateTime.now())
                 .build();
         latestMessageRepository.save(updateLatestMessage);

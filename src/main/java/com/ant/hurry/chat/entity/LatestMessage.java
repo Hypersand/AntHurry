@@ -13,9 +13,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class LatestMessage extends BaseMessage {
 
     @Builder.Default
-    private ChatMessage message = null;
-
-    @Builder.Default
-    private ChatFileMessage fileMessage = null;
+    private Message message = null;
 
 }
