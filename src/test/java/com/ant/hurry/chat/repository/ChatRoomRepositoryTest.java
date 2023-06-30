@@ -2,7 +2,10 @@ package com.ant.hurry.chat.repository;
 
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.chat.entity.ChatRoom;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,8 +26,7 @@ public class ChatRoomRepositoryTest {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    @BeforeEach
-    @AfterAll
+    @AfterEach
     void refresh() {
         chatRoomRepository.deleteAll();
     }

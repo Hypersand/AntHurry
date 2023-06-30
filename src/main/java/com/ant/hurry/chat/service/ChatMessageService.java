@@ -1,6 +1,5 @@
 package com.ant.hurry.chat.service;
 
-import com.amazonaws.util.IOUtils;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.chat.config.MongoConfig;
@@ -13,7 +12,6 @@ import com.ant.hurry.chat.repository.ChatMessageRepository;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
 import com.mongodb.client.gridfs.GridFSDownloadStream;
-import com.mongodb.client.gridfs.GridFSUploadStream;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.client.model.Filters;
@@ -21,21 +19,17 @@ import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -136,8 +130,8 @@ public class ChatMessageService {
         return RsData.of(FILE_SAVED, fileId);
     }
 
-    // 파일 불러오기
-    public ResponseEntity<byte[]> getFile(ChatFileMessage message) throws IOException {
+    // 파일 다운로드
+    public ResponseEntity<StreamingResponseBody> downloadFile(ChatFileMessage message) throws IOException {
         String fileId = message.getUploadFileId();
 
         GridFSBucket gridBucket =
@@ -149,15 +143,25 @@ public class ChatMessageService {
             return ResponseEntity.notFound().build();
         }
 
-        GridFSDownloadStream downloadStream = gridBucket.openDownloadStream(file.getObjectId());
-        byte[] bytes = IOUtils.toByteArray(downloadStream);
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(file.getMetadata().getString("content_type")));
         headers.setContentLength(file.getLength());
         headers.setContentDisposition(ContentDisposition.builder("attachment").filename(file.getFilename()).build());
 
-        return ResponseEntity.ok().headers(headers).body(bytes);
+        StreamingResponseBody responseBody = outputStream -> {
+            GridFSDownloadStream downloadStream = gridBucket.openDownloadStream(file.getObjectId());
+
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = downloadStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            downloadStream.close();
+            outputStream.close();
+        };
+
+        return ResponseEntity.ok().headers(headers).body(responseBody);
     }
 
     public RsData deleteSoft(ChatMessage chatMessage) {

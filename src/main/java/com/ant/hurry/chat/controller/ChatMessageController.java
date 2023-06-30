@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
 
@@ -50,7 +51,7 @@ public class ChatMessageController {
     }
 
     @GetMapping("/download/{messageId}")
-    public ResponseEntity<byte[]> downloadFile(
+    public ResponseEntity<StreamingResponseBody> downloadFile(
             @PathVariable("messageId") String messageId
     ) throws IOException {
         RsData<ChatFileMessage> findRs = chatMessageService.findFileMessageById(messageId);
@@ -59,7 +60,7 @@ public class ChatMessageController {
         }
         ChatFileMessage message = findRs.getData();
 
-        return chatMessageService.getFile(message);
+        return chatMessageService.downloadFile(message);
     }
 
 }
