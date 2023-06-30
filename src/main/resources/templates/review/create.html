@@ -1,6 +1,8 @@
 <html layout:decorate="~{usr/layout/layout.html}">
 <head>
     <title>후기 작성</title>
+<!--    <meta name="_csrf" th:content="${_csrf.token}"/>-->
+<!--    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>-->
 </head>
 
 <body>
@@ -27,21 +29,20 @@
 <main layout:fragment="main">
     <div class="text-center" style="overflow-y: auto;">
         <div class="mt-5 border-b border-base-200 py-3">
-            <h1 class="text-lg" th:text="|${opponentNickname}님에 대한 후기를 작성해주세요|"></h1>
+            <h1 class="text-lg" th:text="|${reviewRequest.getReceiverName()}님에 대한 후기를 작성해주세요|"></h1>
         </div>
-
-
-        <form th:object="${reviewRequest}" th:action method="POST" class="flex flex-col items-center sm:flex-column">
+        <form th:object="${reviewRequest}" th:action th:method="POST" class="flex flex-col items-center sm:flex-column">
             <div class="card w-full sm:w-96 bg-base-100 shadow-xl m-auto mt-7">
                 <div class="card-body items-center text-center">
                     <label class="form-label text-base font-bold card-title" style="display: block; margin-bottom: 0.1rem;">별점을 선택해주세요</label>
                     <div class="rating rating-lg mt-5">
-                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="1.0" />
-                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="2.0" />
-                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="3.0" />
-                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="4.0" />
-                        <input th:field="*{rating}" type="radio" class="mask mask-star-2 bg-red-400" value="5.0" />
-                        <span th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}" class="text-error"></span>
+                    </div>
+                    <div class="rating rating-lg">
+                        <input th:field="*{rating}" type="radio" name="rating-4" class="mask mask-star-2 bg-red-400" th:value="1.0" />
+                        <input th:field="*{rating}" type="radio" name="rating-4" class="mask mask-star-2 bg-red-400" th:value="2.0" />
+                        <input th:field="*{rating}" type="radio" name="rating-4" class="mask mask-star-2 bg-red-400" th:value="3.0" />
+                        <input th:field="*{rating}" type="radio" name="rating-4" class="mask mask-star-2 bg-red-400" th:value="4.0" />
+                        <input th:field="*{rating}" type="radio" name="rating-4" class="mask mask-star-2 bg-red-400" th:value="5.0" />
                     </div>
                 </div>
             </div>
@@ -54,12 +55,13 @@
                 </div>
             </div>
 
+            <input type="hidden" th:value="*{receiverName}" th:field="*{receiverName}">
+
             <button type="submit" class="btn btn-wide mt-5 bg-[#FF626F]">제출</button>
         </form>
     </div>
 
 </main>
-
 
 </body>
 
