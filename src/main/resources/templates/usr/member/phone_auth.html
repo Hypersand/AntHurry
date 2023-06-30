@@ -104,6 +104,13 @@
           e.preventDefault();
           var phoneNumber = $("#phoneNumber").val();
 
+          // 입력된 전화번호가 비어 있거나 형식에 맞지 않는 경우
+          var phoneRegEx = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/; // 수정: 전화번호 형식 정규 표현식
+          if (!phoneNumber || !phoneRegEx.test(phoneNumber)) {
+            alert('유효한 전화번호를 입력하세요.');
+            return; // 중요: 유효하지 않은 전화번호를 입력한 경우 요청을 중단합니다.
+          }
+
           $.ajax({
             url: '/usr/member/phoneAuth/send',
             type: 'POST',
