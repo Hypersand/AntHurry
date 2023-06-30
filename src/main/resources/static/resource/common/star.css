@@ -23,6 +23,7 @@
     height:100%;
 }
 
+[data-star^="0"]::after{width:0}
 [data-star^="0.1"]::after{width:2%}
 [data-star^="0.2"]::after{width:4%}
 [data-star^="0.3"]::after{width:6%}
