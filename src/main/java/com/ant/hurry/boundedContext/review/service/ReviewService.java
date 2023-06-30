@@ -78,6 +78,8 @@ public class ReviewService {
 
         double avgRating = (opponentRating * reviewCount + rating) / (reviewCount + 1);
 
+        avgRating = Math.round(avgRating * 10) / 10.0;
+
         return avgRating;
     }
 
