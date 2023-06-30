@@ -10,5 +10,5 @@ public class ExchangeRequest {
     private BankType bankType;
     private String accountNumber;
     private String holderName;
-    private long money;
+    private int money;
 }

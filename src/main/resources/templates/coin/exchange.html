@@ -49,23 +49,27 @@
                                        placeholder="0"
                                        onkeyup="formatCurrency(this)"/>
                                 <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1198/1198299.png"
-                                 alt="text">
-                            <div class="dropdown inline-block relative">
-                                <button class="bg-gray-300 text-black font-semibold py-2 px-4 rounded inline-flex items-center">
-                                    <span id="dropdown-title" class="mr-1">카드사 선택</span>
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                         viewBox="0 0 20 20">
-                                        <path d="M5 8a.5.5 0 01.707 0L10 12.293l4.293-4.293A.5.5 0 0115 8v7a.5.5 0 01-.5.5h-9a.5.5 0 01-.5-.5V8z"
-                                              clip-rule="evenodd"/>
-                                    </svg>
-                                </button>
-                                <ul id="dropdown-menu" class="dropdown-menu absolute hidden text-black pt-1">
-                                    <li class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" th:each="type : ${bankTypes}">
-                                        <label><input type="radio" name="bankType" th:value="${type}" th:text="${type}"></label>
-                                    </li>
-                                </ul>
+                                     alt="text">
+                                <div class="flex flex-wrap">
+                                    <label for="bankType" class="block text-gray-700 text-sm font-bold mb-2">
+                                        은행
+                                    </label>
+                                    <div class="relative w-full">
+                                        <select name="bankType"
+                                                class="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                                id="bankType">
+                                            <option th:each="type : ${bankTypes}" th:value="${type}" th:text="${type}"
+                                                    name="bankType"></option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                                 viewBox="0 0 20 20">
+                                                <path d="M0 6l10 9 10-9V4H0v2z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
                         <div class="mt-3">
 
                             <p>계좌번호를 입력해주세요.</p>
@@ -90,9 +94,84 @@
         <div class="flex flex-col max-w-2xl mx-auto w-11/12 border-t-4 mt-6">
             <div class="w-full max-w-lg p-4 space-y-4 bg-base-100 rounded-lg shadow-xl">
                 <h2 class="card-title">환전 신청 목록</h2>
-                <ul class="space-y-3" th:each="exchangeList : ${exchangeLists}">
-                    <li class="bg-white rounded-lg shadow-lg p-4 border-t-4 border-red-500"
-                        th:if="${exchangeList.status == false}">
+                <th:block th:each="exchangeList : ${exchangeLists}" th:if="${exchangeList.status == false}">
+                    <ul class="space-y-3" th:each="exchangeList : ${exchangeLists}">
+                        <li class="bg-white rounded-lg shadow-lg p-4 border-t-4 border-red-500"
+                            th:if="${exchangeList.status == false}">
+                            <h2>처리중</h2>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-lg font-semibold text-gray-800"
+                                       th:text="'환전 금액 : ' + ${exchangeList.money}"></p>
+                                    <p class="text-lg font-semibold text-gray-800"
+                                       th:text="'은행 : ' + ${exchangeList.bankType}"></p>
+                                    <p class="text-lg font-semibold text-gray-800"
+                                       th:text="'계좌번호 : ' + ${exchangeList.accountNumber}"></p>
+                                    <p class="text-lg font-semibold text-gray-800"
+                                       th:text="'예금주 : ' + ${exchangeList.holderName}"></p>
+                                    <span class="text-xs text-gray-400 theme-bg inline-block px-1.5 py-0.5 rounded"
+                                          th:text="'신청일자 : ' + ${#temporals.format(exchangeList.createdAt, 'MM-dd HH:mm')}"></span>
+                                </div>
+                                <div class="flex space-x-2 justify-end">
+                                    <label for="my_modal_6" class="btn">수정</label>
+
+                                    <!-- Put this part before </body> tag -->
+                                    <input type="checkbox" id="my_modal_6" class="modal-toggle"/>
+                                    <div class="modal">
+                                        <div class="modal-box">
+                                            <form th:action="@{/coin/exchange/{id}(id=${exchangeList.id})}"
+                                                  th:method="PATCH">
+                                                <input type="text" class="form-input border-2 border-black" name="money"
+                                                       placeholder="0"
+                                                       onkeyup="formatCurrency(this)"/>
+                                                <input type="text" class="form-input border-2 border-black"
+                                                       name="accountNumber"
+                                                       placeholder="계좌번호를 입력해주세요." maxlength="20"/>
+                                                <input type="text" class="form-input border-2 border-black"
+                                                       name="holderName"
+                                                       placeholder="예금주를 입력해주세요."/>
+                                                <div class="flex flex-wrap">
+                                                    <label for="bankType"
+                                                           class="block text-gray-700 text-sm font-bold mb-2">
+                                                        은행
+                                                    </label>
+                                                    <div class="relative w-full">
+                                                        <select name="bankType"
+                                                                class="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                                                id="bankType">
+                                                            <option th:each="type : ${bankTypes}" th:value="${type}"
+                                                                    th:text="${type}"></option>
+                                                        </select>
+                                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                                            <svg class="fill-current h-4 w-4"
+                                                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                                <path d="M0 6l10 9 10-9V4H0v2z"/>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button type="submit" onclick="processExchange();" class="btn btn-sm"
+                                                        style="background-color: #FF626F; color: white;">환전
+                                                </button>
+                                                <div class="modal-action">
+                                                    <label for="my_modal_6" class="btn">Close!</label>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <form class="delete-notification-form" th:action th:method="DELETE">
+                                        <button type="submit" class="text-main">
+                                            삭제
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </li>
+                </th:block>
+                <th:block th:each="exchangeList : ${exchangeLists}" th:if="${exchangeList.status == true}">
+                    <li class="bg-white rounded-lg shadow-lg p-4 border-t-4 border-blue-500"
+                        th:if="${exchangeList.status == true}">
+                        <h2>처리완료</h2>
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-lg font-semibold text-gray-800"
@@ -100,102 +179,22 @@
                                 <p class="text-lg font-semibold text-gray-800"
                                    th:text="'은행 : ' + ${exchangeList.bankType}"></p>
                                 <p class="text-lg font-semibold text-gray-800"
+                                   th:text="'계좌번호 : ' + ${exchangeList.accountNumber}"></p>
+                                <p class="text-lg font-semibold text-gray-800"
                                    th:text="'예금주 : ' + ${exchangeList.holderName}"></p>
                                 <span class="text-xs text-gray-400 theme-bg inline-block px-1.5 py-0.5 rounded"
-                                      th:text="'신청일자 : ' + ${#temporals.format(exchangeList.createdAt, 'MM-dd HH:mm')}"></span>
+                                      th:text="'수락일자 : ' + ${#temporals.format(exchangeList.updatedAt, 'MM-dd HH:mm')}"></span>
                             </div>
-                            <div class="flex space-x-2 justify-end">
-                                <label for="my_modal_6" class="btn">수정</label>
-
-                                <!-- Put this part before </body> tag -->
-                                <input type="checkbox" id="my_modal_6" class="modal-toggle"/>
-                                <div class="modal">
-                                    <div class="modal-box">
-                                        <form th:action th:method="PATCH">
-                                            <input type="text" class="form-input border-2 border-black" name="money"
-                                                   placeholder="0"
-                                                   onkeyup="formatCurrency(this)"/>
-                                            <input type="text" class="form-input border-2 border-black"
-                                                   name="accountNumber"
-                                                   placeholder="계좌번호를 입력해주세요." maxlength="20"/>
-                                            <input type="text" class="form-input border-2 border-black"
-                                                   name="holderName"
-                                                   placeholder="예금주를 입력해주세요."/>
-                                            <div class="dropdown inline-block relative">
-                                                <button class="bg-gray-300 text-black font-semibold py-2 px-4 rounded inline-flex items-center">
-                                                    <span id="dropdown-titles" class="mr-1">카드사 선택</span>
-                                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                                         viewBox="0 0 20 20">
-                                                        <path d="M5 8a.5.5 0 01.707 0L10 12.293l4.293-4.293A.5.5 0 0115 8v7a.5.5 0 01-.5.5h-9a.5.5 0 01-.5-.5V8z"
-                                                              clip-rule="evenodd"/>
-                                                    </svg>
-                                                </button>
-                                                <ul id="dropdown-menus" class="dropdown-menu absolute hidden text-black pt-1">
-                                                    <li class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" th:each="type : ${bankTypes}">
-                                                        <label><input type="radio" name="bankType" th:value="${type}" th:text="${type}"></label>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <button type="submit" onclick="processExchange();" class="btn btn-sm"
-                                                    style="background-color: #FF626F; color: white;">환전
-                                            </button>
-                                            <div class="modal-action">
-                                                <label for="my_modal_6" class="btn">Close!</label>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                                <!--                                <form class="delete-notification-form" th:action th:method="PATCH">-->
-                                <!--                                    <button type="submit" class="text-main">-->
-                                <!--                                        수정-->
-                                <!--                                    </button>-->
-                                <!--                                </form>-->
-                                <form class="delete-notification-form" th:action th:method="DELETE">
-                                    <button type="submit" class="text-main">
-                                        삭제
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="bg-white rounded-lg shadow-lg p-4 border-t-4 border-blue-500"
-                        th:if="${exchangeList.status == true}">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-lg font-semibold text-gray-800" th:text="${exchangeList.money}"></p>
-                                <span class="text-xs text-gray-400 theme-bg inline-block px-1.5 py-0.5 rounded"
-                                      th:text="'수락일자 : ' + ${#temporals.format(exchangeList.updateddAt, 'MM-dd HH:mm')}"></span>
-                            </div>
-
                             <form class="delete-notification-form" th:action th:method="DELETE">
                                 <button type="submit" class="text-main">
+                                    <i class="fas fa-times fa-xl"></i>
                                 </button>
                             </form>
                         </div>
                     </li>
+                </th:block>
                 </ul>
             </div>
-            <!--            <div class="card shadow-xl">-->
-            <!--                <div class="card-body">-->
-            <!--                    <h2 class="card-title">환전 현황 목록</h2>-->
-            <!--                    <div class="mt-3 flex justify">-->
-            <!--                        <span class="text-base font-black" th:text="${member.nickname} + '님이 현재 가지고 있는 코인 | '"></span>-->
-            <!--                        <span class="text-base pl-2 pr-1" th:text="${member.coin}"></span>-->
-            <!--                        <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1490/1490853.png" alt="text">-->
-            <!--                    </div>-->
-            <!--                    <div class="mt-4 mb-2 flex flex-col gap-2">-->
-            <!--                        <div class="mt-3">-->
-            <!--                            <div>-->
-            <!--                                <i class="fa-solid fa-coins"></i>-->
-            <!--                                환전할 금액을 입력해주세요. (1000원 = 1000coin)-->
-            <!--                            </div>-->
-            <!--                            <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1198/1198299.png"-->
-            <!--                                 alt="text">-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-
-            <!--                </div>-->
-            <!--            </div>-->
         </div>
     </div>
 
@@ -226,48 +225,11 @@
             }
         }
 
-        let dropdowns = document.querySelectorAll('.dropdown');
-        dropdowns.forEach((dropdown) => {
-            dropdown.querySelector('button').addEventListener('click', (event) => {
-                event.preventDefault();
-                dropdown.querySelector('.dropdown-menu').classList.toggle('hidden');
-            });
-            document.addEventListener('click', (event) => {
-                if (event.target.closest('.dropdown') !== dropdown) {
-                    dropdown.querySelector('.dropdown-menu').classList.add('hidden');
-                }
-            });
-        });
-
-        let dropdownMenu = document.getElementById('dropdown-menu');
-        dropdownMenu.addEventListener('change', (event) => {
-            let title = document.getElementById('dropdown-title');
-            title.textContent = event.target.value;
-        });
-
-        let dropdownMenu = document.getElementById('dropdown-menus');
-        dropdownMenu.addEventListener('change', (event) => {
-            let title = document.getElementById('dropdown-titles');
-            title.textContent = event.target.value;
-        });
-
-        document.getElementById('accountNumber').addEventListener('input', function (e) {
-            e.target.value = e.target.value.replace(/[^0-9]/g, '');
-        });
-
         function Validation__exchange(form) {
 
             if (form.money.value.trim().length == 0 || form.money.value === 0) {
                 toastWarning("환전할 금액을 입력해주세요.");
                 form.money.focus();
-                return;
-            }
-
-            const $checkedBankTypeRadioButton = $(form).find("[name=bankType]:checked");
-
-            if ($checkedBankTypeRadioButton.length === 0) {
-                toastWarning('은행을 선택해주세요.');
-                $(form).find("[name=bankType]:first").focus();
                 return;
             }
 

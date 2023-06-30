@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/coin")
@@ -132,4 +134,36 @@ public class CoinController {
         coinService.applyExchange(exchangeRequest);
         return rq.redirectWithMsg("/usr/member/profile", "성공");
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/exchange/{exchangeId}")
+    public String editApplyExchange(Model model, ExchangeRequest exchangeRequest, @PathVariable Long exchangeId) {
+        log.info("은행 = {}", exchangeRequest.getBankType());
+        log.info("계좌번호 = {}", exchangeRequest.getAccountNumber());
+        log.info("예금주 = {}", exchangeRequest.getHolderName());
+        log.info("환전금액 = {}", exchangeRequest.getMoney());
+        RsData canExchange = memberService.canExchange(exchangeRequest.getMoney());
+        model.addAttribute("bankTypes", BankType.values());
+        if(canExchange.isFail()){
+            return rq.historyBack(canExchange);
+        }
+        RsData rsData = coinService.modifyApplyExchange(exchangeRequest, exchangeId);
+        if(rsData.isFail()){
+            return rq.historyBack(rsData);
+        }
+
+        return rq.redirectWithMsg("/coin/exchange", "성공");
+    }
+
+//    @PreAuthorize("isAuthenticated()")
+//    @DeleteMapping("/exchange")
+//    public String cancelApplyExchange(Model model, ExchangeRequest exchangeRequest) {
+//        RsData canExchange = memberService.canExchange(exchangeRequest.getMoney());
+//        model.addAttribute("bankTypes", BankType.values());
+//        if(canExchange.isFail()){
+//            return rq.historyBack(canExchange);
+//        }
+//        coinService.applyExchange(exchangeRequest);
+//        return rq.redirectWithMsg("/coin/exchange", "성공");
+//    }
 }

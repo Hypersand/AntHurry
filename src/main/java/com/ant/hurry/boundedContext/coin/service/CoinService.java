@@ -1,6 +1,7 @@
 package com.ant.hurry.boundedContext.coin.service;
 
 import com.ant.hurry.base.rq.Rq;
+import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.coin.dto.ExchangeRequest;
 import com.ant.hurry.boundedContext.coin.entity.CoinChargeLog;
 import com.ant.hurry.boundedContext.coin.entity.Exchange;
@@ -10,8 +11,12 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+
+import static com.ant.hurry.boundedContext.adm.code.AdmErrorCode.APPLY_NOT_EXISTS;
+import static com.ant.hurry.boundedContext.coin.code.ExchangeSuccessCode.CAN_EDIT_APPLY_EXCHANGE;
 
 @Service
 @RequiredArgsConstructor
@@ -48,5 +53,17 @@ public class CoinService {
 
     public List<Exchange> getExchangeList(Member member) {
         return exchangeRepository.findByMember(member);
+    }
+
+    @Transactional
+    public RsData modifyApplyExchange(ExchangeRequest exchangeRequest, Long exchangeId) {
+        Exchange exchange = exchangeRepository.findByIdWithMember(exchangeId).orElse(null);
+        if(ObjectUtils.isEmpty(exchange)){
+            return RsData.of(APPLY_NOT_EXISTS);
+        }
+        int difference = exchange.getMoney() - exchangeRequest.getMoney();
+        exchange.getMember().increaseCoin(difference);
+        exchange.update(exchangeRequest);
+        return RsData.of(CAN_EDIT_APPLY_EXCHANGE);
     }
 }
