@@ -23,6 +23,7 @@ import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
+@PreAuthorize("isAuthenticated()")
 @RequestMapping("/trade")
 public class TradeStatusController {
 
@@ -34,15 +35,12 @@ public class TradeStatusController {
     @GetMapping("/create/{id}")
     public String create(@PathVariable Long id) {
         Optional<Board> op = boardService.findById(id);
-
         if(op.isEmpty()) {
             return rq.historyBack("존재하지 않는 게시물입니다.");
         }
-
         Board board = op.get();
 
-        Member requester;
-        Member helper;
+        Member requester; Member helper;
         if(board.getMember().equals(rq.getMember())) {
             requester = rq.getMember();
             helper = board.getMember();
@@ -51,13 +49,13 @@ public class TradeStatusController {
             helper = rq.getMember();
         }
 
-        TradeStatus tradeStatus = tradeStatusService.create(board, requester, helper);
+        RsData<TradeStatus> rs = tradeStatusService.create(board, requester, helper);
+        TradeStatus tradeStatus = rs.getData();
 
         return chatRoomController.create(tradeStatus);
     }
 
     @GetMapping("/list")
-    @PreAuthorize("isAuthenticated()")
     public String showList(@RequestParam(defaultValue = "COMPLETE") String status, @AuthenticationPrincipal User user, Model model) {
 
         RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), Status.valueOf(status));
@@ -73,7 +71,6 @@ public class TradeStatusController {
 
     @GetMapping("/list/select")
     @ResponseBody
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> showListByResponseBody(@RequestParam(defaultValue = "COMPLETE") String status, @AuthenticationPrincipal User user, Model model) {
 
         if (status.equals("undefined")) {

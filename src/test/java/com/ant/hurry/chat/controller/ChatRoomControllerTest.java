@@ -46,7 +46,7 @@ public class ChatRoomControllerTest {
                 .id(1L).status(Status.BEFORE).requester(otherMember).helper(user1).build();
 
         ResultActions resultActions1 = mvc
-                .perform(post("/chat/room/%d".formatted(tradeStatus.getId()))
+                .perform(post("/chat/room")
                         .with(csrf()))
                 .andDo(print());
 
