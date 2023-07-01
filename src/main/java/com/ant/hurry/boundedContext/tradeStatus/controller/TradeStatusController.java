@@ -2,12 +2,14 @@ package com.ant.hurry.boundedContext.tradeStatus.controller;
 
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.service.BoardService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
+import com.ant.hurry.chat.controller.ChatRoomController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,37 +17,44 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/trade")
 public class TradeStatusController {
 
+    private final ChatRoomController chatRoomController;
     private final TradeStatusService tradeStatusService;
     private final BoardService boardService;
-    private final MemberService memberService;
     private final Rq rq;
 
-//    @GetMapping("/create/{id}")
-//    public String create(@PathVariable Long id) {
-//        Board board = boardService.findById(id);
-//        Member requester = board.getMember();
-//        Member helper = rq.getMember();
-//
-//        tradeStatusService.create(board, requester, helper);
-//        [event -> ChatRoom 생성]
-//
-//        return "[redirect ChatRoom]";
-//    }
+    @GetMapping("/create/{id}")
+    public String create(@PathVariable Long id) {
+        Optional<Board> op = boardService.findById(id);
+
+        if(op.isEmpty()) {
+            return rq.historyBack("존재하지 않는 게시물입니다.");
+        }
+
+        Board board = op.get();
+
+        Member requester;
+        Member helper;
+        if(board.getMember().equals(rq.getMember())) {
+            requester = rq.getMember();
+            helper = board.getMember();
+        } else {
+            requester = board.getMember();
+            helper = rq.getMember();
+        }
+
+        TradeStatus tradeStatus = tradeStatusService.create(board, requester, helper);
+
+        return chatRoomController.create(tradeStatus);
+    }
 
     @GetMapping("/list")
     @PreAuthorize("isAuthenticated()")
