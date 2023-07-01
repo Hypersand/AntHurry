@@ -30,7 +30,8 @@
 <main layout:fragment="main" class="flex-grow flex items-center justify-center w-screen">
     <div id="chat-area" class="flex flex-col w-full h-[1000px]">
         <div id="messages" class="flex text-center w-full m-8">
-            <div class="chat chat-start" th:each="message : ${chatMessages}" th:if="${message.getSender() != @rq.getMember()}">
+            <div class="chat chat-start" th:each="message : ${chatMessages}"
+                 th:if="${message.getSender() != @rq.getMember()}">
                 <div class="chat-image avatar">
                     <!-- 상대방의 프로필 이미지 -->
                     <div class="w-10 rounded-full bg-pink-400"></div>
@@ -41,7 +42,8 @@
                 </div>
                 <div class="chat-bubble" th:text="${message.getContent()}"></div>
             </div>
-            <div class="chat chat-end" th:each="message : ${chatMessages}" th:if="${message.getSender() == @rq.getMember()}">
+            <div class="chat chat-end" th:each="message : ${chatMessages}"
+                 th:if="${message.getSender() == @rq.getMember()}">
                 <div class="chat-image avatar">
                     <!-- 나의 프로필 이미지 -->
                     <div class="w-10 rounded-full bg-pink-400"></div>
@@ -54,7 +56,7 @@
             </div>
         </div>
         <div id="input-area" class="flex justify-center mt-auto mb-24">
-            <input id="send-msg" type="text" class="input input-bordered w-full max-w-sm" />
+            <input id="send-msg" type="text" class="input input-bordered w-full max-w-sm"/>
             <button id="send-button" class="btn btn-outline"><i class="fa-regular fa-paper-plane"></i></button>
         </div>
     </div>
@@ -68,7 +70,7 @@
         var stomp = Stomp.over(sockJs);
 
         var roomId = [[${room.id}]];
-        var username = [[${member.nickName}]];
+        var username = [[${rq.member.nickname}]];
 
         stomp.connect({}, function () {
             stomp.subscribe("/sub/chat/room/" + roomId, function (message) {
@@ -100,7 +102,7 @@
                 $("#messages").append(msg);
             });
 
-            stomp.send('/pub/chat/message', {}, JSON.stringify({ roomId: roomId, writer: username }));
+            stomp.send('/pub/chat/message', {}, JSON.stringify({roomId: roomId, writer: username}));
         });
 
         $("#send-msg").on("keydown", function (event) {
@@ -112,7 +114,7 @@
 
         $("#send-button").on("click", function (event) {
             var msg = document.getElementById("send-msg");
-            stomp.send('/pub/chat/message', {}, JSON.stringify({ roomId: roomId, message: msg.value, writer: username }));
+            stomp.send('/pub/chat/message', {}, JSON.stringify({roomId: roomId, message: msg.value, writer: username}));
             msg.value = '';
         });
     });

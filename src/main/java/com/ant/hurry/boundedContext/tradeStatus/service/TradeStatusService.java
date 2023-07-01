@@ -4,7 +4,6 @@ import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
-import com.ant.hurry.boundedContext.review.service.ReviewService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.repository.TradeStatusRepository;

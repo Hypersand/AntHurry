@@ -8,7 +8,6 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
-import com.ant.hurry.chat.controller.ChatRoomController;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
