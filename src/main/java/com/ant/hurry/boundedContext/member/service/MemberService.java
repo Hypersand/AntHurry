@@ -176,4 +176,8 @@ public class MemberService {
         }
         return RsData.of(COIN_ENOUGH);
     }
+
+    public Optional<Member> findByNickname(String nickname) {
+        return memberRepository.findByNickname(nickname);
+    }
 }

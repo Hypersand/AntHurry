@@ -65,7 +65,8 @@ class ReviewControllerTest {
                 .andExpect(handler().handlerType(ReviewController.class))
                 .andExpect(handler().methodName("showCreate"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("opponentNickname", "User4"))
+                .andExpect(model().attributeExists("reviewRequest"))
+                .andExpect(model().attributeExists("tradeStatusId"))
                 .andExpect(view().name("review/create"));
 
     }
@@ -85,14 +86,15 @@ class ReviewControllerTest {
                 .andExpect(handler().handlerType(ReviewController.class))
                 .andExpect(handler().methodName("showCreate"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("opponentNickname", "User3"))
+                .andExpect(model().attributeExists("reviewRequest"))
+                .andExpect(model().attributeExists("tradeStatusId"))
                 .andExpect(view().name("review/create"));
 
     }
 
 
     @Test
-    @DisplayName("후기 또는 별점을 작성 안하고 제출 시 bindingResult가 model에 담긴다.")
+    @DisplayName("후기 또는 별점을 작성 안하고 제출 시 bindingResult에 담긴 메시지로 historyBack 한다.")
     @WithMockUser("user3")
     void review_content_not_exists() throws Exception {
 
@@ -110,9 +112,8 @@ class ReviewControllerTest {
         resultActions
                 .andExpect(handler().handlerType(ReviewController.class))
                 .andExpect(handler().methodName("create"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("bindingResult"))
-                .andExpect(view().name("review/create"));
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("common/js"));
     }
 
     @Test
@@ -121,7 +122,7 @@ class ReviewControllerTest {
     void review_success_write() throws Exception {
 
         //given
-        ReviewRequest reviewRequest = new ReviewRequest("후기테스트입니다.", 5.0);
+        ReviewRequest reviewRequest = new ReviewRequest("후기테스트입니다.", 5.0, "User4");
         Long tradeStatusId = 4L;
 
         //when
@@ -135,7 +136,7 @@ class ReviewControllerTest {
         resultActions
                 .andExpect(handler().handlerType(ReviewController.class))
                 .andExpect(handler().methodName("create"))
-                .andExpect(status().isOk());
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
