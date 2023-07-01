@@ -35,9 +35,8 @@ public class Board extends BaseEntity {
 
     private String regCode;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Member member;
-
 
     public void updateBoard(CreateRequest createRequest) {
         this.title = createRequest.getTitle();

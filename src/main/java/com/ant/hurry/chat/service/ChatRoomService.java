@@ -46,7 +46,7 @@ public class ChatRoomService {
 
         ChatRoom foundchatRoom = chatRoom.get();
 
-        if (foundchatRoom.getMembers().stream().filter(m -> m.getUsername().equals(member.getUsername())).count() < 1) {
+        if (foundchatRoom.getMembers().stream().noneMatch(m -> m.getUsername().equals(member.getUsername()))) {
             return RsData.of(UNAUTHORIZED);
         }
 
