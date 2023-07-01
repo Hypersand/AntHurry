@@ -31,7 +31,10 @@ public class ChatRoomService {
     private final ApplicationEventPublisher publisher;
 
     public RsData<ChatRoom> findById(String id) {
-        return RsData.of(CHATROOM_FOUND, chatRoomRepository.findById(id).get());
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(id);
+
+        return chatRoom.map(room -> RsData.of(CHATROOM_FOUND, room))
+                .orElseGet(() -> RsData.of(CHATROOM_NO_EXISTS));
     }
 
     public RsData<ChatRoom> findByIdAndVerify(String id, Member member) {
@@ -40,6 +43,7 @@ public class ChatRoomService {
         if (chatRoom.isEmpty()) {
             return RsData.of(CHATROOM_NO_EXISTS);
         }
+
         ChatRoom foundchatRoom = chatRoom.get();
 
         if (!foundchatRoom.getMembers().contains(member)) {
@@ -50,13 +54,11 @@ public class ChatRoomService {
     }
 
     public RsData<List<ChatRoom>> findByMember(Member member) {
-        List<ChatRoom> chatRooms = chatRoomRepository.findByMembersContaining(member);
-        return RsData.of(CHATROOM_FOUND, chatRooms);
+        return RsData.of(CHATROOM_FOUND, chatRoomRepository.findByMembersContaining(member));
     }
 
     public RsData<List<ChatRoom>> findAll() {
-        List<ChatRoom> chatRooms = chatRoomRepository.findAll();
-        return RsData.of(CHATROOM_FOUND, chatRooms);
+        return RsData.of(CHATROOM_FOUND, chatRoomRepository.findAll());
     }
 
     public RsData<ChatRoom> create(TradeStatus tradeStatus) {
@@ -70,9 +72,8 @@ public class ChatRoomService {
                 .members(members)
                 .createdAt(LocalDateTime.now())
                 .build();
-        ChatRoom insertChatRoom = chatRoomRepository.insert(chatRoom);
 
-        return RsData.of(CHATROOM_CREATED, insertChatRoom);
+        return RsData.of(CHATROOM_CREATED, chatRoomRepository.insert(chatRoom));
     }
 
     public RsData exit(ChatRoom chatRoom, Member member) {
@@ -90,7 +91,6 @@ public class ChatRoomService {
         if (chatRoomMemberExited.getExitedMembers().size() == 2) {
             delete(chatRoomMemberExited);
         }
-
         return RsData.of(CHATROOM_EXITED);
     }
 

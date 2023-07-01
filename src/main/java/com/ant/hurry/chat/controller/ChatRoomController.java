@@ -4,7 +4,6 @@ import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
-import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.entity.LatestMessage;
 import com.ant.hurry.chat.service.ChatMessageService;
@@ -34,17 +33,19 @@ public class ChatRoomController {
     public String showRoom(@PathVariable String id, Model model) {
         RsData<ChatRoom> rs = chatRoomService.findByIdAndVerify(id, rq.getMember());
 
-        if (rs.getData() == null) {
+        if (rs.isFail()) {
             return rq.historyBack(rs.getMsg());
         }
 
-        ChatRoom room = rs.getData();
-        Member otherMember = room.getMembers().stream().filter(m -> !m.equals(rq.getMember())).findFirst().get();
-        List<ChatMessage> chatMessages = chatMessageService.findByChatRoom(room).getData();
+        ChatRoom chatRoom = rs.getData();
+        Member otherMember = chatRoom.getMembers()
+                .stream().filter(m -> !m.equals(rq.getMember())).findFirst().orElse(null);
+
+        if (otherMember == null) return rq.historyBack("존재하지 않는 회원입니다.");
 
         model.addAttribute("otherMember", otherMember);
-        model.addAttribute("chatMessages", chatMessages);
-        model.addAttribute("room", room);
+        model.addAttribute("chatMessages", chatMessageService.findByChatRoom(chatRoom).getData());
+        model.addAttribute("room", chatRoom);
         return "chat/room";
     }
 
@@ -66,10 +67,9 @@ public class ChatRoomController {
 
     @GetMapping("/exit/{id}")
     public String exit(@PathVariable String id) {
-        ChatRoom chatRoom = chatRoomService.findByIdAndVerify(id, rq.getMember()).getData();
-        Member member = rq.getMember();
-        RsData rs = chatRoomService.exit(chatRoom, member);
-        return rq.redirectWithMsg("chat/myRooms", rs.getMsg());
+        RsData<ChatRoom> rs = chatRoomService.findByIdAndVerify(id, rq.getMember());
+        RsData exitRs = chatRoomService.exit(rs.getData(), rq.getMember());
+        return rq.redirectWithMsg("chat/myRooms", exitRs.getMsg());
     }
 
 }
