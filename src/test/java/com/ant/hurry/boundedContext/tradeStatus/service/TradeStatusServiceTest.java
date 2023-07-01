@@ -32,8 +32,6 @@ public class TradeStatusServiceTest {
 
     @Autowired
     TradeStatusService tradeStatusService;
-    @Autowired
-    TradeStatusRepository tradeStatusRepository;
 
     @Test
     void create_tradeStatus() {
