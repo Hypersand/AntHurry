@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusErrorCode.*;
 import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusSuccessCode.*;
@@ -34,7 +35,7 @@ public class TradeStatusService {
                 .helper(helper)
                 .build();
         tradeStatusRepository.save(tradeStatus);
-        return RsData.of(CREATED_SUCCESS, tradeStatus);
+        return RsData.of(CREATE_SUCCESS, tradeStatus);
     }
 
     @Transactional
@@ -48,29 +49,31 @@ public class TradeStatusService {
         TradeStatus modifiedTradeStatus = tradeStatus.toBuilder().status(status).build();
         tradeStatusRepository.save(modifiedTradeStatus);
 
-        return RsData.of(STATUS_UPDATED, modifiedTradeStatus);
+        return RsData.of(UPDATE_SUCCESS, modifiedTradeStatus);
     }
 
     private RsData canUpdateStatus(TradeStatus tradeStatus, Status status) {
         Status target = tradeStatus.getStatus();
         if (!target.equals(BEFORE) && status.equals(INPROGRESS)) {
-            return RsData.of(ALREADY_INPROGRESS);
+            return RsData.of(ALREADY_IN_PROGRESS);
         }
         if (!target.equals(INPROGRESS) && status.equals(COMPLETE)) {
-            return RsData.of(COMLETE_FAILED);
+            return RsData.of(COMPLETE_FAILED);
         }
         if(target.equals(COMPLETE) && !status.equals(CANCELED)) {
             return RsData.of(ALREADY_COMPLETED);
         }
-        return RsData.of(STATUS_CAN_UPDATE);
+        return RsData.of(CAN_UPDATE);
     }
 
-    public List<TradeStatus> findByMember(Member member) {
-        return tradeStatusRepository.findByRequesterOrHelper(member.getId());
+    public RsData<List<TradeStatus>> findByMember(Member member) {
+        return RsData.of(TRADESTATUS_FOUND, tradeStatusRepository.findByRequesterOrHelper(member.getId()));
     }
 
-    public TradeStatus findById(Long id) {
-        return tradeStatusRepository.findById(id).orElse(null);
+    public RsData<TradeStatus> findById(Long id) {
+        Optional<TradeStatus> tradeStatus = tradeStatusRepository.findById(id);
+        return tradeStatus.map(status -> RsData.of(TRADESTATUS_FOUND, status))
+                .orElseGet(() -> RsData.of(TRADESTATUS_NOT_EXISTS));
     }
 
     public RsData<List<TradeStatus>> findMyTradeStatusList(String username, Status status) {

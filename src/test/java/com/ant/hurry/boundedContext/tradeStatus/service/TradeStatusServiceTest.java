@@ -7,10 +7,8 @@ import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.repository.TradeStatusRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusSuccessCode.CREATED_SUCCESS;
+import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusSuccessCode.CREATE_SUCCESS;
 import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusSuccessCode.REDIRECT_TO_PAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,8 +51,8 @@ public class TradeStatusServiceTest {
 
         RsData<TradeStatus> rs = tradeStatusService.create(board, requester, helper);
 
-        assertEquals(CREATED_SUCCESS.getCode(), rs.getResultCode());
-        assertEquals(CREATED_SUCCESS.getMessage(), rs.getMsg());
+        assertEquals(CREATE_SUCCESS.getCode(), rs.getResultCode());
+        assertEquals(CREATE_SUCCESS.getMessage(), rs.getMsg());
         assertNotNull(rs.getData());
     }
 

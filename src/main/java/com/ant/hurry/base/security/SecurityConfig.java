@@ -31,8 +31,8 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/chat/**").permitAll()
-                .requestMatchers("/user/member/login").anonymous()
-                .requestMatchers("/**").authenticated());
+                .requestMatchers("/usr/member/login").anonymous()
+                .anyRequest().authenticated());
 
         return http.build();
     }
