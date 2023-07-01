@@ -26,11 +26,14 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -77,7 +80,7 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/phoneAuth")
     @ResponseBody
-    public ResponseEntity phoneAuthComplete(String phoneNumber){
+    public ResponseEntity phoneAuthComplete(String phoneNumber) {
         Member member = rq.getMember();
         RsData<?> result = memberService.phoneAuthComplete(member, phoneNumber);
         if (result.isFail()) {
@@ -93,7 +96,7 @@ public class MemberController {
     public ResponseEntity phoneAuth(String phoneNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
         //핸드폰 번호를 가지고 있는 사용자가 존재하는지 체크
         boolean existPhoneNumber = memberService.existsPhoneNumber(phoneNumber);
-        if(existPhoneNumber){
+        if (existPhoneNumber) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("전화번호 중복");
         }
 
@@ -101,7 +104,7 @@ public class MemberController {
         String authCode = phoneAuthService.sendSms(phoneNumber);
 
         Member member = rq.getMember();
-        if(member != null){
+        if (member != null) {
             memberService.updateTmpPhone(member, phoneNumber);
         }
 
@@ -144,7 +147,7 @@ public class MemberController {
 
         //이미지 경로 세팅
         Optional<ProfileImage> profileImage = memberService.findProfileImage(member);
-        if(profileImage.isPresent())
+        if (profileImage.isPresent())
             profileRequestDto.setImagePath(profileImage.get().getFullPath());
         else
             profileRequestDto.setImagePath(null);
@@ -170,8 +173,8 @@ public class MemberController {
     @PostMapping("/profile_edit")
     @ResponseBody
     public ResponseEntity updateProfile(@ModelAttribute @Valid ProfileRequestDto profileRequestDto,
-                                BindingResult result,
-                                MultipartFile file) throws IOException {
+                                        BindingResult result,
+                                        MultipartFile file) throws IOException {
         //입력필드 검증
         Map<String, String> errors = new HashMap<>();
         if (result.hasErrors()) {
@@ -191,7 +194,7 @@ public class MemberController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/charge")
-    public String chargePoint(Model model){
+    public String chargePoint(Model model) {
         Member member = memberService.getMember();
         model.addAttribute("member", member);
         return "usr/member/charge";
@@ -204,6 +207,21 @@ public class MemberController {
         model.addAttribute("code", code);
         return "usr/member/fail";
 
+    }
+
+
+    @GetMapping("/profile/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String opponentProfile(@PathVariable Long id, Model model) {
+        Member member = memberService.findById(id).orElse(null);
+
+        if (member == null) {
+            rq.historyBack("존재하는 회원이 없습니다.");
+        }
+
+        model.addAttribute("member", member);
+
+        return "usr/member/usrCheck";
     }
 
 }
