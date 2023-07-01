@@ -49,13 +49,6 @@ public class ChatRoomController {
         return "chat/room";
     }
 
-    @PostMapping("/room")
-    public String create(TradeStatus tradeStatus) {
-        RsData<ChatRoom> rs = chatRoomService.create(tradeStatus);
-        ChatRoom chatRoom = rs.getData();
-        return rq.redirectWithMsg("chat/room/%s".formatted(chatRoom.getId()), rs.getMsg());
-    }
-
     @GetMapping("/myRooms")
     public String showMyRooms(Model model) {
         RsData<List<LatestMessage>> rs = latestMessageService.findByMember(rq.getMember());

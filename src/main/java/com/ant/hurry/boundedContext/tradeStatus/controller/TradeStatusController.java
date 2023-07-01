@@ -5,11 +5,12 @@ import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.service.BoardService;
 import com.ant.hurry.boundedContext.member.entity.Member;
-import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import com.ant.hurry.chat.controller.ChatRoomController;
+import com.ant.hurry.chat.entity.ChatRoom;
+import com.ant.hurry.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +20,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,21 +31,22 @@ import java.util.*;
 @RequestMapping("/trade")
 public class TradeStatusController {
 
-    private final ChatRoomController chatRoomController;
+    private final ChatRoomService chatRoomService;
     private final TradeStatusService tradeStatusService;
     private final BoardService boardService;
     private final Rq rq;
 
     @GetMapping("/create/{id}")
     public String create(@PathVariable Long id) {
-        Optional<Board> op = boardService.findById(id);
-        if(op.isEmpty()) {
-            return rq.historyBack("존재하지 않는 게시물입니다.");
-        }
-        Board board = op.get();
+        Optional<Board> opBoard = boardService.findById(id);
 
-        Member requester; Member helper;
-        if(board.getMember().equals(rq.getMember())) {
+        if (opBoard.isEmpty()) return rq.historyBack("존재하지 않는 게시물입니다.");
+
+        Board board = opBoard.get();
+
+        Member requester;
+        Member helper;
+        if (board.getMember().equals(rq.getMember())) {
             requester = rq.getMember();
             helper = board.getMember();
         } else {
@@ -49,10 +54,9 @@ public class TradeStatusController {
             helper = rq.getMember();
         }
 
-        RsData<TradeStatus> rs = tradeStatusService.create(board, requester, helper);
-        TradeStatus tradeStatus = rs.getData();
-
-        return chatRoomController.create(tradeStatus);
+        RsData<TradeStatus> tradeStatus = tradeStatusService.create(board, requester, helper);
+        RsData<ChatRoom> chatRoom = chatRoomService.create(tradeStatus.getData());
+        return "redirect:/chat/room/%s".formatted(chatRoom.getData().getId());
     }
 
     @GetMapping("/list")
