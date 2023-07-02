@@ -3,6 +3,7 @@ package com.ant.hurry.boundedContext.board.controller;
 import com.ant.hurry.base.region.service.RegionSearchService;
 import com.ant.hurry.boundedContext.board.entity.BoardType;
 import com.ant.hurry.boundedContext.board.entity.TradeType;
+import com.ant.hurry.standard.util.Ut;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -196,4 +198,52 @@ public class BoardControllerTest {
                 .andExpect(content().string(containsString("휴지좀")))
                 .andExpect(content().string(containsString("1000")));
     }
+
+    @Test
+    @DisplayName("게시글 수정 GET")
+    @WithMockUser("user1")
+    void modifyBoard() throws Exception {
+        regionSearchService.selectPattern();
+
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/board/modify/5"))
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(BoardController.class))
+                .andExpect(handler().methodName("showModify"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(view().name("board/modify"))
+                .andExpect(content().string(containsString("휴지좀")))
+                .andExpect(content().string(containsString("1000")));
+    }
+
+    @Test
+    @DisplayName("게시글 수정 POST")
+    @WithMockUser("user1")
+    void updateBoard() throws Exception {
+        regionSearchService.selectPattern();
+
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(post("/board/modify/5")
+                        .with(csrf())
+                        .param("title", "게시판 제목입니다.")
+                        .param("content", "게시판 내용입니다.")
+                        .param("boardType", String.valueOf(BoardType.나잘해요))
+                        .param("tradeType", String.valueOf(TradeType.온라인))
+                        .param("address", "")
+                        .param("rewardCoin", "100"))
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(BoardController.class))
+                .andExpect(handler().methodName("modify"))
+                .andExpect(status().is3xxRedirection());
+
+    }
+
 }
