@@ -15,6 +15,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
+import static com.ant.hurry.base.code.BasicErrorCode.UNAUTHORIZED;
 import static com.ant.hurry.boundedContext.adm.code.AdmErrorCode.APPLY_NOT_EXISTS;
 import static com.ant.hurry.boundedContext.coin.code.ExchangeErrorCode.NOT_EXISTS_APPLY_EXCHANGE;
 import static com.ant.hurry.boundedContext.coin.code.ExchangeSuccessCode.*;
@@ -70,11 +71,16 @@ public class CoinService {
     }
 
     public RsData canCancelExchange(Long exchangeId) {
+        System.out.println(exchangeId);
+        Member member = rq.getMember();
         Exchange exchange = exchangeRepository.findByIdWithMember(exchangeId).orElse(null);
         if(ObjectUtils.isEmpty(exchange)){
-            return RsData.of(APPLY_NOT_EXISTS);
+            return RsData.of(NOT_EXISTS_APPLY_EXCHANGE);
         }
-        return RsData.of(NOT_EXISTS_APPLY_EXCHANGE, exchange);
+        if(!exchange.getMember().equals(member)){
+            return RsData.of(UNAUTHORIZED);
+        }
+        return RsData.of(CAN_DELETE_APPLY_EXCHANGE, exchange);
     }
 
     @Transactional
