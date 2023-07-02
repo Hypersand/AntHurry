@@ -35,5 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
 application-secret.yml
+
 .env
+
+src/main/generated
