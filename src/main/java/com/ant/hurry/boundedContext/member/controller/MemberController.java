@@ -218,7 +218,7 @@ public class MemberController {
 
     @GetMapping("/profile/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String opponentProfile(@PathVariable Long id, Model model) {
+    public String showProfile(@PathVariable Long id, Model model) {
 
         RsData<Member> rsData = memberService.validateAndReturnMember(id);
 
@@ -226,8 +226,8 @@ public class MemberController {
             return rq.historyBack(rsData.getMsg());
         }
 
-        Long completeTradeCount = tradeStatusService.getMemberComleteTradeStatusCount(id);
-        Long reviewCount = reviewService.getMemberReviewCount(id);
+        Long completeTradeCount = tradeStatusService.getComleteTradeStatusCount(id);
+        Long reviewCount = reviewService.getReviewCount(id);
 
         model.addAttribute("member", rsData.getData());
         model.addAttribute("completeTradeCount", completeTradeCount);

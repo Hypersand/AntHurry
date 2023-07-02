@@ -127,7 +127,7 @@ public class ReviewService {
         return RsData.of("S_R-3", "후기목록페이지로 이동합니다.", map);
     }
 
-    public Long getMemberReviewCount(Long id) {
+    public Long getReviewCount(Long id) {
         return reviewRepository.countByReceiver_Id(id);
     }
 
