@@ -2,6 +2,7 @@ package com.ant.hurry.chat.service;
 
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.chat.baseEntity.Message;
 import com.ant.hurry.chat.config.MongoConfig;
 import com.ant.hurry.chat.dto.ChatMessageDto;
 import com.ant.hurry.chat.entity.ChatFileMessage;
@@ -74,13 +75,7 @@ public class ChatMessageService {
                 .build();
         chatMessageRepository.save(message);
 
-        LatestMessage latestMessage = latestMessageService.findByChatRoom(dto.getChatRoom()).getData();
-        LatestMessage updateLatestMessage = latestMessage.toBuilder()
-                .message(message)
-                .createdAt(LocalDateTime.now())
-                .build();
-        latestMessageRepository.save(updateLatestMessage);
-
+        saveLatestMessage(dto.getChatRoom(), message);
         return RsData.of(MESSAGE_SENT, message);
     }
 
@@ -115,14 +110,17 @@ public class ChatMessageService {
                 .build();
         chatFileMessageRepository.insert(chatFileMessage);
 
+        saveLatestMessage(chatRoom, chatFileMessage);
+        return RsData.of(MESSAGE_SENT, chatFileMessage);
+    }
+
+    private void saveLatestMessage(ChatRoom chatRoom, Message message) {
         LatestMessage latestMessage = latestMessageService.findByChatRoom(chatRoom).getData();
         LatestMessage updateLatestMessage = latestMessage.toBuilder()
-                .message(chatFileMessage)
+                .message(message)
                 .createdAt(LocalDateTime.now())
                 .build();
         latestMessageRepository.save(updateLatestMessage);
-
-        return RsData.of(MESSAGE_SENT, chatFileMessage);
     }
 
     // 파일 업로드(저장)
@@ -135,9 +133,7 @@ public class ChatMessageService {
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
         InputStream inputStream = file.getInputStream();
-
-        GridFSBucket gridBucket =
-                GridFSBuckets.create(mongoConfig.mongoClient().getDatabase(databaseName));
+        GridFSBucket gridBucket = createGridBucket();
 
         GridFSUploadOptions uploadOptions = new GridFSUploadOptions().chunkSizeBytes(1024).metadata(doc);
         ObjectId fileId = gridBucket.uploadFromStream(file.getOriginalFilename(), inputStream, uploadOptions);
@@ -147,22 +143,19 @@ public class ChatMessageService {
     }
 
     // 파일 다운로드
-    public ResponseEntity<StreamingResponseBody> downloadFile(ChatFileMessage message) throws IOException {
+    public ResponseEntity<StreamingResponseBody> downloadFile(ChatFileMessage message) {
         String fileId = message.getUploadFileId();
-
-        GridFSBucket gridBucket =
-                GridFSBuckets.create(mongoConfig.mongoClient().getDatabase(databaseName));
-
+        GridFSBucket gridBucket = createGridBucket();
         GridFSFile file = gridBucket.find(Filters.eq("_id", new ObjectId(fileId))).first();
 
-        if (file == null) {
-            return ResponseEntity.notFound().build();
-        }
+        if (file == null) return ResponseEntity.notFound().build();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(file.getMetadata().getString("content_type")));
         headers.setContentLength(file.getLength());
-        headers.setContentDisposition(ContentDisposition.builder("attachment").filename(file.getFilename()).build());
+        headers.setContentDisposition(ContentDisposition
+                .builder("attachment").filename(file.getFilename())
+                .build());
 
         StreamingResponseBody responseBody = outputStream -> {
             GridFSDownloadStream downloadStream = gridBucket.openDownloadStream(file.getObjectId());
@@ -180,10 +173,12 @@ public class ChatMessageService {
         return ResponseEntity.ok().headers(headers).body(responseBody);
     }
 
-    public RsData deleteSoft(ChatMessage chatMessage) {
-        ChatMessage deletedChatMessage = chatMessageRepository.deleteSoft(chatMessage);
+    private GridFSBucket createGridBucket() {
+        return GridFSBuckets.create(mongoConfig.mongoClient().getDatabase(databaseName));
+    }
 
-        return deletedChatMessage.getDeletedAt() != null ?
+    public RsData deleteSoft(ChatMessage chatMessage) {
+        return chatMessageRepository.deleteSoft(chatMessage).getDeletedAt() != null ?
                 RsData.of(MESSAGE_DELETED) : RsData.of(MESSAGE_NOT_DELETED);
     }
 
@@ -192,9 +187,9 @@ public class ChatMessageService {
         return RsData.of(MESSAGE_DELETED);
     }
 
+    // event
     public void whenAfterDeletedChatRoom(ChatRoom chatRoom) {
-        List<ChatMessage> chatMessages = findByChatRoom(chatRoom).getData();
-        chatMessages.forEach(chatMessageRepository::deleteSoft);
+        findByChatRoom(chatRoom).getData().forEach(chatMessageRepository::deleteSoft);
     }
 
 }

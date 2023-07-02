@@ -34,13 +34,12 @@ public class LatestMessageService {
     }
 
     public RsData<LatestMessage> findByChatRoom(ChatRoom chatRoom) {
-        LatestMessage latestMessage = latestMessageRepository.findByChatRoom(chatRoom).orElse(null);
-        if(latestMessage == null) {
-            latestMessage = LatestMessage.builder()
-                    .chatRoom(chatRoom)
-                    .createdAt(LocalDateTime.now())
-                    .build();
-        }
+        LatestMessage latestMessage = latestMessageRepository.findByChatRoom(chatRoom)
+                .orElseGet(() -> LatestMessage.builder()
+                        .chatRoom(chatRoom)
+                        .createdAt(LocalDateTime.now())
+                        .build());
+
         return RsData.of(MESSAGE_FOUND, latestMessage);
     }
 

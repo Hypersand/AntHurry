@@ -1,6 +1,8 @@
 package com.ant.hurry.chat.entity;
 
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.chat.baseEntity.BaseMessage;
+import com.ant.hurry.chat.baseEntity.Message;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
