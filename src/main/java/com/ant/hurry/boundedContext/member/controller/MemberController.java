@@ -7,6 +7,7 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
+import com.ant.hurry.boundedContext.review.service.ReviewService;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import jakarta.validation.Valid;
@@ -53,6 +54,7 @@ public class MemberController {
     private final MemberService memberService;
     private final PhoneAuthService phoneAuthService;
     private final TradeStatusService tradeStatusService;
+    private final ReviewService reviewService;
     private final Rq rq;
 
     @PreAuthorize("isAnonymous()")
@@ -225,9 +227,11 @@ public class MemberController {
         }
 
         Long completeTradeCount = tradeStatusService.getMemberComleteTradeStatusCount(id);
+        Long reviewCount = reviewService.getMemberReviewCount(id);
 
         model.addAttribute("member", rsData.getData());
         model.addAttribute("completeTradeCount", completeTradeCount);
+        model.addAttribute("reviewCount", reviewCount);
 
         return "usr/member/usrCheck";
     }

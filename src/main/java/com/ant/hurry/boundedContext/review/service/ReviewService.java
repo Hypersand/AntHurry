@@ -120,4 +120,8 @@ public class ReviewService {
         return RsData.of("S_R-3", "후기목록페이지로 이동합니다.", myReviews);
     }
 
+    public Long getMemberReviewCount(Long id) {
+        return reviewRepository.countByReceiver_Id(id);
+    }
+
 }
