@@ -37,7 +37,7 @@ public class TradeStatusController {
 
     @GetMapping("/create/{id}")
     public String create(@PathVariable Long id) {
-        Optional<Board> opBoard = boardService.findById(id);
+        Optional<Board> opBoard = boardService.findByIdWithMember(id);
 
         if (opBoard.isEmpty()) return rq.historyBack("존재하지 않는 게시물입니다.");
 

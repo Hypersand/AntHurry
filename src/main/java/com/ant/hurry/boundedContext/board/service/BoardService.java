@@ -109,6 +109,10 @@ public class BoardService {
         return boardRepository.findById(id);
     }
 
+    public Optional<Board> findByIdWithMember(Long id) {
+        return boardRepository.findByIdWithMember(id);
+    }
+
     public List<Board> findByCode(String code) {
         return boardRepository.findByRegCode(code);
     }
