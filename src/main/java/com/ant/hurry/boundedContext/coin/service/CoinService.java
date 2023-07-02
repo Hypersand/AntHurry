@@ -71,7 +71,6 @@ public class CoinService {
     }
 
     public RsData canCancelExchange(Long exchangeId) {
-        System.out.println(exchangeId);
         Member member = rq.getMember();
         Exchange exchange = exchangeRepository.findByIdWithMember(exchangeId).orElse(null);
         if(ObjectUtils.isEmpty(exchange)){

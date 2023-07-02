@@ -33,3 +33,4 @@ INSERT INTO REVIEW (content, rating, trade_status_id, writer_id, receiver_id) VA
 INSERT INTO REVIEW (content, rating, trade_status_id, writer_id, receiver_id) VALUES ('내용4', 3.0, 3, 2, 3);
 
 INSERT INTO EXCHANGE (member_id, bank_type, account_number, holder_name, money, status) VALUES (1, '국민', '123456789', '홍길동', 1000, 0);
+INSERT INTO EXCHANGE (member_id, bank_type, account_number, holder_name, money, status) VALUES (1, '국민', '123456789', '홍길동', 1000, 1);
