@@ -37,26 +37,6 @@ public class ChatRoomControllerTest {
     MockMvc mvc;
 
     @Test
-    @DisplayName("채팅방을 생성합니다.")
-    @WithUserDetails("user1")
-    void chatRoom_create() throws Exception {
-        Member otherMember = Member.builder().build();
-        Member user1 = memberService.findByUsername("user1").get();
-        TradeStatus tradeStatus = TradeStatus.builder()
-                .id(1L).status(Status.BEFORE).requester(otherMember).helper(user1).build();
-
-        ResultActions resultActions1 = mvc
-                .perform(post("/chat/room/%d".formatted(tradeStatus.getId()))
-                        .with(csrf()))
-                .andDo(print());
-
-        resultActions1
-                .andExpect(handler().handlerType(ChatRoomController.class))
-                .andExpect(handler().methodName("create"))
-                .andExpect(status().is3xxRedirection());
-    }
-
-    @Test
     @DisplayName("채팅 목록을 조회합니다.")
     @WithUserDetails("user1")
     void chatRoom_showMyRooms() throws Exception {

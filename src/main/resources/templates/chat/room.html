@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html layout:decorate="~{usr/layout/layout.html}">
 
 <head>
@@ -6,7 +7,6 @@
 
 <body>
 <header layout:fragment="header" class="sticky top-0 z-50">
-
     <div class="navbar max-w-2xl mx-auto bg-base-100">
         <div class="navbar-start">
             <div>
@@ -25,35 +25,100 @@
             </button>
         </div>
     </div>
-
 </header>
 
 <main layout:fragment="main" class="flex-grow flex items-center justify-center w-screen">
-    <div class="text-center w-full m-8" th:each="message : ${chatMessages}">
-        <div class="chat chat-start" th:if="${message.getSender() != @rq.getMember()}">
-            <div class="chat-image avatar">
-                <!-- 상대방의 프로필 이미지 -->
-                <div class="w-10 rounded-full bg-pink-400"></div>
+    <div id="chat-area" class="flex flex-col w-full h-[1000px]">
+        <div id="messages" class="flex text-center w-full m-8">
+            <div class="chat chat-start" th:each="message : ${chatMessages}"
+                 th:if="${message.getSender() != @rq.getMember()}">
+                <div class="chat-image avatar">
+                    <!-- 상대방의 프로필 이미지 -->
+                    <div class="w-10 rounded-full bg-pink-400"></div>
+                </div>
+                <div class="chat-header" th:text="${message.getSender().username}">
+                    <time class="text-xs opacity-50"
+                          th:utext="${#temporals.format(message.getCreatedAt(), 'HH:mm')}"></time>
+                </div>
+                <div class="chat-bubble" th:text="${message.getContent()}"></div>
             </div>
-            <div class="chat-header" th:text="${message.getSender().username}">
-                <time class="text-xs opacity-50"
-                      th:utext="${#temporals.format(message.getCreatedAt(), 'HH:mm')}"></time>
+            <div class="chat chat-end" th:each="message : ${chatMessages}"
+                 th:if="${message.getSender() == @rq.getMember()}">
+                <div class="chat-image avatar">
+                    <!-- 나의 프로필 이미지 -->
+                    <div class="w-10 rounded-full bg-pink-400"></div>
+                </div>
+                <div class="chat-header">
+                    <time class="text-xs opacity-50"
+                          th:utext="${#temporals.format(message.getCreatedAt(), 'HH:mm')}"></time>
+                </div>
+                <div class="chat-bubble" th:text="${message.getContent()}"></div>
             </div>
-            <div class="chat-bubble" th:text="${message.getContent()}"></div>
         </div>
-        <div class="chat chat-end" th:if="${message.getSender() == @rq.getMember()}">
-            <div class="chat-image avatar">
-                <!-- 나의 프로필 이미지 -->
-                <div class="w-10 rounded-full bg-pink-400"></div>
-            </div>
-            <div class="chat-header">
-                <time class="text-xs opacity-50"
-                      th:utext="${#temporals.format(message.getCreatedAt(), 'HH:mm')}"></time>
-            </div>
-            <div class="chat-bubble" th:text="${message.getContent()}"></div>
+        <div id="input-area" class="flex justify-center mt-auto mb-24">
+            <input id="send-msg" type="text" class="input input-bordered w-full max-w-sm"/>
+            <button id="send-button" class="btn btn-outline"><i class="fa-regular fa-paper-plane"></i></button>
         </div>
     </div>
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        var sockJs = new SockJS("/chat");
+        var stomp = Stomp.over(sockJs);
+
+        var roomId = [[${room.id}]];
+        var username = [[${rq.member.nickname}]];
+
+        stomp.connect({}, function () {
+            stomp.subscribe("/sub/chat/room/" + roomId, function (message) {
+                var content = JSON.parse(message.body);
+                var writer = content.writer;
+                var msg = '';
+
+                if (writer === username) {
+                    msg = "<div class='chat chat-end'>";
+                    msg += "<div class='chat-image avatar'>";
+                    msg += "<div class='w-10 rounded-full bg-pink-400'></div>";
+                    msg += "</div>";
+                    msg += "<div class='chat-header' th:text='" + writer + "'>";
+                    msg += "<time class='text-xs opacity-50' th:utext='${#temporals.format(message.getCreatedAt(), 'HH:mm')}'></time>";
+                    msg += "</div>";
+                    msg += "<div class='chat-bubble' th:text='" + content.message + "'></div>";
+                    msg += "</div>";
+                } else {
+                    msg = "<div class='chat chat-start'>";
+                    msg += "<div class='chat-image avatar'>";
+                    msg += "<div class='w-10 rounded-full bg-pink-400'></div>";
+                    msg += "</div>";
+                    msg += "<div class='chat-header' th:text='" + writer + "'>";
+                    msg += "<time class='text-xs opacity-50' th:utext='${#temporals.format(message.getCreatedAt(), 'HH:mm')}'></time>";
+                    msg += "</div>";
+                    msg += "<div class='chat-bubble' th:text='" + content.message + "'></div>";
+                    msg += "</div>";
+                }
+                $("#messages").append(msg);
+            });
+
+            stomp.send('/pub/chat/message', {}, JSON.stringify({roomId: roomId, writer: username}));
+        });
+
+        $("#send-msg").on("keydown", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById('send-button').click();
+            }
+        });
+
+        $("#send-button").on("click", function (event) {
+            var msg = document.getElementById("send-msg");
+            stomp.send('/pub/chat/message', {}, JSON.stringify({roomId: roomId, message: msg.value, writer: username}));
+            msg.value = '';
+        });
+    });
+</script>
 
 </body>
 

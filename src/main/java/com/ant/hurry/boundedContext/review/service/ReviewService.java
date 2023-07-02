@@ -28,7 +28,7 @@ public class ReviewService {
 
         Member member = memberService.findByUsername(username).orElse(null);
         Member receiver = memberService.findByNickname(reviewRequest.getReceiverName()).orElse(null);
-        TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId);
+        TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId).getData();
 
         if (member == null) {
             return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
@@ -85,7 +85,7 @@ public class ReviewService {
 
     public RsData<Object> validateTradeStatusAndMember(Long tradeStatusId, String username) {
 
-        TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId);
+        TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId).getData();
         Member member = memberService.findByUsername(username).orElse(null);
 
         if (!member.getUsername().equals(tradeStatus.getRequesterUsername()) && !member.getUsername().equals(tradeStatus.getHelperUsername())) {
