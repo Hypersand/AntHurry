@@ -13,6 +13,10 @@ import com.ant.hurry.boundedContext.board.service.BoardService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -154,12 +158,24 @@ public class BoardController {
         return "board/enterRegion";
     }
 
+    @AllArgsConstructor
+    @Getter
+    public static class SearchForm {
+        @NotBlank
+        @Size(min = 2, max = 30)
+        private final String title;
+
+
+
+    }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/online")
-    public String showOnlineBoard(Model model) {
-        List<Board> board = boardService.findByTradeTypeAndBoardType(TradeType.온라인, BoardType.나급해요);
+    public String showOnlineBoard(@Valid SearchForm searchForm, Model model) {
 
-        model.addAttribute("board", board);
+        List<Board> boards = boardService.findByTradeTypeAndBoardTypeAndTitleContaining(TradeType.온라인, BoardType.나급해요, searchForm.getTitle());
+
+        model.addAttribute("boards", boards);
         return "board/online";
     }
 }

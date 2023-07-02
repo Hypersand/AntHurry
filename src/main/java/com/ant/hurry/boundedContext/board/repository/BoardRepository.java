@@ -15,5 +15,5 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     List<Board> findByRegCodeAndBoardType(String code, BoardType boardType);
 
-    List<Board> findByTradeTypeAndBoardType(TradeType tradeType, BoardType boardType);
+    List<Board> findByTradeTypeAndBoardTypeAndTitleContaining(TradeType tradeType, BoardType boardType, String title);
 }

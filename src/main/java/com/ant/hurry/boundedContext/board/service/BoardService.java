@@ -154,7 +154,8 @@ public class BoardService {
         return RsData.of("S_B-4", "게시글이 수정되었습니다.");
     }
 
-    public List<Board> findByTradeTypeAndBoardType(TradeType tradeType, BoardType boardType) {
-        return boardRepository.findByTradeTypeAndBoardType(tradeType, boardType);
+
+    public List<Board> findByTradeTypeAndBoardTypeAndTitleContaining(TradeType tradeType, BoardType boardType, String title) {
+        return boardRepository.findByTradeTypeAndBoardTypeAndTitleContaining(tradeType, boardType, title);
     }
 }

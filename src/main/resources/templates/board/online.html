@@ -1,10 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{usr/layout/layout.html}">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>온라인</title>
 </head>
+
 <body>
+<header layout:fragment="header" class="sticky top-0 z-50">
+
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div>
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="navbar-center">
+            <a class="font-black">온라인 게시판</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+
+</header>
+
+<main layout:fragment="main" class="flex flex-col items-center overflow-y-scroll">
+
+    <ul th:if="${!#lists.isEmpty(boards)}" th:each="board : ${boards}" class="flex flex-col md:w-[584px] w-[92%] mx-auto">
+        <li class="card-item p-2 mt-2" th:data-type="${board.boardType}">
+            <a th:href="@{/board/{id}(id=${board.id})}">
+                <div class="card bg-base-100 shadow-lg">
+                    <div class="card-body">
+                        <div class="flex">
+                            <span class="card-title" th:text="${board.title}"></span>
+                            <span class="text-xs mt-1 ml-auto" th:text="${board.boardType}"></span>
+                        </div>
+                        <span class="text-xs mb-1" th:if="${board.member != null}" th:text="${board.member.nickname}"></span>
+                        <div class="flex">
+                            <span th:text="${board.rewardCoin}" class="pr-1"></span>
+                            <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1490/1490853.png"
+                                 alt="text">
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </li>
+    </ul>
+
+
+
+</main>
 
 </body>
+
 </html>
