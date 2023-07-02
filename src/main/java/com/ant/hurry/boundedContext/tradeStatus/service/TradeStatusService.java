@@ -88,4 +88,9 @@ public class TradeStatusService {
 
         return RsData.of(REDIRECT_TO_PAGE, tradeStatusList);
     }
+
+    public Long getMemberComleteTradeStatusCount(Long id) {
+        return tradeStatusRepository.countMemberCompleteTradeStatus(id);
+
+    }
 }

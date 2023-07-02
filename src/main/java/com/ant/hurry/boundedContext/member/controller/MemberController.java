@@ -7,6 +7,7 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
+import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import jakarta.validation.Valid;
 import com.ant.hurry.standard.util.Ut;
@@ -18,6 +19,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -49,6 +52,7 @@ import java.util.Optional;
 public class MemberController {
     private final MemberService memberService;
     private final PhoneAuthService phoneAuthService;
+    private final TradeStatusService tradeStatusService;
     private final Rq rq;
 
     @PreAuthorize("isAnonymous()")
@@ -213,13 +217,17 @@ public class MemberController {
     @GetMapping("/profile/{id}")
     @PreAuthorize("isAuthenticated()")
     public String opponentProfile(@PathVariable Long id, Model model) {
-        Member member = memberService.findById(id).orElse(null);
 
-        if (member == null) {
-            rq.historyBack("존재하는 회원이 없습니다.");
+        RsData<Member> rsData = memberService.validateAndReturnMember(id);
+
+        if (rsData.isFail()) {
+            return rq.historyBack(rsData.getMsg());
         }
 
-        model.addAttribute("member", member);
+        Long completeTradeCount = tradeStatusService.getMemberComleteTradeStatusCount(id);
+
+        model.addAttribute("member", rsData.getData());
+        model.addAttribute("completeTradeCount", completeTradeCount);
 
         return "usr/member/usrCheck";
     }
