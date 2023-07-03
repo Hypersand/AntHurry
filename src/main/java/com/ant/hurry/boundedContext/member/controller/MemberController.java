@@ -48,6 +48,8 @@ public class MemberController {
     private final PhoneAuthService phoneAuthService;
     private final Rq rq;
 
+    private final ObjectMapper objectMapper;
+
     @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
     public String showLogin() {
@@ -167,7 +169,7 @@ public class MemberController {
 //    }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/profile_edit")
+    @PostMapping(value = "/profile_edit", produces = "application/json;utf-8;")
     @ResponseBody
     public ResponseEntity updateProfile(@ModelAttribute @Valid ProfileRequestDto profileRequestDto,
                                 BindingResult result,
@@ -180,13 +182,15 @@ public class MemberController {
                 String errorMessage = error.getDefaultMessage();
                 errors.put(fieldName, errorMessage);
             });
-
+            System.out.println(profileRequestDto);
+            System.out.println(file.getOriginalFilename());
             return new ResponseEntity<>(errors, HttpStatusCode.valueOf(HTTPResponse.SC_BAD_REQUEST));
         }
         Member member = rq.getMember();
         memberService.updateProfile(member, profileRequestDto.getNickname(), file);
-
-        return ResponseEntity.status(HttpStatus.OK).body("성공");
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body("{\"message\":\"성공\"}");
     }
 
     @PreAuthorize("isAuthenticated()")

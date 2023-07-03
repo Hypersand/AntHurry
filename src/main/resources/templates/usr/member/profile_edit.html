@@ -121,7 +121,11 @@
         data: formData,
         processData: false,  // tell jQuery not to process the data
         contentType: false,  // tell jQuery not to set contentType
+        headers: {
+          'Accept': 'application/json'  // Accept 헤더 설정
+        },
         success: function(response) {
+          alert(response.data);
           alert('프로필 업데이트 완료');
           window.location.href= window.location.origin + "/usr/member/profile";
         },
@@ -130,6 +134,7 @@
           for (var field in responseJSON) {
             if(field === "nickname")
               alert(responseJSON[field]);
+              return;
           }
           alert('An error occurred. Please try again.');
         }
