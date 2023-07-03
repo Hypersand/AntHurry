@@ -180,4 +180,16 @@ public class MemberService {
     public Optional<Member> findByNickname(String nickname) {
         return memberRepository.findByNickname(nickname);
     }
+
+    public RsData<Member> validateAndReturnMember(Long id) {
+
+        Member currentMember = getMember(); //접속한 유저
+        Member profileMember = findById(id).orElse(null); //프로필 유저
+
+        if (currentMember == null || profileMember == null) {
+            return RsData.of("F_M-2", "접근할 수 있는 권한이 없습니다.");
+        }
+
+        return RsData.successOf(profileMember);
+    }
 }

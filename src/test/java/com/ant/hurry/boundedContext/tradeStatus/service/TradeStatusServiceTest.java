@@ -137,4 +137,19 @@ public class TradeStatusServiceTest {
     }
 
 
+    @Test
+    @DisplayName("유효한 거래 완료 횟수를 반환한다.")
+    void tradeStatus_count_valid() {
+
+        //given
+        Long memberId = 6L;
+
+        //when
+        Long count = tradeStatusService.getComleteTradeStatusCount(memberId);
+
+        //then
+        assertThat(count).isEqualTo(2L);
+    }
+
+
 }

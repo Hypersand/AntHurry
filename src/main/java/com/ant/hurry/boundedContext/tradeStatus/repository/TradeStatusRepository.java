@@ -21,5 +21,10 @@ public interface TradeStatusRepository extends JpaRepository<TradeStatus, Long> 
             "and t.status = :status order by t.id desc")
     List<TradeStatus> findMyTradeStatus(@Param("memberId") Long memberId, @Param("status") Status status);
 
+    @Query("select count(t.id) from TradeStatus t inner join t.requester r inner join t.helper h " +
+            "where (r.id = :memberId or h.id = :memberId)" +
+            "and t.status = com.ant.hurry.boundedContext.tradeStatus.entity.Status.COMPLETE")
+    Long countMemberCompleteTradeStatus(@Param("memberId") Long memberId);
+
 
 }

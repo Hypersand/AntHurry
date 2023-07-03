@@ -13,7 +13,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -196,7 +198,7 @@ class ReviewServiceTest {
 
 
         //when
-        RsData<List<Review>> rsData = reviewService.getMyReviews("member_not_exists");
+        RsData<Map<String, Object>> rsData = reviewService.getReviews("member_not_exists", 999L);
 
         //then
         assertAll(
@@ -209,18 +211,39 @@ class ReviewServiceTest {
     @DisplayName("유효한 멤버로 후기 목록 페이지 접근")
     void review_list_member_exists() {
 
+        //given
+        Long memberId = 1L;
+        Member member = memberRepository.findById(memberId).orElse(null);
+
         //when
-        RsData<List<Review>> rsData = reviewService.getMyReviews("user1");
+        RsData<Map<String, Object>> rsData = reviewService.getReviews("user1", memberId);
+
 
         //then
+        List<Review> reviews = (List<Review>) rsData.getData().get("reviews");
+
         assertAll(
                 () -> assertThat(rsData.getResultCode()).isEqualTo("S_R-3"),
                 () -> assertThat(rsData.getMsg()).isEqualTo("후기목록페이지로 이동합니다."),
-                () -> assertThat(rsData.getData().get(0).getContent()).isEqualTo("내용3"),
-                () -> assertThat(rsData.getData().get(0).getRating()).isEqualTo(2.0)
+                () -> assertThat(rsData.getData().get("profileMember")).isEqualTo(member),
+                () -> assertThat(reviews.size()).isEqualTo(1),
+                () -> assertThat(reviews.get(0).getRating()).isEqualTo(2.0),
+                () -> assertThat(reviews.get(0).getContent()).isEqualTo("내용3")
         );
 
     }
 
+    @Test
+    @DisplayName("유효한 후기 횟수를 반환한다.")
+    void review_count_valid() {
 
+        //given
+        Long receiverId = 3L;
+
+        //when
+        Long count = reviewService.getReviewCount(receiverId);
+
+        //then
+        assertThat(count).isEqualTo(2L);
+    }
 }
