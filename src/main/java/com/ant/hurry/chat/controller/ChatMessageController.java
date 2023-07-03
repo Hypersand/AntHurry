@@ -11,7 +11,7 @@ import com.ant.hurry.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,14 +29,14 @@ public class ChatMessageController {
 
     private final ChatMessageService chatMessageService;
     private final ChatRoomService chatRoomService;
-    private final SimpMessageSendingOperations messagingTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
     private final Rq rq;
 
     @MessageMapping("/message")
     public void sendMessage(ChatMessageDto dto) {
         RsData<ChatMessage> rs = chatMessageService.send(dto);
         ChatMessage message = rs.getData();
-        messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(dto.getChatRoom().getId()), message);
+        messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(dto.getRoomId()), message);
     }
 
     @MessageMapping("/room/{id}/file/message")
@@ -49,9 +49,7 @@ public class ChatMessageController {
     }
 
     @GetMapping("/download/{messageId}")
-    public ResponseEntity<StreamingResponseBody> downloadFile(
-            @PathVariable("messageId") String messageId
-    ) throws IOException {
+    public ResponseEntity<StreamingResponseBody> downloadFile(@PathVariable("messageId") String messageId) {
         RsData<ChatFileMessage> findRs = chatMessageService.findFileMessageById(messageId);
         if (findRs.getData() == null) {
             return ResponseEntity.notFound().build();
