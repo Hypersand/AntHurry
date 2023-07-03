@@ -20,6 +20,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import static com.ant.hurry.chat.code.ChatMessageSuccessCode.MESSAGE_DELETED;
 import static com.ant.hurry.chat.code.ChatMessageSuccessCode.MESSAGE_SENT;
@@ -46,12 +47,12 @@ public class ChatMessageServiceTest {
 
     @BeforeEach
     void setUp() {
-        member = Member.builder().build();
-        chatRoom = ChatRoom.builder().build();
+        member = Member.builder().username("user1").build();
+        chatRoom = ChatRoom.builder().id(UUID.randomUUID().toString()).build();
         dto = ChatMessageDto.builder()
-                .chatRoom(chatRoom)
-                .content("안녕하세요.")
-                .sender(member)
+                .roomId(chatRoom.getId())
+                .message("안녕하세요.")
+                .writer(member.getUsername())
                 .build();
         file = new MockMultipartFile(
                 "file",

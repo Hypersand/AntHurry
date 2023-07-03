@@ -30,7 +30,7 @@ public class SecurityConfig {
         http.addFilterBefore(new PhoneAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/chat/**").permitAll()
+                .requestMatchers("/chat/**", "/pub/**", "/sub/**").permitAll()
                 .requestMatchers("/usr/member/login").anonymous()
                 .anyRequest().authenticated());
 
