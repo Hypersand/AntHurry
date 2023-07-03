@@ -84,6 +84,50 @@ public class MemberControllerTest {
     }
 
     @Test
+    @DisplayName("프로필 페이지 이동 - 로그인 X")
+    void showProfileNotLogin() throws Exception {
+
+        //given
+        when(rq.isLogin()).thenReturn(false);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/usr/member/profile"));
+
+
+        //then
+        resultActions
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("showProfile"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/usr/member/login"))
+                .andExpect(redirectedUrl("/usr/member/login"));
+    }
+
+    @Test
+    @DisplayName("프로필 페이지 이동 - 로그인 O")
+    @WithMockUser
+    void showProfileLogin() throws Exception {
+
+        //given
+        when(rq.isLogin()).thenReturn(true);
+
+        Member member = new Member();
+        Optional<ProfileImage> profileImage = Optional.of(new ProfileImage());
+        when(rq.getMember()).thenReturn(member);
+        when(memberService.findProfileImage(member)).thenReturn(profileImage);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/usr/member/profile"));
+
+        //then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(view().name("usr/member/profile"))
+                .andExpect(model().attribute("member", member))
+                .andExpect(model().attribute("profileImage", profileImage.orElse(null)));
+    }
+
+    @Test
     @DisplayName("프로필 수정 페이지 이동")
     void showProfileEdit() throws Exception {
         Member member = Member.builder()
