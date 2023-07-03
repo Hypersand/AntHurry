@@ -1,14 +1,15 @@
 package com.ant.hurry.boundedContext.board.service;
 
+import com.ant.hurry.base.region.service.RegionSearchService;
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.entity.BoardType;
 import com.ant.hurry.boundedContext.board.entity.TradeType;
+import com.ant.hurry.boundedContext.board.repository.BoardRepository;
 import com.ant.hurry.boundedContext.member.entity.Member;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,7 +34,16 @@ public class BoardServiceTest {
     private BoardService boardService;
     @Autowired
     private Rq rq;
+    @Autowired
+    private BoardRepository boardRepository;
+    @Autowired
+    private RegionSearchService regionSearchService;
 
+
+    @AfterEach
+    void cleanUp() {
+        boardRepository.deleteAll();
+    }
     @Test
     @DisplayName("canModify 메소드 성공 테스트")
     @WithUserDetails("user1")
@@ -96,6 +108,36 @@ public class BoardServiceTest {
         // Then
         assertThat(modify.getResultCode()).isEqualTo("F_B-3");
         assertThat(modify.getMsg()).isEqualTo("수정할 권한이 없습니다.");
+    }
+
+    @Test
+    @DisplayName("1번째 페이지 불러오기")
+    @WithUserDetails("user1")
+    void noOffSet() throws Exception {
+        regionSearchService.selectPattern();
+
+
+        //when
+        List<Board> boards = boardRepository.paginationNoOffsetBuilder(null, "2823710500", BoardType.나급해요);
+
+        assertThat(boards.size()).isEqualTo(10);
+        assertThat(boards.get(0).getTitle()).isEqualTo("제목30");
+        assertThat(boards.get(9).getTitle()).isEqualTo("제목21");
+    }
+
+    @Test
+    @DisplayName("2번째 페이지 불러오기")
+    @WithUserDetails("user1")
+    void offSet() throws Exception {
+        regionSearchService.selectPattern();
+
+
+        //when
+        List<Board> boards = boardRepository.paginationNoOffsetBuilder(21L, "2823710500", BoardType.나급해요);
+
+        assertThat(boards.size()).isEqualTo(10);
+        assertThat(boards.get(0).getTitle()).isEqualTo("제목20");
+        assertThat(boards.get(9).getTitle()).isEqualTo("제목11");
     }
 
 

@@ -56,4 +56,6 @@ public class Board extends BaseEntity {
         this.y = convertDTO.getY();
         this.regCode = convertDTO.getRegCode();
     }
+
+
 }
