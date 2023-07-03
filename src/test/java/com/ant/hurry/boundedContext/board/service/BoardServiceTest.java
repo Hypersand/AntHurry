@@ -13,6 +13,8 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -118,27 +120,48 @@ public class BoardServiceTest {
 
 
         //when
-        List<Board> boards = boardRepository.paginationNoOffsetBuilder(null, "2823710500", BoardType.나급해요);
+        Slice<Board> boards = boardRepository.paginationNoOffsetBuilder(null, "2823710500", BoardType.나급해요, PageRequest.ofSize(10));
 
-        assertThat(boards.size()).isEqualTo(10);
-        assertThat(boards.get(0).getTitle()).isEqualTo("제목30");
-        assertThat(boards.get(9).getTitle()).isEqualTo("제목21");
+        //then
+        assertThat(boards.getContent().size()).isEqualTo(10);
+        assertThat(boards.getContent().get(0).getTitle()).isEqualTo("제목30");
+        assertThat(boards.getContent().get(9).getTitle()).isEqualTo("제목21");
     }
 
     @Test
     @DisplayName("2번째 페이지 불러오기")
     @WithUserDetails("user1")
-    void offSet() throws Exception {
+    void noOffSet2() throws Exception {
         regionSearchService.selectPattern();
 
+        //when
+        Slice<Board> boards = boardRepository.paginationNoOffsetBuilder(21L, "2823710500", BoardType.나급해요, PageRequest.ofSize(10));
+
+        //then
+        assertThat(boards.getContent().size()).isEqualTo(10);
+        assertThat(boards.getContent().get(0).getTitle()).isEqualTo("제목20");
+        assertThat(boards.getContent().get(9).getTitle()).isEqualTo("제목11");
+    }
+
+    @Test
+    @DisplayName("마지막 페이지에서는 isLast가 true, 마지막이 아니면 false")
+    @WithUserDetails("user1")
+    void checkLast() throws Exception{
+        regionSearchService.selectPattern();
 
         //when
-        List<Board> boards = boardRepository.paginationNoOffsetBuilder(21L, "2823710500", BoardType.나급해요);
+        Slice<Board> boards = boardRepository.paginationNoOffsetBuilder(21L, "2823710500", BoardType.나급해요, PageRequest.ofSize(10));
 
-        assertThat(boards.size()).isEqualTo(10);
-        assertThat(boards.get(0).getTitle()).isEqualTo("제목20");
-        assertThat(boards.get(9).getTitle()).isEqualTo("제목11");
+        //then
+        assertThat(boards.isLast()).isFalse();
+
+        //when
+        Slice<Board> boards2 = boardRepository.paginationNoOffsetBuilder(11L, "2823710500", BoardType.나급해요, PageRequest.ofSize(10));
+
+        //then
+        assertThat(boards2.isLast()).isTrue();
     }
+
 
 
 }
