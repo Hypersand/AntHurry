@@ -190,6 +190,7 @@ public class BoardController {
         Slice<Board> boards = boardService.getOnlineBoards(null, searchForm.getTitle(), TradeType.온라인 ,PageRequest.ofSize(10));
 
         model.addAttribute("boards", boards);
+        model.addAttribute("content", searchForm.getTitle());
         return "board/online";
     }
 
