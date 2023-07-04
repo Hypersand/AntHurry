@@ -169,7 +169,5 @@ public class BoardService {
         return boardRepository.paginationNoOffsetBuilder(lastId, code, pageable);
     }
 
-    public Long getLastId(String code) {
-        return boardRepository.getLastId(code);
-    }
+
 }

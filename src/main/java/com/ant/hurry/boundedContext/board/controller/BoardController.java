@@ -164,9 +164,6 @@ public class BoardController {
     @ResponseBody
     public ResponseEntity<?> enterRegion(@PathVariable("lastId") Long lastId,
                                          @RequestParam("code") String code) {
-        if (lastId == null) {
-            lastId = boardService.getLastId(code);
-        }
 
         Slice<Board> boards = boardService.getBoards(lastId, code, PageRequest.ofSize(10));
         Map<String, Object> map = new HashMap<>();

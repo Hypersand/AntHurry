@@ -2,7 +2,7 @@ package com.ant.hurry.boundedContext.board.repository;
 
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.entity.BoardType;
-import com.querydsl.core.types.Projections;
+import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         List<Board> results = jpaQueryFactory.selectFrom(board)
                 .where(idLt, codeEq)
                 .orderBy(board.id.desc())
-                .limit(pageable.getPageSize()+1)
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
 
         return checkLastPage(pageable, results);
@@ -46,11 +46,18 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     @Override
-    public Long getLastId(String code) {
-        return jpaQueryFactory.select(board.id.max())
-                .from(board)
-                .where(board.regCode.eq(code))
-                .fetchOne();
+    public Slice<Board> onlineBoardPaginationNoOffsetBuilder(Long id, String content, TradeType tradeType, Pageable pageable) {
+        BooleanExpression idLt = id != null ? board.id.lt(id) : null;
+        BooleanExpression tradeTypeEq = tradeType != null ? board.tradeType.eq(tradeType) : null;
+
+        List<Board> results = jpaQueryFactory.selectFrom(board)
+                .where(idLt, tradeTypeEq, board.boardType.eq(BoardType.나급해요),
+                        board.title.contains(content).or(board.content.contains(content)))
+                .orderBy(board.id.desc())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        return checkLastPage(pageable, results);
     }
 
 
