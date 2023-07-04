@@ -160,6 +160,7 @@ public class BoardController {
         return "board/enterRegion";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/enterRegion/{lastId}")
     @ResponseBody
     public ResponseEntity<?> enterRegion(@PathVariable("lastId") Long lastId,
@@ -186,10 +187,23 @@ public class BoardController {
     @GetMapping("/online")
     public String showOnlineBoard(@Valid SearchForm searchForm, Model model) {
 
-        List<Board> boards = boardService.findByTradeTypeAndBoardTypeAndTitleContaining(TradeType.온라인, BoardType.나급해요, searchForm.getTitle());
+        Slice<Board> boards = boardService.getOnlineBoards(null, searchForm.getTitle(), TradeType.온라인 ,PageRequest.ofSize(10));
 
         model.addAttribute("boards", boards);
         return "board/online";
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/online/{lastId}")
+    @ResponseBody
+    public ResponseEntity<?> showOnlineBoard(@PathVariable("lastId") Long lastId,
+                                              @RequestParam("title") String title) {
+
+        Slice<Board> boards = boardService.getOnlineBoards(lastId, title, TradeType.온라인, PageRequest.ofSize(10));
+        Map<String, Object> map = new HashMap<>();
+        map.put("boardList", boards.getContent());
+        return ResponseEntity.ok(map);
+    }
+
 }
 

@@ -15,6 +15,7 @@ import com.ant.hurry.boundedContext.board.repository.BoardRepository;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -170,4 +171,7 @@ public class BoardService {
     }
 
 
+    public Slice<Board> getOnlineBoards(Long id, String title, TradeType tradeType, PageRequest pageRequest) {
+        return boardRepository.onlineBoardPaginationNoOffsetBuilder(id, title, tradeType, pageRequest);
+    }
 }
