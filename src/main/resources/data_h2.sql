@@ -44,6 +44,31 @@ insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trad
 insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(1000, 126.732240699017, 37.5110124805355, '나급해요', '내용29', '2823710500', '제목29', '오프라인', 1);
 insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(1000, 126.732240699017, 37.5110124805355, '나급해요', '내용30', '2823710500', '제목30', '오프라인', 1);
 
+
+-- //trade_type이 온라인인 경우의 게시물 20개
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나잘해요', '내용31', '2823710500', '제목31', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(100, 126.732240699017, 37.5110124805355, '나잘해요', '내용32', '2823710500', '제목32', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나잘해요', '내용33', '2823710500', '제목33', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(100, 126.732240699017, 37.5110124805355, '나잘해요', '내용34', '2823710500', '제목34', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(100, 126.732240699017, 37.5110124805355, '나잘해요', '내용35', '2823710500', '제목35', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(20, 126.732240699017, 37.5110124805355, '나잘해요', '내용36', '2823710500', '제목36', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(200, 126.732240699017, 37.5110124805355, '나잘해요', '내용37', '2823710500', '제목37', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(100, 126.732240699017, 37.5110124805355, '나잘해요', '내용38', '2823710500', '제목38', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나잘해요', '내용39', '2823710500', '제목39', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나잘해요', '내용40', '2823710500', '제목40', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나잘해요', '내용41', '2823710500', '제목41', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나잘해요', '내용42', '2823710500', '제목42', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나잘해요', '내용43', '2823710500', '제목43', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나잘해요', '내용44', '2823710500', '제목44', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나잘해요', '내용45', '2823710500', '제목45', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나잘해요', '내용46', '2823710500', '제목46', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나잘해요', '내용47', '2823710500', '제목47', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나잘해요', '내용48', '2823710500', '제목48', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나잘해요', '내용49', '2823710500', '제목49', '온라인', 1);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나잘해요', '내용50', '2823710500', '제목50', '온라인', 1);
+
+
+
 INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (1, 1, 2, 'BEFORE');
 INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (2, 1, 3, 'CANCELED');
 INSERT INTO TRADE_STATUS (board_id, requester_id, helper_id, status) VALUES (3, 2, 3, 'COMPLETE');

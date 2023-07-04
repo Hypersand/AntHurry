@@ -124,8 +124,8 @@ public class BoardServiceTest {
 
         //then
         assertThat(boards.getContent().size()).isEqualTo(10);
-        assertThat(boards.getContent().get(0).getTitle()).isEqualTo("제목30");
-        assertThat(boards.getContent().get(9).getTitle()).isEqualTo("제목21");
+        assertThat(boards.getContent().get(0).getTitle()).isEqualTo("제목50");
+        assertThat(boards.getContent().get(9).getTitle()).isEqualTo("제목41");
     }
 
     @Test
@@ -135,12 +135,12 @@ public class BoardServiceTest {
         regionSearchService.selectPattern();
 
         //when
-        Slice<Board> boards = boardRepository.paginationNoOffsetBuilder(21L, "2823710500", PageRequest.ofSize(10));
+        Slice<Board> boards = boardRepository.paginationNoOffsetBuilder(41L, "2823710500", PageRequest.ofSize(10));
 
         //then
         assertThat(boards.getContent().size()).isEqualTo(10);
-        assertThat(boards.getContent().get(0).getTitle()).isEqualTo("제목20");
-        assertThat(boards.getContent().get(9).getTitle()).isEqualTo("제목11");
+        assertThat(boards.getContent().get(0).getTitle()).isEqualTo("제목40");
+        assertThat(boards.getContent().get(9).getTitle()).isEqualTo("제목31");
     }
 
     @Test
