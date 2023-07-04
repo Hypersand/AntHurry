@@ -27,7 +27,6 @@ services:
     container_name: ant-hurry-app
     build: .
     depends_on:
-      - ant-hurry-database
       - ant-hurry-redis
     image: ant-hurry-app
     ports:
