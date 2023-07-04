@@ -176,6 +176,30 @@
                 }
             }
         }, 200))
+
+        const urgentButton = document.querySelector('#urgentButton');
+        const goodButton = document.querySelector('#goodButton');
+        const cardItem = document.querySelectorAll('.card-item');
+
+        urgentButton.addEventListener('click', () => {
+            cardItem.forEach(item => {
+                if (item.getAttribute('data-type') === '나급해요') {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        goodButton.addEventListener('click', () => {
+            cardItem.forEach(item => {
+                if (item.getAttribute('data-type') === '나잘해요') {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
     </script>
 
 
