@@ -157,14 +157,25 @@
         };
 
 
+        function debounce(callback, limit = 100) {
+            let timeout
+            return function (...args) {
+                clearTimeout(timeout)
+                timeout = setTimeout(() => {
+                    callback.apply(this, args)
+                }, limit)
+            }
+        }
+
         //무한 스크롤, 스크롤이 바닥에 닿으면 loadMoreItems 함수 실행
-        window.addEventListener('scroll', () => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        document.addEventListener("scroll", debounce(e => {
+            const {clientHeight, scrollTop, scrollHeight} = e.target.scrollingElement;
+            if (clientHeight + scrollTop >= scrollHeight) {
                 if (!isFetching) {
                     loadMoreItems();
                 }
             }
-        });
+        }, 200))
     </script>
 
 
