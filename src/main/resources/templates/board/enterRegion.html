@@ -140,7 +140,6 @@
             /*const cardItemBodyLink = document.createElement('a');
                 cardItemBodyLink.setAttribute('href', `/board/${board.id}`);여기서 id 가져옴*/
             const lastId = document.querySelector('.item_row .item:last-child .card-item a').getAttribute('href').split('/')[2];
-            console.log(lastId);
 
 
             const url = `/board/enterRegion/${lastId}?code=${region.code}`;
@@ -177,28 +176,22 @@
             }
         }, 200))
 
-        const urgentButton = document.querySelector('#urgentButton');
-        const goodButton = document.querySelector('#goodButton');
-        const cardItem = document.querySelectorAll('.card-item');
-
-        urgentButton.addEventListener('click', () => {
-            cardItem.forEach(item => {
-                if (item.getAttribute('data-type') === '나급해요') {
-                    item.style.display = 'block';
+        function showCards(type) {
+            const allCards = document.querySelectorAll('.card-item');
+            allCards.forEach(card => {
+                if(type === 'all') {
+                    card.style.display = 'block';
+                } else if(card.dataset.type === type) {
+                    card.style.display = 'block';
                 } else {
-                    item.style.display = 'none';
+                    card.style.display = 'none';
                 }
             });
-        });
+        }
 
-        goodButton.addEventListener('click', () => {
-            cardItem.forEach(item => {
-                if (item.getAttribute('data-type') === '나잘해요') {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('urgentButton').addEventListener('click', () => showCards('나급해요'));
+            document.getElementById('goodButton').addEventListener('click', () => showCards('나잘해요'));
         });
     </script>
 
