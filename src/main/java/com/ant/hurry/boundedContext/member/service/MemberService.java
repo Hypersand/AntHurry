@@ -52,7 +52,7 @@ public class MemberService {
         Member member = Member
                 .builder()
                 .username(username)
-                .nickname(username.substring(0,17)) //소셜 로그인 초기 닉네임은 username 과 동일
+                .nickname(username.substring(0,12)) //소셜 로그인 초기 닉네임은 username 과 동일
                 .password(passwordEncoder.encode(password))
                 .phoneNumber(phone)
                 .providerTypeCode(providerTypeCode)
