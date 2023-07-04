@@ -86,4 +86,34 @@ class MemberServiceTest {
         assertThat(result.getMsg()).isEqualTo("회원가입이 완료되었습니다.");
         assertThat(result.getData()).isEqualTo(member);
     }
+
+    @Test
+    @DisplayName("findByUsername()")
+    void findByUsername(){
+
+        //given
+        String username="KAKAO_123123123123";
+        Optional<Member> opMember = Optional.of(
+                Member.builder()
+                        .username(username)
+                        .nickname(username.substring(0, 12))
+                        .providerTypeCode("KAKAO")
+                        .password("1234")
+                        .phoneAuth(1)
+                        .phoneNumber("01011112222")
+                        .build()
+        );
+        when(memberRepository.findByUsername(username)).thenReturn(opMember);
+
+
+        //when
+        Optional<Member> result = memberService.findByUsername(username);
+        Member member = result.get();
+
+        //then
+        assertThat(member).isEqualTo(opMember.get());
+        assertThat(member.getUsername()).isEqualTo(opMember.get().getUsername());
+        assertThat(member.getNickname()).isEqualTo(opMember.get().getNickname());
+        assertThat(member.getUsername()).isEqualTo(opMember.get().getUsername());
+    }
 }
