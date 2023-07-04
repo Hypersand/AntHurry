@@ -2,6 +2,7 @@ package com.ant.hurry.chat.service;
 
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.chat.baseEntity.Message;
 import com.ant.hurry.chat.config.MongoConfig;
 import com.ant.hurry.chat.dto.ChatMessageDto;
@@ -49,6 +50,8 @@ public class ChatMessageService {
     private final ChatFileMessageRepository chatFileMessageRepository;
     private final LatestMessageRepository latestMessageRepository;
     private final LatestMessageService latestMessageService;
+    private final ChatRoomService chatRoomService;
+    private final MemberService memberService;
     private final MongoConfig mongoConfig;
 
     @Value("${spring.data.mongodb.database}")
@@ -67,15 +70,22 @@ public class ChatMessageService {
 
     // 일반 메시지 전송
     public RsData<ChatMessage> send(ChatMessageDto dto) {
+        ChatRoom chatRoom = chatRoomService.findById(dto.getRoomId()).getData();
+        Member writer = memberService.findByUsername(dto.getWriter()).orElse(null);
+
+        if(writer == null) {
+            return RsData.of("F_M-1", "존재하지 않는 회원입니다."); // 수정 필요
+        }
+
         ChatMessage message = ChatMessage.builder()
                 .id(UUID.randomUUID().toString())
-                .chatRoom(dto.getChatRoom())
-                .sender(dto.getSender())
-                .content(dto.getContent())
+                .chatRoom(chatRoom)
+                .writer(writer)
+                .message(dto.getMessage())
                 .build();
         chatMessageRepository.save(message);
 
-        saveLatestMessage(dto.getChatRoom(), message);
+        saveLatestMessage(chatRoom, message);
         return RsData.of(MESSAGE_SENT, message);
     }
 

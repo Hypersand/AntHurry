@@ -21,16 +21,20 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .formLogin(
-                        formLogin -> formLogin.loginPage("/usr/member/login"))
+                        formLogin -> formLogin.loginPage("/usr/member/login")
+                                .defaultSuccessUrl("/",true)
+                )
                 .oauth2Login(
-                        oauth2Login -> oauth2Login.loginPage("/usr/member/login"))
+                        oauth2Login -> oauth2Login.loginPage("/usr/member/login")
+                                .defaultSuccessUrl("/", true)
+                )
                 .logout(
                         logout -> logout.logoutUrl("/usr/member/logout"));
 
         http.addFilterBefore(new PhoneAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/chat/**").permitAll()
+                .requestMatchers("/chat/**", "/pub/**", "/sub/**").permitAll()
                 .requestMatchers("/usr/member/login").anonymous()
                 .anyRequest().authenticated());
 

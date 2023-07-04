@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -61,18 +62,17 @@ public class ReviewController {
         return rq.redirectWithMsg("/review/list", reviewRsData);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/list/{memberId}")
     @PreAuthorize("isAuthenticated()")
-    public String list(Model model, @AuthenticationPrincipal User user) {
+    public String list(Model model, @AuthenticationPrincipal User user, @PathVariable Long memberId) {
 
-        RsData<List<Review>> rsData = reviewService.getMyReviews(user.getUsername());
+        RsData<Map<String, Object>> rsData = reviewService.getReviews(user.getUsername(), memberId);
 
         if (rsData.isFail()) {
             return rq.historyBack(rsData.getMsg());
         }
 
-
-        model.addAttribute("reviews", rsData.getData());
+        model.addAttribute("reviewData", rsData.getData());
 
         return "review/list";
     }
