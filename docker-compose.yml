@@ -17,7 +17,7 @@ services:
     environment:
       - MARIADB_DATABASE=${DATASOURCE_USERNAME}
       - MARIADB_ROOT_PASSWORD=${DATASOURCE_PASSWORD}
-      - MARIADB_DATABASE=antHurry_prod
+      - MARIADB_DATABASE=${DATABASE_NAME}
     volumes:
       - ./database/config:/etc/mysql/conf.d
       - ./database/init:/docker-entrypoint-initdb.d
