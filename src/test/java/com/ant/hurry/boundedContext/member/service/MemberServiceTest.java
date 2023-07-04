@@ -24,7 +24,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @ExtendWith(MockitoExtension.class)
@@ -171,5 +171,21 @@ class MemberServiceTest {
         //then
         assertThat(phoneAuthenticated).isFalse();
 
+    }
+
+    @Test
+    @DisplayName("updatePhoneAuth()")
+    void updatePhoneAuthTest() {
+
+        // Given
+        Member member = new Member();
+        int beforePhoneAuth = member.getPhoneAuth();
+
+        // When
+        memberService.updatePhoneAuth(member);
+
+        // Then
+        assertThat(beforePhoneAuth).isNotEqualTo(member.getPhoneAuth());
+        assertThat(member.getPhoneAuth()).isEqualTo(1);
     }
 }
