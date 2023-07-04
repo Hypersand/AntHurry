@@ -1,6 +1,7 @@
 package com.ant.hurry.boundedContext.member.controller;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -11,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.ant.hurry.base.rq.Rq;
+import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.base.security.SecurityConfig;
 import com.ant.hurry.boundedContext.member.dto.ProfileRequestDto;
 import com.ant.hurry.boundedContext.member.entity.Member;
@@ -28,6 +30,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -105,7 +108,6 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("프로필 페이지 이동 - 로그인 O")
-    @WithMockUser
     void showProfileLogin() throws Exception {
 
         //given
@@ -240,6 +242,209 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(handler().handlerType(MemberController.class))
                 .andExpect(handler().methodName("updateProfile"));
+    }
+
+
+    @Test
+    @DisplayName("핸드폰 번호 전송 - 성공")
+    void phoneAuthSendSuccess() throws Exception {
+        // Given
+        String phoneNumber = "01012345678";
+        String authCode = "123456";
+
+        when(memberService.existsPhoneNumber(phoneNumber)).thenReturn(false);
+        when(phoneAuthService.sendSms(phoneNumber)).thenReturn(authCode);
+
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/usr/member/phoneAuth/send")
+                .param("phoneNumber", phoneNumber));
+
+        // Then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("phoneAuth"))
+                .andExpect(jsonPath("$.message", is("인증번호 전송 성공")));
+    }
+
+    @Test
+    @DisplayName("핸드폰 번호 전송 - 전화번호 중복")
+    void phoneAuthSendDuplicate() throws Exception {
+        // Given
+        String phoneNumber = "01012345678";
+
+        when(memberService.existsPhoneNumber(phoneNumber)).thenReturn(true);
+
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/usr/member/phoneAuth/send")
+                .param("phoneNumber", phoneNumber));
+
+        // Then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("phoneAuth"))
+                .andExpect(jsonPath("$.message", is("전화번호 중복")));
+    }
+
+    // 인증번호 확인 테스트1
+    @Test
+    @DisplayName("인증번호 확인 테스트 - 성공")
+    void checkPhoneAuthCodeTestSuccess() throws Exception {
+        // Given
+        String phoneNumber = "01012345678";
+        String authCode = "123456";
+
+        when(phoneAuthService.getAuthCode(phoneNumber)).thenReturn(authCode);
+
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/usr/member/phoneAuth/check")
+                .param("phoneNumber", phoneNumber)
+                .param("authCode", authCode));
+
+        // Then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("checkAuthCode"))
+                .andExpect(jsonPath("$.message", is("인증 성공")));
+    }
+
+    // 인증번호 확인 테스트2
+    @Test
+    @DisplayName("인증번호 확인 테스트 - 만료")
+    void checkAuthCodeTestExpired() throws Exception {
+        // Given
+        String phoneNumber = "01012345678";
+        String authCode = "123456";
+
+        when(phoneAuthService.getAuthCode(phoneNumber)).thenReturn(null);
+
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/usr/member/phoneAuth/check")
+                .param("phoneNumber", phoneNumber)
+                .param("authCode", authCode));
+
+        // Then
+        resultActions
+                .andExpect(status().isGone())
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("checkAuthCode"))
+                .andExpect(jsonPath("$.message", is("인증번호가 만료되었습니다.")));
+    }
+
+    // 인증번호 확인 테스트3
+    @Test
+    @DisplayName("인증번호 확인 테스트 - 실패")
+    void checkAuthCodeTestFail() throws Exception {
+        // Given
+        String phoneNumber = "01012345678";
+        String authCode = "123456";
+
+        when(phoneAuthService.getAuthCode(phoneNumber)).thenReturn(authCode);
+
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/usr/member/phoneAuth/check")
+                .param("phoneNumber", phoneNumber)
+                .param("authCode", "123123"));
+
+        // Then
+        resultActions
+                .andExpect(status().isUnauthorized())
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("checkAuthCode"))
+                .andExpect(jsonPath("$.message", is("인증번호가 일치하지 않습니다.")));
+    }
+
+    @Test
+    @DisplayName("인증완료 테스트 - 성공")
+    void checkPhoneAuthSuccess() throws Exception {
+        // Given
+        String phoneNumber = "01012345678";
+
+        Member member = new Member();
+        RsData<String> rsData = RsData.of("S-2", "전화번호 인증이 완료되었습니다.");
+        when(rq.getMember()).thenReturn(member);
+        when(memberService.phoneAuthComplete(member, phoneNumber)).thenReturn(rsData);
+
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/usr/member/phoneAuth")
+                .param("phoneNumber", phoneNumber));
+
+        // Then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("phoneAuthComplete"))
+                .andExpect(jsonPath("$.message", is("전화번호 인증이 완료되었습니다.")));
+    }
+    @Test
+    @DisplayName("인증완료 테스트 - 실패1")
+    void checkPhoneAuthFail01() throws Exception {
+        // Given
+        String phoneNumber = "01012345678";
+
+        Member member = new Member();
+        RsData<String> rsData = RsData.of("F-2", "전화번호를 입력해서 인증번호를 받아주세요.");
+        when(rq.getMember()).thenReturn(member);
+        when(memberService.phoneAuthComplete(member, phoneNumber)).thenReturn(rsData);
+
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/usr/member/phoneAuth")
+                .param("phoneNumber", phoneNumber));
+
+        // Then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("phoneAuthComplete"))
+                .andExpect(jsonPath("$.message", is("전화번호를 입력해서 인증번호를 받아주세요.")));
+    }
+
+    @Test
+    @DisplayName("인증완료 테스트 - 실패2")
+    void checkPhoneAuthFail02() throws Exception {
+        // Given
+        String phoneNumber = "01012345678";
+
+        Member member = new Member();
+        RsData<String> rsData = RsData.of("F-2", "인증번호 검증이 완료되지 않았습니다.");
+        when(rq.getMember()).thenReturn(member);
+        when(memberService.phoneAuthComplete(member, phoneNumber)).thenReturn(rsData);
+
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/usr/member/phoneAuth")
+                .param("phoneNumber", phoneNumber));
+
+        // Then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("phoneAuthComplete"))
+                .andExpect(jsonPath("$.message", is("인증번호 검증이 완료되지 않았습니다.")));
+    }
+
+    @Test
+    @DisplayName("인증완료 테스트 - 실패3")
+    void checkPhoneAuthFail03() throws Exception {
+        // Given
+        String phoneNumber = "01012345678";
+
+        Member member = new Member();
+        RsData<String> rsData = RsData.of("F-2", "입력하신 전화번호와 인증번호를 받은 번호가 일치하지 않습니다.");
+        when(rq.getMember()).thenReturn(member);
+        when(memberService.phoneAuthComplete(member, phoneNumber)).thenReturn(rsData);
+
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/usr/member/phoneAuth")
+                .param("phoneNumber", phoneNumber));
+
+        // Then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("phoneAuthComplete"))
+                .andExpect(jsonPath("$.message", is("입력하신 전화번호와 인증번호를 받은 번호가 일치하지 않습니다.")));
     }
 
 }

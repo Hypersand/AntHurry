@@ -102,7 +102,7 @@ public class MemberService {
         member.updatePhoneAuth();
     }
 
-    public RsData<?> phoneAuthComplete(Member member, String phoneNumber) {
+    public RsData<String> phoneAuthComplete(Member member, String phoneNumber) {
         if(member.getTmpPhoneNumber() == null){
             return RsData.of("F-2", "전화번호를 입력해서 인증번호를 받아주세요.");
         }

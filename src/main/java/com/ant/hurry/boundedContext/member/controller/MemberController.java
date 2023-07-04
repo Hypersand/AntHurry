@@ -81,22 +81,29 @@ public class MemberController {
     @ResponseBody
     public ResponseEntity phoneAuthComplete(String phoneNumber){
         Member member = rq.getMember();
-        RsData<?> result = memberService.phoneAuthComplete(member, phoneNumber);
+        RsData<String> result = memberService.phoneAuthComplete(member, phoneNumber);
         if (result.isFail()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result.getMsg());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("{\"message\": \"" + result.getMsg() + "\"}");
         }
         memberService.updatePhoneNumber(member, phoneNumber);
-        return ResponseEntity.status(HttpStatus.OK).body(result.getMsg());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body("{\"message\": \"" + result.getMsg() + "\"}");
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/phoneAuth/send")
+    @PostMapping(value = "/phoneAuth/send", produces = "application/json;charset=UTF-8")
     @ResponseBody
     public ResponseEntity phoneAuth(String phoneNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
         //핸드폰 번호를 가지고 있는 사용자가 존재하는지 체크
         boolean existPhoneNumber = memberService.existsPhoneNumber(phoneNumber);
         if(existPhoneNumber){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("전화번호 중복");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("{\"message\":\"전화번호 중복\"}");
         }
 
         //SMS 인증번호 전송
@@ -107,7 +114,9 @@ public class MemberController {
             memberService.updateTmpPhone(member, phoneNumber);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body("인증번호 전송 성공");
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body("{\"message\":\"인증번호 전송 성공\"}");
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -118,11 +127,15 @@ public class MemberController {
         String storedAuthCode = phoneAuthService.getAuthCode(phoneNumber);
 
         if (storedAuthCode == null) {
-            return ResponseEntity.status(HttpStatus.GONE).body("인증번호가 만료되었습니다.");
+            return ResponseEntity.status(HttpStatus.GONE)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("{\"message\":\"인증번호가 만료되었습니다.\"}");
         }
 
         if (!storedAuthCode.equals(authCode)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증번호가 일치하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("{\"message\":\"인증번호가 일치하지 않습니다.\"}");
         }
 
         //인증 성공 경우
@@ -130,7 +143,9 @@ public class MemberController {
         if (member != null) {
             memberService.updatePhoneAuth(member);
         }
-        return ResponseEntity.status(HttpStatus.OK).body("인증 성공");
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body("{\"message\":\"인증 성공\"}");
     }
 
 
