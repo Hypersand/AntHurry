@@ -19,14 +19,13 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Slice<Board> paginationNoOffsetBuilder(Long id, String code, BoardType boardType, Pageable pageable) {
+    public Slice<Board> paginationNoOffsetBuilder(Long id, String code, Pageable pageable) {
         // id < 파라미터를 첫 페이지에서는 사용하지 않기 위한 동적 쿼리
         BooleanExpression idLt = id != null ? board.id.lt(id) : null;
         BooleanExpression codeEq = code != null ? board.regCode.eq(code) : null;
-        BooleanExpression boardTypeEq = boardType != null ? board.boardType.eq(boardType) : null;
 
         List<Board> results = jpaQueryFactory.selectFrom(board)
-                .where(idLt, codeEq, boardTypeEq)
+                .where(idLt, codeEq)
                 .orderBy(board.id.desc())
                 .limit(pageable.getPageSize()+1)
                 .fetch();
@@ -44,6 +43,14 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         }
 
         return new SliceImpl<>(results, pageable, hasNext);
+    }
+
+    @Override
+    public Long getLastId(String code) {
+        return jpaQueryFactory.select(board.id.max())
+                .from(board)
+                .where(board.regCode.eq(code))
+                .fetchOne();
     }
 
 

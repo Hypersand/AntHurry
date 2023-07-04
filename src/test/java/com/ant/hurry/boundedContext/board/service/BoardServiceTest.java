@@ -120,7 +120,7 @@ public class BoardServiceTest {
 
 
         //when
-        Slice<Board> boards = boardRepository.paginationNoOffsetBuilder(null, "2823710500", BoardType.나급해요, PageRequest.ofSize(10));
+        Slice<Board> boards = boardRepository.paginationNoOffsetBuilder(null, "2823710500", PageRequest.ofSize(10));
 
         //then
         assertThat(boards.getContent().size()).isEqualTo(10);
@@ -135,7 +135,7 @@ public class BoardServiceTest {
         regionSearchService.selectPattern();
 
         //when
-        Slice<Board> boards = boardRepository.paginationNoOffsetBuilder(21L, "2823710500", BoardType.나급해요, PageRequest.ofSize(10));
+        Slice<Board> boards = boardRepository.paginationNoOffsetBuilder(21L, "2823710500", PageRequest.ofSize(10));
 
         //then
         assertThat(boards.getContent().size()).isEqualTo(10);
@@ -150,13 +150,13 @@ public class BoardServiceTest {
         regionSearchService.selectPattern();
 
         //when
-        Slice<Board> boards = boardRepository.paginationNoOffsetBuilder(21L, "2823710500", BoardType.나급해요, PageRequest.ofSize(10));
+        Slice<Board> boards = boardRepository.paginationNoOffsetBuilder(21L, "2823710500", PageRequest.ofSize(10));
 
         //then
         assertThat(boards.isLast()).isFalse();
 
         //when
-        Slice<Board> boards2 = boardRepository.paginationNoOffsetBuilder(11L, "2823710500", BoardType.나급해요, PageRequest.ofSize(10));
+        Slice<Board> boards2 = boardRepository.paginationNoOffsetBuilder(11L, "2823710500", PageRequest.ofSize(10));
 
         //then
         assertThat(boards2.isLast()).isTrue();

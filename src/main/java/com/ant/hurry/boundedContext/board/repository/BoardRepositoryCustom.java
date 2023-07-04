@@ -8,5 +8,7 @@ import org.springframework.data.domain.Slice;
 import java.util.List;
 
 public interface BoardRepositoryCustom {
-    Slice<Board> paginationNoOffsetBuilder(Long id, String code, BoardType boardType, Pageable pageable);
+    Slice<Board> paginationNoOffsetBuilder(Long id, String code, Pageable pageable);
+
+    Long getLastId(String code);
 }

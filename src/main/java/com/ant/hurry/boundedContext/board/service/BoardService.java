@@ -15,6 +15,8 @@ import com.ant.hurry.boundedContext.board.repository.BoardRepository;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -161,5 +163,13 @@ public class BoardService {
 
     public List<Board> findByTradeTypeAndBoardTypeAndTitleContaining(TradeType tradeType, BoardType boardType, String title) {
         return boardRepository.findByTradeTypeAndBoardTypeAndTitleContaining(tradeType, boardType, title);
+    }
+
+    public Slice<Board> getBoards(Long lastId, String code, Pageable pageable) {
+        return boardRepository.paginationNoOffsetBuilder(lastId, code, pageable);
+    }
+
+    public Long getLastId(String code) {
+        return boardRepository.getLastId(code);
     }
 }
