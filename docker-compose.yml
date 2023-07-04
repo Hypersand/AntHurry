@@ -1,0 +1,42 @@
+version: "3.8"
+services:
+  ant-hurry-redis:
+    container_name: ant-hurry-redis
+    build:
+      dockerfile: Dockerfile
+      context: ./redis
+    image: ant-hurry-redis
+    ports:
+      - "6379:6379"
+  ant-hurry-database:
+    container_name: ant-hurry-database
+    build:
+      dockerfile: Dockerfile
+      context: ./database
+    image: ant-hurry-database
+    environment:
+      - MARIADB_DATABASE=${DATASOURCE_USERNAME}
+      - MARIADB_ROOT_PASSWORD=${DATASOURCE_PASSWORD}
+      - MARIADB_DATABASE=antHurry_prod
+    volumes:
+      - ./database/config:/etc/mysql/conf.d
+      - ./database/init:/docker-entrypoint-initdb.d
+    ports:
+      - "3308:3306"
+  ant-hurry-app:
+    container_name: ant-hurry-app
+    build: .
+    depends_on:
+      - ant-hurry-database
+      - ant-hurry-redis
+    image: ant-hurry-app
+    ports:
+      - "8086:8080"
+    restart: always
+  ant-hurry-jenkins:
+    container_name: ant-hurry-jenkins
+    image: jenkins/jenkins:lts
+    ports:
+      - "8090:8080"
+    volumes:
+      - ./jenkins_home:/var/jenkins_home

@@ -51,7 +51,7 @@ public class BoardServiceTest {
 
     @Test
     @DisplayName("canModify 메소드 실패 테스트")
-    @WithUserDetails("user1")
+    @WithUserDetails("user4")
     void canModifyFail() throws Exception {
         // Given
         Long boardId = 1L; // user1이 작성한 게시글이 아닌 게시글
@@ -84,7 +84,7 @@ public class BoardServiceTest {
 
     @Test
     @DisplayName("modify 메서드 실패 테스트")
-    @WithUserDetails("user1")
+    @WithUserDetails("user3")
     void modifyFail() throws Exception {
         // Given
         Long boardId = 1L; // user1이 작성한 게시글이 아닌 게시글

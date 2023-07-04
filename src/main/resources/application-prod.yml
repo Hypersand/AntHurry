@@ -6,26 +6,18 @@ spring:
     password: '${custom.prod_database.password}'
   jpa:
     hibernate:
-      ddl-auto: validate
-    properties:
-      hibernate:
-        show_sql: false
-        format_sql: false
-        use_sql_comments: false
+      ddl-auto: create
+
   servlet:
     multipart:
       maxFileSize: 10MB
       maxRequestSize: 10MB
       location: ${custom.prod_fileLocation}
       enabled: true
-
-
-logging:
-  level:
-    root: INFO
-    com.ant.hurry: INFO
-    org.hibernate.orm.jdbc.bind: INFO
-    org.hibernate.orm.jdbc.extract: INFO
+  data:
+    redis:
+      host: ${custom.redis.host}
+      port: ${custom.redis.port}
 custom:
   site:
-    baseUrl:
+    baseUrl: http://localhost:8080
