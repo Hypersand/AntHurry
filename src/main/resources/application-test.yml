@@ -13,3 +13,6 @@ spring:
     init:
       data-locations: classpath:data_h2.sql
       mode: always
+custom:
+  site:
+    baseUrl: http://localhost:8080
