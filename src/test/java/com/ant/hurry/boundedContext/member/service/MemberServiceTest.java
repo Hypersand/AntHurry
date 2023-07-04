@@ -116,4 +116,60 @@ class MemberServiceTest {
         assertThat(member.getNickname()).isEqualTo(opMember.get().getNickname());
         assertThat(member.getUsername()).isEqualTo(opMember.get().getUsername());
     }
+
+    @Test
+    @DisplayName("isPhoneAuthenticated() - 성공")
+    void isPhoneAuthenticatedSuccess(){
+
+        //given
+        String username="KAKAO_123123123123";
+        Optional<Member> opMember = Optional.of(
+                Member.builder()
+                        .username(username)
+                        .nickname(username.substring(0, 12))
+                        .providerTypeCode("KAKAO")
+                        .password("1234")
+                        .phoneAuth(1)
+                        .phoneNumber("01011112222")
+                        .build()
+        );
+        when(memberRepository.findByUsername(username)).thenReturn(opMember);
+
+
+        //when
+        boolean phoneAuthenticated = memberService.isPhoneAuthenticated(username);
+
+
+        //then
+        assertThat(phoneAuthenticated).isTrue();
+
+    }
+
+    @Test
+    @DisplayName("isPhoneAuthenticated() - 실패")
+    void isPhoneAuthenticatedFail(){
+
+        //given
+        String username="KAKAO_123123123123";
+        Optional<Member> opMember = Optional.of(
+                Member.builder()
+                        .username(username)
+                        .nickname(username.substring(0, 12))
+                        .providerTypeCode("KAKAO")
+                        .password("1234")
+                        .phoneAuth(0)
+                        .phoneNumber(null)
+                        .build()
+        );
+        when(memberRepository.findByUsername(username)).thenReturn(opMember);
+
+
+        //when
+        boolean phoneAuthenticated = memberService.isPhoneAuthenticated(username);
+
+
+        //then
+        assertThat(phoneAuthenticated).isFalse();
+
+    }
 }
