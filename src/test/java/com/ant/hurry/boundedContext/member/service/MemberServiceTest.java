@@ -188,4 +188,19 @@ class MemberServiceTest {
         assertThat(beforePhoneAuth).isNotEqualTo(member.getPhoneAuth());
         assertThat(member.getPhoneAuth()).isEqualTo(1);
     }
+
+    @Test
+    @DisplayName("getMember()")
+    void getMember() {
+
+        // Given
+        Member member = new Member();
+        when(rq.getMember()).thenReturn(member);
+
+        // When
+        Member getMember = memberService.getMember();
+
+        // Then
+        assertThat(getMember).isEqualTo(member);
+    }
 }
