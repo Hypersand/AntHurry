@@ -20,4 +20,4 @@ spring:
       port: ${custom.redis.port}
 custom:
   site:
-    baseUrl: http://localhost:8080
+    baseUrl: https://www.anthurry.shop
