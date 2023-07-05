@@ -5,27 +5,25 @@ import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.base.s3.S3ProfileUploader;
 import com.ant.hurry.boundedContext.coin.service.CoinService;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.repository.MemberRepository;
 import com.ant.hurry.boundedContext.member.repository.ProfileImageRepository;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.filter.CharacterEncodingFilter;
 
+
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
@@ -202,5 +200,65 @@ class MemberServiceTest {
 
         // Then
         assertThat(getMember).isEqualTo(member);
+    }
+
+
+    @Test
+    @DisplayName("updateProfile() - Exchange Image")
+    void updateProfileExchange() throws IOException {
+
+        //given
+        Member member = new Member();
+        ProfileImage profileImage = new ProfileImage("test1.png","test1.png","test1.png");
+        profileImage.setMember(member);
+        String currentImageName = profileImage.getUploadFileName();
+
+        String fileName = "test2.png";
+        String fileContent = "content";
+        MockMultipartFile file = new MockMultipartFile(fileName, fileName, "img/*", fileContent.getBytes());
+
+        ProfileImage updateProfileImage = new ProfileImage(file.getOriginalFilename(), file.getOriginalFilename(), file.getOriginalFilename());
+        updateProfileImage.setMember(member);
+        when(profileImageRepository.findByMember(member)).thenReturn(Optional.of(profileImage));
+        when(profileUploader.updateFile(profileImage.getStoredFileName(), file)).thenReturn(updateProfileImage);
+
+
+        //when
+        String nickname = "newNickname";
+        memberService.updateProfile(member, nickname, file);
+
+        // Then
+        ProfileImage result = profileImageRepository.findByMember(member).get();
+        assertThat(currentImageName).isNotEqualTo(result.getUploadFileName());
+        assertThat(result.getUploadFileName()).isEqualTo(fileName);
+        assertThat(member.getNickname()).isEqualTo("newNickname");
+    }
+
+    @Test
+    @DisplayName("updateProfile() - New Image")
+    void updateProfileNew() throws IOException {
+
+        // Given
+        Member member = new Member(); // Replace this with actual Member instantiation if necessary
+        ProfileImage profileImage = new ProfileImage();
+        profileImage.setMember(member);
+
+        String fileName = "test.txt";
+        String fileContent = "content";
+        MockMultipartFile file = new MockMultipartFile(fileName, fileName, "text/plain", fileContent.getBytes());
+
+
+        when(profileImageRepository.findByMember(member)).thenReturn(Optional.empty());
+        when(profileUploader.uploadFile(file)).thenReturn(profileImage);
+        when(profileImageRepository.save(any(ProfileImage.class))).thenReturn(profileImage);
+
+        // When
+        String nickname = "newNickname";
+        memberService.updateProfile(member, nickname, file);
+
+
+        // Then;
+        assertThat(member.getNickname()).isEqualTo("newNickname");
+        verify(profileImageRepository).save(profileImage);
     }
 }

@@ -143,7 +143,7 @@ public class MemberService {
             else{
                 ProfileImage profileImage = profileUploader.uploadFile(file);
                 profileImage.setMember(member);
-                profileImageRepository.save(profileImage);
+                ProfileImage saveProfileImage = profileImageRepository.save(profileImage);
             }
         }
     }
