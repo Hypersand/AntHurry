@@ -39,25 +39,25 @@
 </header>
 
 <main layout:fragment="main" class="flex-grow flex items-center justify-center w-screen h-[1000px] p-8">
-    <div id="chat-area" class="flex flex-col w-full h-full">
-        <div id="messages" class="flex text-center w-full m-8" th:each="message : ${chatMessages}">
-            <div class="chat chat-start" th:if="${@rq.getMember() != message.writer}">
+    <div id="chat-area" class="flex flex-col w-[650px] h-full">
+        <div id="messages" class="flex text-center w-full justify-end" th:each="message : ${chatMessages}">
+            <div class="chat chat-start" th:if="${!@rq.getMember().getNickname().equals(message.writer)}">
                 <div class="chat-image avatar">
                     <div class="w-10 rounded-full bg-pink-400"></div>
                 </div>
                 <div class="chat-header">
-                    <time class="text-xs opacity-50" th:utext="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
+                    <time class="text-xs opacity-50" th:text="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
                 </div>
                 <div class="chat-bubble" th:text="${message.message}"></div>
             </div>
-            <div class="chat chat-end" th:if="${@rq.getMember() == message.writer}">
+            <div class="chat chat-end flex justify-end" th:if="${@rq.getMember().getNickname().equals(message.writer)}">
+                <div class="chat-header">
+                    <time class="text-xs opacity-50" th:text="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
+                </div>
+                <div class="chat-bubble" th:text="${message.message}"></div>
                 <div class="chat-image avatar">
                     <div class="w-10 rounded-full bg-pink-400"></div>
                 </div>
-                <div class="chat-header">
-                    <time class="text-xs opacity-50" th:utext="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
-                </div>
-                <div class="chat-bubble" th:text="${message.message}"></div>
             </div>
         </div>
         <div id="input-area" class="flex order-1 justify-center mt-auto mb-12">

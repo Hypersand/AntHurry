@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
@@ -50,10 +53,11 @@ public class ChatRoomController {
 
     @GetMapping("/myRooms")
     public String showMyRooms(Model model) {
-        RsData<List<LatestMessage>> rs = latestMessageService.findByMember(rq.getMember());
-        List<LatestMessage> latestMessages = rs.getData().stream()
-                .filter(lm -> lm != null && lm.getMessage() != null).toList();
-        model.addAttribute("latestMessages", latestMessages);
+        List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData();
+        Map<ChatRoom, LatestMessage> map = new HashMap<>();
+        chatRooms.forEach(cr -> map.put(cr, latestMessageService.findByChatRoomId(cr.getId()).getData()));
+
+        model.addAttribute("chatRooms", map);
         return "chat/myRooms";
     }
 

@@ -83,7 +83,7 @@ public class ChatMessageService {
                 .build();
         chatMessageRepository.save(message);
 
-        saveLatestMessage(dto.getRoomId(), message);
+        saveLatestMessage(dto.getRoomId(), writer.getNickname(), message);
         return RsData.of(MESSAGE_SENT, message);
     }
 
@@ -113,18 +113,19 @@ public class ChatMessageService {
                 .uploadFilePath(filePath)
                 .uploadFileId(fileId.toString())
                 .roomId(chatRoom.getId())
-                .sender(sender)
+                .sender(sender.getNickname())
                 .createdAt(LocalDateTime.now())
                 .build();
         chatFileMessageRepository.insert(chatFileMessage);
 
-        saveLatestMessage(chatRoom.getId(), chatFileMessage);
+        saveLatestMessage(chatRoom.getId(), sender.getNickname(), chatFileMessage);
         return RsData.of(MESSAGE_SENT, chatFileMessage);
     }
 
-    private void saveLatestMessage(String roomId, Message message) {
+    private void saveLatestMessage(String roomId, String sender, Message message) {
         LatestMessage latestMessage = latestMessageService.findByChatRoomId(roomId).getData();
         LatestMessage updateLatestMessage = latestMessage.toBuilder()
+                .sender(sender)
                 .message(message)
                 .createdAt(LocalDateTime.now())
                 .build();
