@@ -14,6 +14,7 @@
 
 
 -- anthurry_dev 데이터베이스 구조 내보내기
+CREATE DATABASE IF NOT EXISTS nginx;
 CREATE DATABASE IF NOT EXISTS `anthurry_prod` /*!40100 DEFAULT CHARACTER SET utf8mb3 */;
 USE `anthurry_prod`;
 
