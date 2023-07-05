@@ -255,4 +255,9 @@ public class MemberController {
         return "usr/member/usrCheck";
     }
 
+    @GetMapping("/faq")
+    public String showFaq() {
+        return "usr/member/faq";
+    }
+
 }
