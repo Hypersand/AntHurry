@@ -7,7 +7,7 @@ services:
       - TZ=Asia/Seoul
     ports:
       - "6379:6379"
-      -
+
   ant-hurry-database:
     container_name: ant-hurry-database
     image: mariadb:latest
@@ -20,7 +20,7 @@ services:
       - ./database/init:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
-      -
+
   ant-hurry-app:
     container_name: ant-hurry-app
     build: .
@@ -49,7 +49,7 @@ services:
     volumes:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
-      -
+
   ant-hurry-jenkins:
     depends_on:
       - ant-hurry-database

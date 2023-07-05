@@ -52,7 +52,7 @@ public class MemberService {
         Member member = Member
                 .builder()
                 .username(username)
-                .nickname(username.substring(0,17)) //소셜 로그인 초기 닉네임은 username 과 동일
+                .nickname(username.substring(0,12)) //소셜 로그인 초기 닉네임은 username 과 동일
                 .password(passwordEncoder.encode(password))
                 .phoneNumber(phone)
                 .providerTypeCode(providerTypeCode)
@@ -102,7 +102,7 @@ public class MemberService {
         member.updatePhoneAuth();
     }
 
-    public RsData<?> phoneAuthComplete(Member member, String phoneNumber) {
+    public RsData<String> phoneAuthComplete(Member member, String phoneNumber) {
         if(member.getTmpPhoneNumber() == null){
             return RsData.of("F-2", "전화번호를 입력해서 인증번호를 받아주세요.");
         }
@@ -143,7 +143,7 @@ public class MemberService {
             else{
                 ProfileImage profileImage = profileUploader.uploadFile(file);
                 profileImage.setMember(member);
-                profileImageRepository.save(profileImage);
+                ProfileImage saveProfileImage = profileImageRepository.save(profileImage);
             }
         }
     }

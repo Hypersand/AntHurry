@@ -117,6 +117,9 @@
             data: {
               phoneNumber: phoneNumber
             },
+            headers: {
+              'Accept': 'application/json'  // Accept 헤더 설정
+            },
             success: function(data) {
               // 요청이 성공적으로 완료되면 이곳에 코드를 작성합니다.
               var timeLeft = 180; // 초 단위
@@ -154,7 +157,9 @@
             },
             error: function(jqXHR, textStatus, errorThrown) {
               // 요청이 실패하면 이곳에 코드를 작성합니다.
-              if(jqXHR.responseText === "전화번호 중복"){
+              var errorResponse = jqXHR.responseJSON;  // JSON 데이터로 파싱된 응답
+              var errorMessage = errorResponse.message;  // 실패 메시지
+              if(errorMessage === "전화번호 중복"){
                 alert("이미 사용중인 전화번호 입니다. 다른 번호로 요청해주세요.");
               }else{
                 alert('핸드폰 인증에 실패하였습니다. 다시 시도해 주세요.');
@@ -175,13 +180,19 @@
               phoneNumber: phoneNumber,
               authCode: checkNumber
             },
+            headers: {
+              'Accept': 'application/json'  // Accept 헤더 설정
+            },
             success: function (response) {
               clearInterval(interval); //타이머 중지
-              alert(response);
+              alert(response.message);
             },
-            error: function(jqXHR, textStatus, errorThrown) {
+            error: function (jqXHR, textStatus, errorThrown) {
               // 서버가 반환한 데이터를 확인합니다.
-              alert(jqXHR.responseText);
+              var errorResponse = jqXHR.responseJSON;  // JSON 데이터로 파싱된 응답
+              var errorMessage = errorResponse.message;  // 실패 메시지
+
+              alert(errorMessage);  // 출력: 실패 메시지
             }
           });
         });
@@ -195,14 +206,22 @@
             data: {
               phoneNumber: phoneNumber
             },
-            success: function (response) {
-              if(response === "전화번호 인증이 완료되었습니다.")
-                window.location.href = "/";
-              alert(response);
+            headers: {
+              'Accept': 'application/json'  // Accept 헤더 설정
             },
-            error: function(jqXHR, textStatus, errorThrown) {
+            success: function (response) {
+              if(response.message === "전화번호 인증이 완료되었습니다.") {
+                alert(response.message);
+                window.location.href = "/";
+              }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
               // 서버가 반환한 데이터를 확인합니다.
-              alert(jqXHR.responseText);
+              var errorResponse = jqXHR.responseJSON;  // JSON 데이터로 파싱된 응답
+              var errorMessage = errorResponse.message;  // 실패 메시지
+              alert(errorMessage);  // 출력: 실패 메시지
+              console.log(errorMessage);
+
             }
           });
         });
