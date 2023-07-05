@@ -1,5 +1,6 @@
 package com.ant.hurry.boundedContext.board.controller;
 
+import com.ant.hurry.base.region.repository.RegionRepository;
 import com.ant.hurry.base.region.service.RegionSearchService;
 import com.ant.hurry.boundedContext.board.entity.BoardType;
 import com.ant.hurry.boundedContext.board.entity.TradeType;
@@ -35,6 +36,8 @@ public class BoardControllerTest {
 
     @Autowired
     private RegionSearchService regionSearchService;
+    @Autowired
+    private RegionRepository regionRepository;
 
 
     @Test
@@ -58,6 +61,7 @@ public class BoardControllerTest {
     @DisplayName("게시판 작성 완료")
     @WithMockUser("user1")
     void shouldCreateBoard() throws Exception {
+        regionRepository.deleteAll();
         regionSearchService.selectPattern();
         // WHEN
         ResultActions resultActions = mvc
@@ -181,6 +185,7 @@ public class BoardControllerTest {
     @DisplayName("해당 지역의 게시판으로 들어가서 게시글 확인")
     @WithUserDetails("user1")
     void checkEnterRegionBoard() throws Exception {
+        regionRepository.deleteAll();
         regionSearchService.selectPattern();
         //삼산동 게시판으로 들어가서 글 확인
         // WHEN
@@ -203,6 +208,7 @@ public class BoardControllerTest {
     @DisplayName("게시글 수정 GET")
     @WithMockUser("user1")
     void modifyBoard() throws Exception {
+        regionRepository.deleteAll();
         regionSearchService.selectPattern();
 
         // WHEN
@@ -224,6 +230,7 @@ public class BoardControllerTest {
     @DisplayName("게시글 수정 POST")
     @WithMockUser("user1")
     void updateBoard() throws Exception {
+        regionRepository.deleteAll();
         regionSearchService.selectPattern();
 
         // WHEN
