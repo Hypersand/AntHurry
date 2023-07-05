@@ -39,7 +39,7 @@ public class Board extends BaseEntity {
     private String regCode;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     public void updateBoard(CreateRequest createRequest) {

@@ -1,7 +1,7 @@
 <html layout:decorate="~{usr/layout/layout.html}">
 
 <head>
-    <title>로그인 페이지</title>
+    <title>로그인</title>
 </head>
 
 <body>
@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="navbar-center">
-            <a class="font-black">로그인 페이지</a>
+            <a class="font-black">로그인</a>
         </div>
         <div class="navbar-end">
             <button class="btn btn-ghost btn-circle">
@@ -48,14 +48,11 @@
     <div class="body bg-white dark:bg-[#0F172A]">
         <div class="bg-black before:animate-pulse before:bg-gradient-to-b before:from-gray-900 overflow-hidden before:via-[#FF626F] before:to-gray-900 before:absolute ">
             <div id="myDIV">
-                <div class="w-[100vw] h-[100vh] px-3 sm:px-5 flex items-center justify-center absolute">
+                <div class="w-[100vw] h-[85vh] px-3 sm:px-5 flex items-center justify-center absolute">
                     <div class="w-full sm:w-1/2 lg:2/3 px-6 bg-gray-500 bg-opacity-20 bg-clip-padding backdrop-filter backdrop-blur-sm text-white z-50 py-4  rounded-lg">
-                        <div class="w-full flex justify-center text-[#FF626F] text-xl mb:2 md:mb-5">
-                            로그인
-                        </div>
 
                         <div class="text-center mt-2">
-                            <a href="/oauth2/authorization/naver" class="btn w-full gap-1">
+                            <a href="/oauth2/authorization/naver" class="btn border border-slate-600 bg-slate-700 text-slate-300 w-full gap-1">
                                 <i class="fa-solid fa-n text-[color:#2DB400]"></i>
                                 <span class="normal-case">네이버 로그인</span>
                             </a>
@@ -67,7 +64,7 @@
                         </div>
                         <div class="text-center mt-2">
                                 <!-- 로그인하지 않은 경우, 로그인 버튼을 보여줌 -->
-                                <a href="/oauth2/authorization/kakao" class="btn w-full gap-1">
+                                <a href="/oauth2/authorization/kakao" class="btn border border-slate-600 bg-slate-700 text-slate-300 w-full gap-1">
                                     <i class="fa-solid fa-comment text-[color:#ffe812]"></i>
                                     <span class="normal-case">카카오 로그인</span>
                                 </a>

@@ -2,6 +2,7 @@ package com.ant.hurry.boundedContext.board.controller;
 
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.board.dto.BoardDto;
 import com.ant.hurry.boundedContext.board.dto.CreateConvertDTO;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.Board;
@@ -152,7 +153,7 @@ public class BoardController {
 
         Region region = regionService.findByCode(code).orElseThrow();
 
-        Slice<Board> boards = boardService.getBoards(lastId, code, PageRequest.ofSize(10));
+        Slice<BoardDto> boards = boardService.getBoards(lastId, code, PageRequest.ofSize(10));
 
         model.addAttribute("boards", boards.getContent());
         model.addAttribute("region", region);
@@ -166,7 +167,7 @@ public class BoardController {
     public ResponseEntity<?> enterRegion(@PathVariable("lastId") Long lastId,
                                          @RequestParam("code") String code) {
 
-        Slice<Board> boards = boardService.getBoards(lastId, code, PageRequest.ofSize(10));
+        Slice<BoardDto> boards = boardService.getBoards(lastId, code, PageRequest.ofSize(10));
         Map<String, Object> map = new HashMap<>();
         map.put("boardList", boards.getContent());
         return ResponseEntity.ok(map);
@@ -187,7 +188,7 @@ public class BoardController {
     @GetMapping("/online")
     public String showOnlineBoard(@Valid SearchForm searchForm, Model model) {
 
-        Slice<Board> boards = boardService.getOnlineBoards(null, searchForm.getTitle(), TradeType.온라인 ,PageRequest.ofSize(10));
+        Slice<BoardDto> boards = boardService.getOnlineBoards(null, searchForm.getTitle(), TradeType.온라인 ,PageRequest.ofSize(10));
 
         model.addAttribute("boards", boards);
         model.addAttribute("content", searchForm.getTitle());
@@ -200,7 +201,7 @@ public class BoardController {
     public ResponseEntity<?> showOnlineBoard(@PathVariable("lastId") Long lastId,
                                               @RequestParam("title") String title) {
 
-        Slice<Board> boards = boardService.getOnlineBoards(lastId, title, TradeType.온라인, PageRequest.ofSize(10));
+        Slice<BoardDto> boards = boardService.getOnlineBoards(lastId, title, TradeType.온라인, PageRequest.ofSize(10));
         Map<String, Object> map = new HashMap<>();
         map.put("boardList", boards.getContent());
         return ResponseEntity.ok(map);

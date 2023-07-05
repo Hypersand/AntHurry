@@ -38,8 +38,8 @@
                                 <span class="card-title" th:text="${board.title}"></span>
                                 <span class="text-xs mt-1 ml-auto" th:text="${board.boardType}"></span>
                             </div>
-                            <span class="text-xs mb-1" th:if="${board.member != null}"
-                                  th:text="${board.member.nickname}"></span>
+                            <span class="text-xs mb-1" th:if="${board.nickname != null}"
+                                  th:text="${board.nickname}"></span>
                             <div class="flex">
                                 <span th:text="${board.rewardCoin}" class="pr-1"></span>
                                 <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1490/1490853.png"
@@ -89,7 +89,7 @@
 
                 const memberNickname = document.createElement('span');
                 memberNickname.setAttribute('class', 'text-xs mb-1');
-                memberNickname.innerText = board.member.nickname;
+                memberNickname.innerText = board.nickname;
 
                 const cardBodyFlex2 = document.createElement('div');
                 cardBodyFlex2.setAttribute('class', 'flex');
@@ -128,7 +128,7 @@
 
 
             const url = `/board/online/${lastId2}?title=${boardSearch}`;
-            console.log(url);
+
             fetch(url)
                 .then((response) => response.json())
                 .then(data => {
