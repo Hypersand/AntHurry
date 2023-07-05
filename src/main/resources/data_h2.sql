@@ -3,6 +3,7 @@ INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, prov
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user3', 'User3', 'password123', '01034567890', 1, 'kakao', 0, 1.0, 2);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user4', 'User4', 'password123', '01045678901', 1, 'kakao', 0, 3.5, 2);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user5', 'User5', 'password123', '01056789012', 1, 'kakao', 0, 0, 0);
+INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('admin', 'admin', 'password123', '01026749612', 1, 'kakao', 0, 0, 0);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('KAKAO__12345678', 'bigsand', 'password12311', '01053833333', 1, 'kakao', 0, 0, 0);
 
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (1, 2, '채팅시작테스트', 'START', NOW());
@@ -33,3 +34,4 @@ INSERT INTO REVIEW (content, rating, trade_status_id, writer_id, receiver_id) VA
 INSERT INTO REVIEW (content, rating, trade_status_id, writer_id, receiver_id) VALUES ('내용4', 3.0, 3, 2, 3);
 
 INSERT INTO EXCHANGE (member_id, bank_type, account_number, holder_name, money, status) VALUES (1, '국민', '123456789', '홍길동', 1000, 0);
+INSERT INTO EXCHANGE (member_id, bank_type, account_number, holder_name, money, status) VALUES (1, '국민', '123456789', '홍길동', 1000, 1);

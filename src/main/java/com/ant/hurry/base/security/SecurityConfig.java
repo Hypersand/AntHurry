@@ -13,35 +13,37 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .formLogin(
-                        formLogin ->
-                                formLogin.loginPage("/usr/member/login")
+                        formLogin -> formLogin.loginPage("/usr/member/login")
+                                .defaultSuccessUrl("/",true)
                 )
                 .oauth2Login(
-                        oauth2Login ->
-                                oauth2Login.loginPage("/usr/member/login")
+                        oauth2Login -> oauth2Login.loginPage("/usr/member/login")
+                                .defaultSuccessUrl("/", true)
                 )
                 .logout(
-                        logout ->
-                                logout.logoutUrl("/usr/member/logout")
-                );
+                        logout -> logout.logoutUrl("/usr/member/logout"));
 
         http.addFilterBefore(new PhoneAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/chat/**", "/pub/**", "/sub/**").permitAll()
+                .requestMatchers("/usr/member/login").anonymous()
+                .anyRequest().authenticated());
 
+        return http.build();
     }
 
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
 }

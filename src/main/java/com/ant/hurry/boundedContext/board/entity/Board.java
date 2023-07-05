@@ -38,7 +38,6 @@ public class Board extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-
     public void updateBoard(CreateRequest createRequest) {
         this.title = createRequest.getTitle();
         this.content = createRequest.getContent();

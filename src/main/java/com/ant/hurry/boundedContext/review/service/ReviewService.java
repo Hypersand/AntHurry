@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class ReviewService {
 
         Member member = memberService.findByUsername(username).orElse(null);
         Member receiver = memberService.findByNickname(reviewRequest.getReceiverName()).orElse(null);
-        TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId);
+        TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId).getData();
 
         if (member == null) {
             return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
@@ -85,7 +87,7 @@ public class ReviewService {
 
     public RsData<Object> validateTradeStatusAndMember(Long tradeStatusId, String username) {
 
-        TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId);
+        TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId).getData();
         Member member = memberService.findByUsername(username).orElse(null);
 
         if (!member.getUsername().equals(tradeStatus.getRequesterUsername()) && !member.getUsername().equals(tradeStatus.getHelperUsername())) {
@@ -107,17 +109,26 @@ public class ReviewService {
         return RsData.of("S_R-2", "후기등록페이지로 이동합니다.", tradeStatus.getRequester().getNickname());
     }
 
-    public RsData<List<Review>> getMyReviews(String username) {
+    public RsData<Map<String, Object>> getReviews(String username, Long memberId) {
 
-        Member member = memberService.findByUsername(username).orElse(null);
+        Member currentMember = memberService.findByUsername(username).orElse(null);
+        Member profileMember = memberService.findById(memberId).orElse(null);
 
-        if (member == null) {
+        if (currentMember == null || profileMember == null) {
             return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
         }
 
-        List<Review> myReviews = reviewRepository.findByReceiver(member);
+        Map<String, Object> map = new HashMap<>();
 
-        return RsData.of("S_R-3", "후기목록페이지로 이동합니다.", myReviews);
+        List<Review> reviews = reviewRepository.findByReceiver(profileMember);
+        map.put("reviews", reviews);
+        map.put("profileMember", profileMember);
+
+        return RsData.of("S_R-3", "후기목록페이지로 이동합니다.", map);
+    }
+
+    public Long getReviewCount(Long id) {
+        return reviewRepository.countByReceiver_Id(id);
     }
 
 }

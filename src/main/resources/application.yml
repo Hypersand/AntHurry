@@ -40,12 +40,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-        use_sql_comments: true
-        default_batch_fetch_size: 200
   servlet:
     multipart:
       maxFileSize: 10MB
@@ -64,12 +58,3 @@ naver-cloud:
     endpoint: https://kr.object.ncloudstorage.com
   region:
     static: ${custom.naver-cloud.region.static}
-
-logging:
-  level:
-    root: INFO
-    com.ant.hurry: DEBUG
-    org.hibernate.orm.jdbc.bind: TRACE
-custom:
-  site:
-    baseUrl: http://localhost:8080

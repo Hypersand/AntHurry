@@ -3,12 +3,13 @@ package com.ant.hurry.boundedContext.tradeStatus.service;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.repository.TradeStatusRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -17,8 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 
+import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusSuccessCode.CREATE_SUCCESS;
+import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusSuccessCode.REDIRECT_TO_PAGE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @Transactional
@@ -27,18 +32,27 @@ public class TradeStatusServiceTest {
 
     @Autowired
     TradeStatusService tradeStatusService;
-    @Autowired
-    TradeStatusRepository tradeStatusRepository;
 
-//    @Test
-//    void createTradeStatus() {
-//        board, requester, helper 생성 및 저장 후 이용
-//        TradeStatus tradeStatus = tradeStatusService.create(board, requester, helper);
-//
-//        assertThat(tradeStatusRepository.findAll().size()).isEqualTo(1);
-//        assertThat(tradeStatus.getStatus()).isEqualTo(Status.BEFORE);
-//    }
+    @Test
+    void create_tradeStatus() {
+        TradeStatusRepository tradeStatusRepository = Mockito.mock(TradeStatusRepository.class);
+        MemberService memberService = Mockito.mock(MemberService.class);
 
+        Member requester = Member.builder().build();
+        Member helper = Member.builder().build();
+        Board board = Board.builder().member(requester).build();
+
+        when(tradeStatusRepository.save(any(TradeStatus.class))).thenReturn(new TradeStatus());
+        when(memberService.getMember()).thenReturn(requester);
+
+        TradeStatusService tradeStatusService = new TradeStatusService(tradeStatusRepository, memberService);
+
+        RsData<TradeStatus> rs = tradeStatusService.create(board, requester, helper);
+
+        assertEquals(CREATE_SUCCESS.getCode(), rs.getResultCode());
+        assertEquals(CREATE_SUCCESS.getMessage(), rs.getMsg());
+        assertNotNull(rs.getData());
+    }
 
     @Test
     @DisplayName("유효하지 않은 username으로 접근 시 오류 발생")
@@ -72,8 +86,8 @@ public class TradeStatusServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("S_T-1"),
-                () -> assertThat(rsData.getMsg()).isEqualTo("거래상태페이지로 이동합니다."),
+                () -> assertThat(rsData.getResultCode()).isEqualTo(REDIRECT_TO_PAGE.getCode()),
+                () -> assertThat(rsData.getMsg()).isEqualTo(REDIRECT_TO_PAGE.getMessage()),
                 () -> assertThat(rsData.getData().size()).isEqualTo(3),
                 () -> assertThat(rsData.getData()).isSortedAccordingTo(Comparator.comparing((TradeStatus e) -> e.getId()).reversed())
 
@@ -93,8 +107,8 @@ public class TradeStatusServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("S_T-1"),
-                () -> assertThat(rsData.getMsg()).isEqualTo("거래상태페이지로 이동합니다."),
+                () -> assertThat(rsData.getResultCode()).isEqualTo(REDIRECT_TO_PAGE.getCode()),
+                () -> assertThat(rsData.getMsg()).isEqualTo(REDIRECT_TO_PAGE.getMessage()),
                 () -> assertThat(rsData.getData().size()).isEqualTo(1),
                 () -> assertThat(rsData.getData()).isSortedAccordingTo(Comparator.comparing((TradeStatus e) -> e.getId()).reversed())
 
@@ -114,12 +128,27 @@ public class TradeStatusServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("S_T-1"),
-                () -> assertThat(rsData.getMsg()).isEqualTo("거래상태페이지로 이동합니다."),
+                () -> assertThat(rsData.getResultCode()).isEqualTo(REDIRECT_TO_PAGE.getCode()),
+                () -> assertThat(rsData.getMsg()).isEqualTo(REDIRECT_TO_PAGE.getMessage()),
                 () -> assertThat(rsData.getData().size()).isEqualTo(2),
                 () -> assertThat(rsData.getData()).isSortedAccordingTo(Comparator.comparing((TradeStatus e) -> e.getId()).reversed())
 
         );
+    }
+
+
+    @Test
+    @DisplayName("유효한 거래 완료 횟수를 반환한다.")
+    void tradeStatus_count_valid() {
+
+        //given
+        Long memberId = 6L;
+
+        //when
+        Long count = tradeStatusService.getComleteTradeStatusCount(memberId);
+
+        //then
+        assertThat(count).isEqualTo(2L);
     }
 
 

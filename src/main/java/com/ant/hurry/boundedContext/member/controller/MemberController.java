@@ -7,6 +7,8 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
+import com.ant.hurry.boundedContext.review.service.ReviewService;
+import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import jakarta.validation.Valid;
 import com.ant.hurry.standard.util.Ut;
@@ -18,6 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,11 +30,14 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -46,6 +53,8 @@ import java.util.Optional;
 public class MemberController {
     private final MemberService memberService;
     private final PhoneAuthService phoneAuthService;
+    private final TradeStatusService tradeStatusService;
+    private final ReviewService reviewService;
     private final Rq rq;
 
     private final ObjectMapper objectMapper;
@@ -79,7 +88,7 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/phoneAuth")
     @ResponseBody
-    public ResponseEntity phoneAuthComplete(String phoneNumber){
+    public ResponseEntity phoneAuthComplete(String phoneNumber) {
         Member member = rq.getMember();
         RsData<String> result = memberService.phoneAuthComplete(member, phoneNumber);
         if (result.isFail()) {
@@ -110,7 +119,7 @@ public class MemberController {
         String authCode = phoneAuthService.sendSms(phoneNumber);
 
         Member member = rq.getMember();
-        if(member != null){
+        if (member != null) {
             memberService.updateTmpPhone(member, phoneNumber);
         }
 
@@ -161,7 +170,7 @@ public class MemberController {
 
         //이미지 경로 세팅
         Optional<ProfileImage> profileImage = memberService.findProfileImage(member);
-        if(profileImage.isPresent())
+        if (profileImage.isPresent())
             profileRequestDto.setImagePath(profileImage.get().getFullPath());
         else
             profileRequestDto.setImagePath(null);
@@ -187,8 +196,8 @@ public class MemberController {
     @PostMapping(value = "/profile_edit", produces = "application/json;utf-8;")
     @ResponseBody
     public ResponseEntity updateProfile(@ModelAttribute @Valid ProfileRequestDto profileRequestDto,
-                                BindingResult result,
-                                MultipartFile file) throws IOException {
+                                        BindingResult result,
+                                        MultipartFile file) throws IOException {
         //입력필드 검증
         Map<String, String> errors = new HashMap<>();
         if (result.hasErrors()) {
@@ -210,7 +219,7 @@ public class MemberController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/charge")
-    public String chargePoint(Model model){
+    public String chargePoint(Model model) {
         Member member = memberService.getMember();
         model.addAttribute("member", member);
         return "usr/member/charge";
@@ -223,6 +232,27 @@ public class MemberController {
         model.addAttribute("code", code);
         return "usr/member/fail";
 
+    }
+
+
+    @GetMapping("/profile/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String showProfile(@PathVariable Long id, Model model) {
+
+        RsData<Member> rsData = memberService.validateAndReturnMember(id);
+
+        if (rsData.isFail()) {
+            return rq.historyBack(rsData.getMsg());
+        }
+
+        Long completeTradeCount = tradeStatusService.getComleteTradeStatusCount(id);
+        Long reviewCount = reviewService.getReviewCount(id);
+
+        model.addAttribute("member", rsData.getData());
+        model.addAttribute("completeTradeCount", completeTradeCount);
+        model.addAttribute("reviewCount", reviewCount);
+
+        return "usr/member/usrCheck";
     }
 
 }

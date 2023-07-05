@@ -4,7 +4,6 @@ import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
-import com.ant.hurry.boundedContext.review.service.ReviewService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.repository.TradeStatusRepository;
@@ -13,7 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
+import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusErrorCode.*;
+import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusSuccessCode.*;
 import static com.ant.hurry.boundedContext.tradeStatus.entity.Status.*;
 
 @Service
@@ -25,10 +27,7 @@ public class TradeStatusService {
     private final MemberService memberService;
 
     @Transactional
-    public TradeStatus create(Board board, Member requester, Member helper) {
-        if (requester.equals(helper)) {
-//            [ErrorCode] 본인의 게시글입니다.
-        }
+    public RsData<TradeStatus> create(Board board, Member requester, Member helper) {
         TradeStatus tradeStatus = TradeStatus.builder()
                 .status(BEFORE)
                 .board(board)
@@ -36,49 +35,45 @@ public class TradeStatusService {
                 .helper(helper)
                 .build();
         tradeStatusRepository.save(tradeStatus);
-        return tradeStatus;
+        return RsData.of(CREATE_SUCCESS, tradeStatus);
     }
 
     @Transactional
-    public TradeStatus updateStatus(TradeStatus tradeStatus, Status status) {
-        if (!canUpdateStatus(tradeStatus, status)) {
-//            [ErrorCode] return ErrorCode
-            return null;
+    public RsData<TradeStatus> updateStatus(TradeStatus tradeStatus, Status status) {
+        RsData canUpdateStatus = canUpdateStatus(tradeStatus, status);
+
+        if (canUpdateStatus.isFail()) {
+            return canUpdateStatus;
         }
-        TradeStatus modifiedTradeStatus = tradeStatus.toBuilder()
-                .status(status).build();
+
+        TradeStatus modifiedTradeStatus = tradeStatus.toBuilder().status(status).build();
         tradeStatusRepository.save(modifiedTradeStatus);
-        return modifiedTradeStatus;
+
+        return RsData.of(UPDATE_SUCCESS, modifiedTradeStatus);
     }
 
-    /**
-     * ErrorCode 생성 시 리턴 타입을 boolean -> ErrorCode로 변경
-     * 원활한 테스트를 위해 임시로 예외 상황 시 false를 반환하도록 설정함
-     * 상단의 updateStatus 부분도 변경 필요
-     */
-    private boolean canUpdateStatus(TradeStatus tradeStatus, Status status) {
+    private RsData canUpdateStatus(TradeStatus tradeStatus, Status status) {
         Status target = tradeStatus.getStatus();
         if (!target.equals(BEFORE) && status.equals(INPROGRESS)) {
-//            [ErrorCode]진행 이력이 있는 거래입니다.
-            return false;
+            return RsData.of(ALREADY_IN_PROGRESS);
         }
         if (!target.equals(INPROGRESS) && status.equals(COMPLETE)) {
-//            [ErrorCode] 현재 진행 중인 거래만 완료할 수 있습니다.
-            return false;
+            return RsData.of(COMPLETE_FAILED);
         }
         if(target.equals(COMPLETE) && !status.equals(CANCELED)) {
-//         [ErrorCode] 이미 완료된 거래입니다.
-            return false;
+            return RsData.of(ALREADY_COMPLETED);
         }
-        return true;
+        return RsData.of(CAN_UPDATE);
     }
 
-    public List<TradeStatus> findByMember(Member member) {
-        return tradeStatusRepository.findByRequesterOrHelper(member.getId());
+    public RsData<List<TradeStatus>> findByMember(Member member) {
+        return RsData.of(TRADESTATUS_FOUND, tradeStatusRepository.findByRequesterOrHelper(member.getId()));
     }
 
-    public TradeStatus findById(Long id) {
-        return tradeStatusRepository.findById(id).orElse(null);
+    public RsData<TradeStatus> findById(Long id) {
+        Optional<TradeStatus> tradeStatus = tradeStatusRepository.findById(id);
+        return tradeStatus.map(status -> RsData.of(TRADESTATUS_FOUND, status))
+                .orElseGet(() -> RsData.of(TRADESTATUS_NOT_EXISTS));
     }
 
     public RsData<List<TradeStatus>> findMyTradeStatusList(String username, Status status) {
@@ -91,6 +86,11 @@ public class TradeStatusService {
 
         List<TradeStatus> tradeStatusList = tradeStatusRepository.findMyTradeStatus(member.getId(), status);
 
-        return RsData.of("S_T-1", "거래상태페이지로 이동합니다.", tradeStatusList);
+        return RsData.of(REDIRECT_TO_PAGE, tradeStatusList);
+    }
+
+    public Long getComleteTradeStatusCount(Long id) {
+        return tradeStatusRepository.countMemberCompleteTradeStatus(id);
+
     }
 }
