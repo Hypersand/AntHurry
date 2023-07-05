@@ -20,48 +20,35 @@
         </div>
         <div class="navbar-end">
             <button class="btn btn-ghost btn-circle">
-                <!-- ellipsis 클릭 시 각각의 채팅방 체크하여 채팅방 나가기, 거래 시작/완료 등 선택할 수 있도록 할 예정 -->
-                <i class="fa-solid fa-ellipsis-vertical"></i>
             </button>
         </div>
     </div>
 
 </header>
 
-<main layout:fragment="main" class="flex-grow flex flex-col items-center justify-center w-screen p-4">
-    <div th:if="${#lists.isEmpty(latestMessages)}" class="text-lg text-gray-400 pt-12">
+<main layout:fragment="main" class="flex-grow flex flex-col items-center w-full p-4">
+    <div th:if="${#lists.isEmpty(chatRooms)}" class="text-lg text-gray-400 pt-12">
         채팅 중인 대화방이 없습니다.<i class="fa-regular fa-face-sad-tear ml-2"></i>
     </div>
-    <div th:if="${!#lists.isEmpty(latestMessages)}">
-        <button th:each="message : ${latestMessages}"
-                class="hover:bg-gray-50 active:bg-gray-100 border-2 border-solid border-gray-100 rounded-lg w-screen px-8 py-6 mb-6 flex justify-between items-center">
+    <div th:if="${!#lists.isEmpty(chatRooms)}">
+        <a th:each="chatRoom : ${chatRooms}" th:href="@{/chat/room/{id}(id=${chatRoom.getKey().id})}"
+                class="hover:bg-gray-50 active:bg-gray-100 border-2 border-solid border-gray-100 rounded-lg w-[650px] px-8 py-6 mb-6 flex justify-between items-center">
             <div>
                 <div class="mb-2 text-start">
-                    <span style="padding: 0;" th:if="${@rq.getMember() == message.chatRoom.members.get(0)}"
-                          th:text="|${message.chatRoom.members.get(1)} 님|"
-                          class="font-black text-lg"></span>
-                    <span style="padding: 0;"
-                          th:if="${@rq.getMember() == message.chatRoom.members.get(1)}"
-                          th:text="|${message.chatRoom.members.get(0)} 님|"
-                          class="font-black text-lg"></span>
-                    <span th:if="${#temporals.format(#dates.createNow(), 'MM-dd').equals(#temporals.format(message.createdAt, 'MM-dd'))}"
-                          th:text="${#temporals.format(message.createdAt, 'HH:mm')}" class="ml-2 text-gray-400"></span>
-                    <span th:if="${!(#temporals.format(#dates.createNow(), 'MM-dd').equals(#temporals.format(message.createdAt, 'MM-dd')))}"
-                          th:text="${#temporals.format(message.createdAt, 'MM월 dd일')}"
-                          class="ml-2 text-gray-400"></span>
+                    <span style="padding: 0;" th:if="${@rq.getMember().getNickname().equals(chatRoom.getKey().getMembersNickName().get(0))}"
+                          th:text="${chatRoom.getKey().getMembersNickName().get(1)}" class="font-black text-lg"></span>
+                    <span style="padding: 0;" th:if="${@rq.getMember().getNickname().equals(chatRoom.getKey().getMembersNickName().get(1))}"
+                          th:text="${chatRoom.getKey().getMembersNickName().get(0)}" class="font-black text-lg"></span>
+                    <span th:text="${#temporals.format(chatRoom.getValue().createdAt, 'HH:mm')}" class="ml-2 text-gray-400"></span>
                 </div>
 
-                <p th:if="${message.message != null}" th:text="${message.message.content}"
+                <p th:if="${chatRoom.getValue().message != null}" th:text="${chatRoom.getValue().message.getMessage()}"
                    class="text-lg text-start"></p>
-                <p th:if="${message.fileMessage != null}" class="text-lg text-start">파일을 다운로드할 수 있습니다.</p>
             </div>
-            <div th:if="${message.message != null && @rq.getMember() != message.message.getSender() && message.message.isNotRead()}"
+            <div th:if="${chatRoom.getValue().message != null && @rq.getMember().getNickname() != chatRoom.getValue().sender && chatRoom.getValue().message.isNotRead()}"
                  class="bg-[#ff626f] w-16 text-white font-semibold rounded-xl">new
             </div>
-            <div th:if="${message.fileMessage != null && @rq.getMember() != message.fileMessage.getSender() && message.fileMessage.isNotRead()}"
-                 class="bg-[#ff626f] w-16 text-white font-semibold rounded-xl">new
-            </div>
-        </button>
+        </a>
     </div>
 </main>
 

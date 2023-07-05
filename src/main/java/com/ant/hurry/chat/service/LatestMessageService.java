@@ -26,17 +26,23 @@ public class LatestMessageService {
         List<LatestMessage> latestMessages = new ArrayList<>();
 
         chatRooms.forEach(cr -> {
-            LatestMessage latestMessage = latestMessageRepository.findByChatRoom(cr).orElse(null);
+            LatestMessage latestMessage = latestMessageRepository.findByChatRoomId(cr.getId())
+                    .orElseGet(() -> LatestMessage.builder()
+                            .sender(" ")
+                            .roomId(cr.getId())
+                            .createdAt(LocalDateTime.now())
+                            .build());
             latestMessages.add(latestMessage);
         });
 
         return RsData.of(MESSAGE_FOUND, latestMessages);
     }
 
-    public RsData<LatestMessage> findByChatRoom(ChatRoom chatRoom) {
-        LatestMessage latestMessage = latestMessageRepository.findByChatRoom(chatRoom)
+    public RsData<LatestMessage> findByChatRoomId(String roomId) {
+        LatestMessage latestMessage = latestMessageRepository.findByChatRoomId(roomId)
                 .orElseGet(() -> LatestMessage.builder()
-                        .chatRoom(chatRoom)
+                        .sender(" ")
+                        .roomId(roomId)
                         .createdAt(LocalDateTime.now())
                         .build());
 

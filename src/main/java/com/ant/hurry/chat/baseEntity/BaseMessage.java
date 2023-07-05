@@ -1,6 +1,5 @@
 package com.ant.hurry.chat.baseEntity;
 
-import com.ant.hurry.chat.entity.ChatRoom;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ public class BaseMessage {
     @Id
     private String id;
 
-    private ChatRoom chatRoom;
+    private String roomId;
 
     @CreatedDate
     private LocalDateTime createdAt;

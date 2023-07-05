@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.ant.hurry.boundedContext.tradeStatus.entity.Status.*;
+
 @Controller
 @RequiredArgsConstructor
 @PreAuthorize("isAuthenticated()")
@@ -61,7 +63,7 @@ public class TradeStatusController {
     @GetMapping("/list")
     public String showList(@RequestParam(defaultValue = "COMPLETE") String status, @AuthenticationPrincipal User user, Model model) {
 
-        RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), Status.valueOf(status));
+        RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), valueOf(status));
 
         if (rsData.isFail()) {
             return rq.historyBack(rsData.getMsg());
@@ -80,13 +82,27 @@ public class TradeStatusController {
             status = "COMPLETE";
         }
 
-        RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), Status.valueOf(status));
+        RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), valueOf(status));
 
         Map<String, Object> map = new HashMap<>();
 
-        map.put("statusMsg", Status.valueOf(status).msg);
+        map.put("statusMsg", valueOf(status).msg);
         map.put("tradeStatusList", rsData.getData());
         return ResponseEntity.ok(map);
+    }
+
+    @GetMapping("/start/{id}")
+    public String start(@PathVariable Long id) {
+        TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
+        RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, INPROGRESS);
+        return rq.historyBack(rs.getMsg());
+    }
+
+    @GetMapping("/complete/{id}")
+    public String complete(@PathVariable Long id) {
+        TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
+        RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, COMPLETE);
+        return rq.historyBack(rs.getMsg());
     }
 
 }

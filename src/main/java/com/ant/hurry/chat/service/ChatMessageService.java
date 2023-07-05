@@ -50,7 +50,6 @@ public class ChatMessageService {
     private final ChatFileMessageRepository chatFileMessageRepository;
     private final LatestMessageRepository latestMessageRepository;
     private final LatestMessageService latestMessageService;
-    private final ChatRoomService chatRoomService;
     private final MemberService memberService;
     private final MongoConfig mongoConfig;
 
@@ -63,29 +62,28 @@ public class ChatMessageService {
                 .orElseGet(() -> RsData.of(MESSAGE_NOT_EXISTS));
     }
 
-    public RsData<List<ChatMessage>> findByChatRoom(ChatRoom chatRoom) {
-        List<ChatMessage> chatMessages = chatMessageRepository.findChatMessageByChatRoom(chatRoom);
+    public RsData<List<ChatMessage>> findByChatRoomId(String roomId) {
+        List<ChatMessage> chatMessages = chatMessageRepository.findByChatRoomId(roomId);
         return RsData.of(MESSAGE_FOUND, chatMessages);
     }
 
     // 일반 메시지 전송
     public RsData<ChatMessage> send(ChatMessageDto dto) {
-        ChatRoom chatRoom = chatRoomService.findById(dto.getRoomId()).getData();
-        Member writer = memberService.findByUsername(dto.getWriter()).orElse(null);
+        Member writer = memberService.findByNickname(dto.getWriter()).orElse(null);
 
-        if(writer == null) {
+        if (writer == null) {
             return RsData.of("F_M-1", "존재하지 않는 회원입니다."); // 수정 필요
         }
 
         ChatMessage message = ChatMessage.builder()
                 .id(UUID.randomUUID().toString())
-                .chatRoom(chatRoom)
-                .writer(writer)
+                .roomId(dto.getRoomId())
+                .writer(writer.getNickname())
                 .message(dto.getMessage())
                 .build();
         chatMessageRepository.save(message);
 
-        saveLatestMessage(chatRoom, message);
+        saveLatestMessage(dto.getRoomId(), writer.getNickname(), message);
         return RsData.of(MESSAGE_SENT, message);
     }
 
@@ -114,19 +112,20 @@ public class ChatMessageService {
                 .id(UUID.randomUUID().toString())
                 .uploadFilePath(filePath)
                 .uploadFileId(fileId.toString())
-                .chatRoom(chatRoom)
-                .sender(sender)
+                .roomId(chatRoom.getId())
+                .sender(sender.getNickname())
                 .createdAt(LocalDateTime.now())
                 .build();
         chatFileMessageRepository.insert(chatFileMessage);
 
-        saveLatestMessage(chatRoom, chatFileMessage);
+        saveLatestMessage(chatRoom.getId(), sender.getNickname(), chatFileMessage);
         return RsData.of(MESSAGE_SENT, chatFileMessage);
     }
 
-    private void saveLatestMessage(ChatRoom chatRoom, Message message) {
-        LatestMessage latestMessage = latestMessageService.findByChatRoom(chatRoom).getData();
+    private void saveLatestMessage(String roomId, String sender, Message message) {
+        LatestMessage latestMessage = latestMessageService.findByChatRoomId(roomId).getData();
         LatestMessage updateLatestMessage = latestMessage.toBuilder()
+                .sender(sender)
                 .message(message)
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -199,7 +198,8 @@ public class ChatMessageService {
 
     // event
     public void whenAfterDeletedChatRoom(ChatRoom chatRoom) {
-        findByChatRoom(chatRoom).getData().forEach(chatMessageRepository::deleteSoft);
+        findByChatRoomId(chatRoom.getId()).getData()
+                .forEach(chatMessageRepository::deleteSoft);
     }
 
 }
