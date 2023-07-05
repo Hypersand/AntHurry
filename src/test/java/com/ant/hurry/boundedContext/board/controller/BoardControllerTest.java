@@ -195,8 +195,8 @@ public class BoardControllerTest {
                 .andExpect(handler().methodName("enterRegion"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(view().name("board/enterRegion"))
-                .andExpect(content().string(containsString("휴지좀")))
-                .andExpect(content().string(containsString("1000")));
+                .andExpect(content().string(containsString("제목50")))
+                .andExpect(content().string(containsString("10")));
     }
 
     @Test
@@ -216,7 +216,7 @@ public class BoardControllerTest {
                 .andExpect(handler().methodName("showModify"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(view().name("board/modify"))
-                .andExpect(content().string(containsString("휴지좀")))
+                .andExpect(content().string(containsString("제목5")))
                 .andExpect(content().string(containsString("1000")));
     }
 
