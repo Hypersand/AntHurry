@@ -41,7 +41,7 @@ public class ChatMessageRepositoryTest {
         Member member2 = Member.builder().build();
         ChatRoom chatRoom = chatRoomService
                 .create(TradeStatus.builder().requester(member1).helper(member2).build()).getData();
-        ChatMessage chatMessage = ChatMessage.builder().roomId(chatRoom).build();
+        ChatMessage chatMessage = ChatMessage.builder().roomId(chatRoom.getId()).build();
         chatMessageRepository.save(chatMessage);
 
         assertThat(chatMessageRepository.findAll()).hasSize(1);
@@ -54,7 +54,7 @@ public class ChatMessageRepositoryTest {
         Member member2 = Member.builder().build();
         ChatRoom chatRoom = chatRoomService
                 .create(TradeStatus.builder().requester(member1).helper(member2).build()).getData();
-        ChatMessage chatMessage = ChatMessage.builder().roomId(chatRoom).build();
+        ChatMessage chatMessage = ChatMessage.builder().roomId(chatRoom.getId()).build();
         mongoTemplate.save(chatMessage);
 
         assertThat(mongoTemplate.findAll(ChatMessage.class)).hasSize(1);
@@ -67,7 +67,7 @@ public class ChatMessageRepositoryTest {
         Member member2 = Member.builder().build();
         ChatRoom chatRoom = chatRoomService
                 .create(TradeStatus.builder().requester(member1).helper(member2).build()).getData();
-        ChatMessage chatMessage = ChatMessage.builder().roomId(chatRoom).build();
+        ChatMessage chatMessage = ChatMessage.builder().roomId(chatRoom.getId()).build();
         ChatMessage savedChatMessage = chatMessageRepository.save(chatMessage);
 
         assertThat(chatMessageRepository.findById(chatMessage.getId())).isNotNull();

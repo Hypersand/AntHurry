@@ -2,12 +2,14 @@ package com.ant.hurry.chat.service;
 
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.repository.MemberRepository;
 import com.ant.hurry.chat.dto.ChatMessageDto;
 import com.ant.hurry.chat.entity.ChatFileMessage;
 import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.repository.ChatFileMessageRepository;
 import com.ant.hurry.chat.repository.ChatMessageRepository;
+import com.ant.hurry.chat.repository.ChatRoomRepository;
 import com.ant.hurry.chat.repository.LatestMessageRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +49,12 @@ public class ChatMessageServiceTest {
 
     @BeforeEach
     void setUp() {
-        member = Member.builder().username("user1").build();
+        member = Member.builder().username("user1").nickname("User1").build();
         chatRoom = ChatRoom.builder().id(UUID.randomUUID().toString()).build();
         dto = new ChatMessageDto();
         dto.setRoomId(chatRoom.getId());
         dto.setMessage("안녕하세요.");
-        dto.setWriter(member.getUsername());
+        dto.setWriter(member.getNickname());
         file = new MockMultipartFile(
                 "file",
                 "testFile.txt",
