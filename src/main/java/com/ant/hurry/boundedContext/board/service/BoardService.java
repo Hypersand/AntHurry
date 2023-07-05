@@ -6,6 +6,7 @@ import com.ant.hurry.base.api.service.KakaoAddressSearchService;
 import com.ant.hurry.base.region.repository.RegionRepository;
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.board.dto.BoardDto;
 import com.ant.hurry.boundedContext.board.dto.CreateConvertDTO;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.Board;
@@ -166,12 +167,12 @@ public class BoardService {
         return boardRepository.findByTradeTypeAndBoardTypeAndTitleContaining(tradeType, boardType, title);
     }
 
-    public Slice<Board> getBoards(Long lastId, String code, Pageable pageable) {
+    public Slice<BoardDto> getBoards(Long lastId, String code, Pageable pageable) {
         return boardRepository.paginationNoOffsetBuilder(lastId, code, pageable);
     }
 
 
-    public Slice<Board> getOnlineBoards(Long id, String title, TradeType tradeType, PageRequest pageRequest) {
+    public Slice<BoardDto> getOnlineBoards(Long id, String title, TradeType tradeType, PageRequest pageRequest) {
         return boardRepository.onlineBoardPaginationNoOffsetBuilder(id, title, tradeType, pageRequest);
     }
 }

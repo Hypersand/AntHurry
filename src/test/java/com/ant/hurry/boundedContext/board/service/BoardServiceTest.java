@@ -3,6 +3,7 @@ package com.ant.hurry.boundedContext.board.service;
 import com.ant.hurry.base.region.service.RegionSearchService;
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.board.dto.BoardDto;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.entity.BoardType;
@@ -120,7 +121,7 @@ public class BoardServiceTest {
 
 
         //when
-        Slice<Board> boards = boardRepository.paginationNoOffsetBuilder(null, "2823710500", PageRequest.ofSize(10));
+        Slice<BoardDto> boards = boardRepository.paginationNoOffsetBuilder(null, "2823710500", PageRequest.ofSize(10));
 
         //then
         assertThat(boards.getContent().size()).isEqualTo(10);
@@ -134,7 +135,7 @@ public class BoardServiceTest {
     void noOffSet2() throws Exception {
 
         //when
-        Slice<Board> boards = boardRepository.paginationNoOffsetBuilder(41L, "2823710500", PageRequest.ofSize(10));
+        Slice<BoardDto> boards = boardRepository.paginationNoOffsetBuilder(41L, "2823710500", PageRequest.ofSize(10));
 
         //then
         assertThat(boards.getContent().size()).isEqualTo(10);
@@ -148,13 +149,13 @@ public class BoardServiceTest {
     void checkLast() throws Exception {
 
         //when
-        Slice<Board> boards = boardRepository.paginationNoOffsetBuilder(21L, "2823710500", PageRequest.ofSize(10));
+        Slice<BoardDto> boards = boardRepository.paginationNoOffsetBuilder(21L, "2823710500", PageRequest.ofSize(10));
 
         //then
         assertThat(boards.isLast()).isFalse();
 
         //when
-        Slice<Board> boards2 = boardRepository.paginationNoOffsetBuilder(11L, "2823710500", PageRequest.ofSize(10));
+        Slice<BoardDto> boards2 = boardRepository.paginationNoOffsetBuilder(11L, "2823710500", PageRequest.ofSize(10));
 
         //then
         assertThat(boards2.isLast()).isTrue();
@@ -166,7 +167,7 @@ public class BoardServiceTest {
     void onlineBoard() throws Exception {
 
         //when
-        Slice<Board> boards = boardRepository.onlineBoardPaginationNoOffsetBuilder(null, "제목", TradeType.온라인, PageRequest.ofSize(10));
+        Slice<BoardDto> boards = boardRepository.onlineBoardPaginationNoOffsetBuilder(null, "제목", TradeType.온라인, PageRequest.ofSize(10));
 
         //then
         assertThat(boards.getContent().size()).isEqualTo(10);
@@ -180,7 +181,7 @@ public class BoardServiceTest {
     void onlineBoard2() throws Exception {
 
         //when
-        Slice<Board> boards = boardRepository.onlineBoardPaginationNoOffsetBuilder(41L, "제목", TradeType.온라인, PageRequest.ofSize(10));
+        Slice<BoardDto> boards = boardRepository.onlineBoardPaginationNoOffsetBuilder(41L, "제목", TradeType.온라인, PageRequest.ofSize(10));
 
         //then
         assertThat(boards.getContent().size()).isEqualTo(10);
@@ -194,13 +195,13 @@ public class BoardServiceTest {
     void onlineBoardLast() throws Exception {
 
         //when
-        Slice<Board> boards = boardRepository.onlineBoardPaginationNoOffsetBuilder(null, "제목", TradeType.온라인, PageRequest.ofSize(10));
+        Slice<BoardDto> boards = boardRepository.onlineBoardPaginationNoOffsetBuilder(null, "제목", TradeType.온라인, PageRequest.ofSize(10));
 
         //then
         assertThat(boards.isLast()).isFalse();
 
         //when
-        Slice<Board> boards2 = boardRepository.onlineBoardPaginationNoOffsetBuilder(41L, "제목", TradeType.온라인, PageRequest.ofSize(10));
+        Slice<BoardDto> boards2 = boardRepository.onlineBoardPaginationNoOffsetBuilder(41L, "제목", TradeType.온라인, PageRequest.ofSize(10));
 
         //then
         assertThat(boards2.isLast()).isTrue();
@@ -212,7 +213,7 @@ public class BoardServiceTest {
     void onlineBoardEmpty() throws Exception {
 
         //when
-        Slice<Board> boards = boardRepository.onlineBoardPaginationNoOffsetBuilder(null, "없는 제목", TradeType.온라인, PageRequest.ofSize(10));
+        Slice<BoardDto> boards = boardRepository.onlineBoardPaginationNoOffsetBuilder(null, "없는 제목", TradeType.온라인, PageRequest.ofSize(10));
 
         //then
         assertThat(boards.getContent().size()).isEqualTo(0);

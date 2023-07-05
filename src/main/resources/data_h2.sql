@@ -5,7 +5,6 @@ INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, prov
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user5', 'User5', 'password123', '01056789012', 1, 'kakao', 0, 0, 0);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('admin', 'admin', 'password123', '01026749612', 1, 'kakao', 0, 0, 0);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('KAKAO__12345678', 'bigsand', 'password12311', '01053833333', 1, 'kakao', 0, 0, 0);
-INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('KAKAO__2863095386', 'donggi', 'password12311', '01000000000', 1, 'KAKAO', 100000, 0, 0);
 
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (1, 2, '채팅시작테스트', 'START', NOW());
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (1, 3, '거래취소테스트', 'CANCEL', NOW());
@@ -66,7 +65,7 @@ insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trad
 insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나급해요', '내용47', '2823710500', '제목47', '온라인', 1);
 insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나급해요', '내용48', '2823710500', '제목48', '온라인', 1);
 insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나급해요', '내용49', '2823710500', '제목49', '온라인', 1);
-insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나급해요', '내용50', '2823710500', '제목50', '온라인', 8);
+insert into BOARD (reward_coin, x, y, board_type, content, reg_code, title, trade_type, member_id) VALUES(10, 126.732240699017, 37.5110124805355, '나급해요', '내용50', '2823710500', '제목50', '온라인', 1);
 
 
 
