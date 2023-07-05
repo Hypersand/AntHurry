@@ -49,11 +49,10 @@ public class ChatMessageServiceTest {
     void setUp() {
         member = Member.builder().username("user1").build();
         chatRoom = ChatRoom.builder().id(UUID.randomUUID().toString()).build();
-        dto = ChatMessageDto.builder()
-                .roomId(chatRoom.getId())
-                .message("안녕하세요.")
-                .writer(member.getUsername())
-                .build();
+        dto = new ChatMessageDto();
+        dto.setRoomId(chatRoom.getId());
+        dto.setMessage("안녕하세요.");
+        dto.setWriter(member.getUsername());
         file = new MockMultipartFile(
                 "file",
                 "testFile.txt",

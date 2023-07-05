@@ -9,20 +9,20 @@ import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.service.ChatMessageService;
 import com.ant.hurry.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
 
-@Controller
+@Slf4j
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/chat")
 public class ChatMessageController {
@@ -32,11 +32,10 @@ public class ChatMessageController {
     private final SimpMessagingTemplate messagingTemplate;
     private final Rq rq;
 
-    @MessageMapping("/message")
-    public void sendMessage(ChatMessageDto dto) {
-        RsData<ChatMessage> rs = chatMessageService.send(dto);
-        ChatMessage message = rs.getData();
-        messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(dto.getRoomId()), message);
+    @MessageMapping("/chat/message")
+    public void sendMessage(@Payload ChatMessageDto dto) {
+        chatMessageService.send(dto);
+        messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(dto.getRoomId()), dto);
     }
 
     @MessageMapping("/room/{id}/file/message")

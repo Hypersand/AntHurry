@@ -36,7 +36,9 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Bean
     public MongoTemplate mongoTemplate() {
-        return new MongoTemplate(new SimpleMongoClientDatabaseFactory(mongoClient(), getDatabaseName()));
+        return new MongoTemplate(
+                new SimpleMongoClientDatabaseFactory(mongoClient(), getDatabaseName())
+        );
     }
 
 }
