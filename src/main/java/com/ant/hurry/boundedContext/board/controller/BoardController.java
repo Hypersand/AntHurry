@@ -2,6 +2,7 @@ package com.ant.hurry.boundedContext.board.controller;
 
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.board.dto.BoardDto;
 import com.ant.hurry.boundedContext.board.dto.CreateConvertDTO;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.Board;
@@ -10,27 +11,28 @@ import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.ant.hurry.base.region.entity.Region;
 import com.ant.hurry.base.region.service.RegionSearchService;
 import com.ant.hurry.boundedContext.board.service.BoardService;
-import com.ant.hurry.boundedContext.member.entity.Member;
-import com.ant.hurry.boundedContext.member.service.MemberService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -145,17 +147,30 @@ public class BoardController {
      **/
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/enterRegion")
-    public String enterRegion(@RequestParam("code") String code, Model model) {
+    public String enterRegion(@RequestParam(value = "lastId", required = false) Long lastId,
+                              @RequestParam("code") String code,
+                              Model model) {
+
         Region region = regionService.findByCode(code).orElseThrow();
 
-        List<Board> board1 = boardService.findByCodeAndBoard(code, BoardType.나급해요);
-        List<Board> board2 = boardService.findByCodeAndBoard(code, BoardType.나잘해요);
+        Slice<BoardDto> boards = boardService.getBoards(lastId, code, PageRequest.ofSize(10));
 
-
+        model.addAttribute("boards", boards.getContent());
         model.addAttribute("region", region);
-        model.addAttribute("board1", board1);
-        model.addAttribute("board2", board2);
+
         return "board/enterRegion";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/enterRegion/{lastId}")
+    @ResponseBody
+    public ResponseEntity<?> enterRegion(@PathVariable("lastId") Long lastId,
+                                         @RequestParam("code") String code) {
+
+        Slice<BoardDto> boards = boardService.getBoards(lastId, code, PageRequest.ofSize(10));
+        Map<String, Object> map = new HashMap<>();
+        map.put("boardList", boards.getContent());
+        return ResponseEntity.ok(map);
     }
 
     @AllArgsConstructor
@@ -173,10 +188,24 @@ public class BoardController {
     @GetMapping("/online")
     public String showOnlineBoard(@Valid SearchForm searchForm, Model model) {
 
-        List<Board> boards = boardService.findByTradeTypeAndBoardTypeAndTitleContaining(TradeType.온라인, BoardType.나급해요, searchForm.getTitle());
+        Slice<BoardDto> boards = boardService.getOnlineBoards(null, searchForm.getTitle(), TradeType.온라인 ,PageRequest.ofSize(10));
 
         model.addAttribute("boards", boards);
+        model.addAttribute("content", searchForm.getTitle());
         return "board/online";
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/online/{lastId}")
+    @ResponseBody
+    public ResponseEntity<?> showOnlineBoard(@PathVariable("lastId") Long lastId,
+                                              @RequestParam("title") String title) {
+
+        Slice<BoardDto> boards = boardService.getOnlineBoards(lastId, title, TradeType.온라인, PageRequest.ofSize(10));
+        Map<String, Object> map = new HashMap<>();
+        map.put("boardList", boards.getContent());
+        return ResponseEntity.ok(map);
+    }
+
 }
 

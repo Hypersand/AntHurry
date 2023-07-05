@@ -145,14 +145,14 @@ class ReviewControllerTest {
     void review_list_member_exists() throws Exception {
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/review/list"))
+        ResultActions resultActions = mockMvc.perform(get("/review/list/1"))
                 .andDo(print());
 
         //then
         resultActions
                 .andExpect(handler().handlerType(ReviewController.class))
                 .andExpect(handler().methodName("list"))
-                .andExpect(model().attributeExists("reviews"))
+                .andExpect(model().attributeExists("reviewData"))
                 .andExpect(view().name("review/list"))
                 .andExpect(status().is2xxSuccessful());
 

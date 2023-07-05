@@ -6,6 +6,7 @@ import com.ant.hurry.base.api.service.KakaoAddressSearchService;
 import com.ant.hurry.base.region.repository.RegionRepository;
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.board.dto.BoardDto;
 import com.ant.hurry.boundedContext.board.dto.CreateConvertDTO;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.board.entity.Board;
@@ -15,6 +16,9 @@ import com.ant.hurry.boundedContext.board.repository.BoardRepository;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -161,5 +165,14 @@ public class BoardService {
 
     public List<Board> findByTradeTypeAndBoardTypeAndTitleContaining(TradeType tradeType, BoardType boardType, String title) {
         return boardRepository.findByTradeTypeAndBoardTypeAndTitleContaining(tradeType, boardType, title);
+    }
+
+    public Slice<BoardDto> getBoards(Long lastId, String code, Pageable pageable) {
+        return boardRepository.paginationNoOffsetBuilder(lastId, code, pageable);
+    }
+
+
+    public Slice<BoardDto> getOnlineBoards(Long id, String title, TradeType tradeType, PageRequest pageRequest) {
+        return boardRepository.onlineBoardPaginationNoOffsetBuilder(id, title, tradeType, pageRequest);
     }
 }

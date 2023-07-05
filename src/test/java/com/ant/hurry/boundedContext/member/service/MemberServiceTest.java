@@ -1,5 +1,6 @@
 package com.ant.hurry.boundedContext.member.service;
 
+
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import org.junit.jupiter.api.Assertions;
@@ -40,5 +41,4 @@ class MemberServiceTest {
                 () -> assertThat(rsData.getMsg()).isEqualTo("접근할 수 있는 권한이 없습니다.")
         );
     }
-
 }
