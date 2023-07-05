@@ -20,13 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @Transactional
 @ActiveProfiles("test")
 public class BoardServiceTest {
 
-    @Autowired
-    private MockMvc mvc;
     @Autowired
     private BoardService boardService;
     @Autowired
