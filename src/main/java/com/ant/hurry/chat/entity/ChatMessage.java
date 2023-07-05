@@ -18,7 +18,7 @@ public class ChatMessage extends BaseMessage implements Message {
 
     private String message;
 
-    private Member writer;
+    private String writer;
 
     private LocalDateTime deletedAt;
 

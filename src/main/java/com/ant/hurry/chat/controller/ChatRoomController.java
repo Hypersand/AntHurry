@@ -42,7 +42,8 @@ public class ChatRoomController {
         if (otherMember == null) return rq.historyBack("존재하지 않는 회원입니다.");
 
         model.addAttribute("otherMember", otherMember);
-        model.addAttribute("chatMessages", chatMessageService.findByChatRoom(chatRoom).getData());
+        model.addAttribute("chatMessages",
+                chatMessageService.findByChatRoomId(chatRoom.getId()).getData());
         model.addAttribute("room", chatRoom);
         return "chat/room";
     }

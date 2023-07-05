@@ -17,7 +17,7 @@ public class BaseMessage {
     @Id
     private String id;
 
-    private ChatRoom chatRoom;
+    private String roomId;
 
     @CreatedDate
     private LocalDateTime createdAt;
