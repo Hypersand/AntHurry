@@ -35,12 +35,8 @@ public class ChatMessageController {
         messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(dto.getRoomId()), dto);
     }
 
-    @MessageMapping("/room/file/{id}")
-    public void sendFileMessage(
-            @DestinationVariable("id") String roomId,
-            @Payload MultipartFile file
-    ) throws IOException {
-
+    @MessageMapping("/chat/file")
+    public void sendFileMessage(@RequestParam String roomId, @Payload MultipartFile file) throws IOException {
         ChatRoom chatRoom = chatRoomService.findById(roomId).getData();
         RsData<ChatFileMessage> rs = chatMessageService.sendFile(file, rq.getMember(), chatRoom);
         ChatFileMessage message = rs.getData();
@@ -50,11 +46,12 @@ public class ChatMessageController {
     @GetMapping("/download/{messageId}")
     public ResponseEntity<StreamingResponseBody> downloadFile(@PathVariable("messageId") String messageId) {
         RsData<ChatFileMessage> findRs = chatMessageService.findFileMessageById(messageId);
+
         if (findRs.getData() == null) {
             return ResponseEntity.notFound().build();
         }
-        ChatFileMessage message = findRs.getData();
 
+        ChatFileMessage message = findRs.getData();
         return chatMessageService.downloadFile(message);
     }
 

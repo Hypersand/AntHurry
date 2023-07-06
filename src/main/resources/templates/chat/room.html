@@ -66,10 +66,10 @@
             <button id="send-button" class="btn btn-outline"><i class="fa-regular fa-paper-plane"></i></button>
             <button class="btn" onclick="my_modal_1.showModal()"><i class="fa-solid fa-paperclip"></i></button>
             <dialog id="my_modal_1" class="modal">
-                <form method="dialog" class="modal-box">
-                    <input type="file" class="file-input file-input-bordered file-input-sm w-full max-w-sm" />
+                <form method="dialog" class="modal-box" enctype="multipart/form-data" th:action="@{/chat/file(roomId=${room.id})}">
+                    <input type="file" class="file-input file-input-bordered file-input-sm w-full max-w-sm" name="file" />
                     <div class="modal-action">
-                        <a class="btn" th:href="@{/chat/room/file/{id}(id=${room.id})}">보내기</a>
+                        <button type="submit" class="btn">보내기</button>
                         <button class="btn">닫기</button>
                     </div>
                 </form>
