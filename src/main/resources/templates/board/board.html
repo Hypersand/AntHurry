@@ -24,12 +24,12 @@
         </div>
         <div class="navbar-end">
             <button class="btn btn-ghost text-white" style="background-color: #FF626F"
-                    th:if="${board.member != @rq.getMember()}">
+                    th:if="${!helper}">
                 <a th:href="@{/trade/create/{id}(id=${board.id})}">채팅하기</a>
             </button>
 
             <!-- The button to open modal -->
-            <label for="modal" class="btn btn-ghost btn-circle"><i class="fa-solid fa-ellipsis-vertical"></i></label>
+            <label for="modal" class="btn btn-ghost btn-circle" th:if="${board.member == @rq.getMember()}"><i class="fa-solid fa-ellipsis-vertical"></i></label>
 
             <!-- Put this part before </body> tag -->
             <input type="checkbox" id="modal" class="modal-toggle"/>

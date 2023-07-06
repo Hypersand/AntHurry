@@ -32,7 +32,7 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <p class="text-lg font-semibold text-gray-800" th:text="'예금주: ' + ${apply.holderName}"></p>
-                            <p class="text-lg font-semibold text-gray-800" th:text="'은행: ' + ${apply.bankType}"></p>
+                            <p class="text-lg font-semibold text-gray-800" th:text="'계좌번호: ' + ${apply.bankType} + ${apply.accountNumber}"></p>
                             <p class="text-lg font-semibold text-gray-800" th:text="'환전금액: ' + ${apply.money}"></p>
                             <span class="text-xs text-gray-400 theme-bg inline-block px-1.5 py-0.5 rounded" th:text="'신청날짜: ' + ${#temporals.format(apply.createdAt, 'MM-dd HH:mm')}"></span>
                         </div>
