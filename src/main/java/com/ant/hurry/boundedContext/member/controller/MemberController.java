@@ -179,18 +179,7 @@ public class MemberController {
         return "usr/member/profile_edit";
     }
 
-//    @PreAuthorize("isAuthenticated()")
-//    @PostMapping("/profile_edit")
-//    public String updateProfile(@ModelAttribute @Valid ProfileRequestDto profileRequestDto, BindingResult bindingResult,
-//                                MultipartFile file) throws IOException {
-//        if (bindingResult.hasErrors()) {
-//            return "/usr/member/profile_edit";
-//        }
-//        Member member = rq.getMember();
-//        memberService.updateProfile(member, profileRequestDto.getNickname(), file);
-//
-//        return "redirect:/usr/member/profile";
-//    }
+
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping(value = "/profile_edit", produces = "application/json;utf-8;")

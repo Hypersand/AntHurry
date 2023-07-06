@@ -2,14 +2,12 @@ package com.ant.hurry.chat.service;
 
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
-import com.ant.hurry.boundedContext.member.repository.MemberRepository;
 import com.ant.hurry.chat.dto.ChatMessageDto;
 import com.ant.hurry.chat.entity.ChatFileMessage;
 import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.repository.ChatFileMessageRepository;
 import com.ant.hurry.chat.repository.ChatMessageRepository;
-import com.ant.hurry.chat.repository.ChatRoomRepository;
 import com.ant.hurry.chat.repository.LatestMessageRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
