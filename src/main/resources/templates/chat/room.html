@@ -39,7 +39,7 @@
     </div>
 </header>
 
-<main layout:fragment="main" class="flex-grow flex items-center justify-center w-screen h-[1000px] p-8">
+<main layout:fragment="main" class="flex-grow flex items-center justify-center w-screen h-[750px] p-8">
     <div id="chat-area" class="flex flex-col w-[650px] h-full">
         <div id="messages" class="flex text-center w-full justify-end" th:each="message : ${chatMessages}">
             <div class="chat chat-start" th:if="${!@rq.getMember().getNickname().equals(message.writer)}">
@@ -69,7 +69,7 @@
                 <form method="dialog" class="modal-box" enctype="multipart/form-data" th:action="@{/chat/file(roomId=${room.id})}">
                     <input type="file" class="file-input file-input-bordered file-input-sm w-full max-w-sm" name="file" />
                     <div class="modal-action">
-                        <button type="submit" class="btn">보내기</button>
+                        <button id="file-send" type="submit" class="btn">보내기</button>
                         <button class="btn">닫기</button>
                     </div>
                 </form>
@@ -129,6 +129,30 @@
                     writer: username
                 }));
                 msg.value = '';
+            });
+
+            $("#file-send").on("click", function (event) {
+                var form = document.querySelector(".modal form");
+                var formData = new FormData(form);
+
+                var inputFile = $("input[name='file']");
+                var files = inputFile[0].files;
+
+                $.ajax({
+                    url: form.action,
+                    type: "POST",
+                    enctype: 'multipart/form-data',
+                    data: files,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        console.log("파일 전송 성공:", data);
+                        document.getElementById("send-msg").value = "";
+                    },
+                    error: function (error) {
+                        console.error("파일 전송 실패:", error);
+                    }
+                });
             });
         });
     </script>
