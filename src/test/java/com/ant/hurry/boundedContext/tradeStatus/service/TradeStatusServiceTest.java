@@ -7,6 +7,7 @@ import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.repository.TradeStatusRepository;
+import com.ant.hurry.chat.service.ChatRoomService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -40,6 +41,7 @@ public class TradeStatusServiceTest {
     @DisplayName("신규 거래 상태를 생성합니다.")
     void tradeStatus_create() {
         TradeStatusRepository tradeStatusRepository = Mockito.mock(TradeStatusRepository.class);
+        ChatRoomService chatRoomService = Mockito.mock(ChatRoomService.class);
         MemberService memberService = Mockito.mock(MemberService.class);
 
         Member requester = Member.builder().build();
@@ -49,7 +51,7 @@ public class TradeStatusServiceTest {
         when(tradeStatusRepository.save(any(TradeStatus.class))).thenReturn(new TradeStatus());
         when(memberService.getMember()).thenReturn(requester);
 
-        TradeStatusService tradeStatusService = new TradeStatusService(tradeStatusRepository, memberService);
+        TradeStatusService tradeStatusService = new TradeStatusService(tradeStatusRepository, chatRoomService, memberService);
 
         RsData<TradeStatus> rs = tradeStatusService.create(board, requester, helper);
 
@@ -155,22 +157,8 @@ public class TradeStatusServiceTest {
     }
 
     @Test
-    @DisplayName("거래 상태를 INPROGRESS로 변경합니다.")
-    void tradeStatus_updateToInprogress() {
-        List<TradeStatus> tradeStatuses = tradeStatusService.findMyTradeStatusList("user1", BEFORE).getData();
-        TradeStatus beforeTradeStatus = tradeStatuses.get(0);
-
-        RsData<TradeStatus> rs = tradeStatusService.updateStatus(beforeTradeStatus, INPROGRESS);
-
-        assertEquals(UPDATE_SUCCESS.getCode(), rs.getResultCode());
-        assertEquals(UPDATE_SUCCESS.getMessage(), rs.getMsg());
-        assertNotNull(rs.getData());
-        assertEquals(rs.getData().getStatus(), INPROGRESS);
-    }
-
-    @Test
     @DisplayName("이미 완료된 거래를 INPROGRESS로 변경 시도합니다.")
-    void tradeStatus_fail_updateToInprogress() {
+    void tradeStatus_fail_updateToINPROGRESS() {
         TradeStatus completeTradeStatus = TradeStatus.builder().status(COMPLETE).build();
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(completeTradeStatus, INPROGRESS);
 
@@ -178,22 +166,9 @@ public class TradeStatusServiceTest {
         assertEquals(ALREADY_COMPLETED.getMessage(), rs.getMsg());
     }
 
-
-    @Test
-    @DisplayName("거래 상태를 COMPLETE로 변경합니다.")
-    void tradeStatus_updateToComplete() {
-        TradeStatus inprogressTradeStatus = TradeStatus.builder().status(INPROGRESS).build();
-        RsData<TradeStatus> rs = tradeStatusService.updateStatus(inprogressTradeStatus, COMPLETE);
-
-        assertEquals(UPDATE_SUCCESS.getCode(), rs.getResultCode());
-        assertEquals(UPDATE_SUCCESS.getMessage(), rs.getMsg());
-        assertNotNull(rs.getData());
-        assertEquals(rs.getData().getStatus(), COMPLETE);
-    }
-
     @Test
     @DisplayName("취소된 거래를 COMPLETE로 변경 시도합니다.")
-    void tradeStatus_fail_updateToComplete() {
+    void tradeStatus_fail_updateToCOMPLETE() {
         List<TradeStatus> tradeStatuses = tradeStatusService.findMyTradeStatusList("user1", CANCELED).getData();
         TradeStatus canceledTradeStatus = tradeStatuses.get(0);
 

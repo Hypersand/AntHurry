@@ -96,7 +96,7 @@ public class ChatRoomService {
 
         chatRoomRepository.deleteMembers(chatRoom, member);
 
-        if (chatRoomMemberExited.getMembers().size() == 0) {
+        if (chatRoomMemberExited.getExitedMembers().size() == 2) {
             delete(chatRoomMemberExited);
         }
         return RsData.of(CHATROOM_EXITED);

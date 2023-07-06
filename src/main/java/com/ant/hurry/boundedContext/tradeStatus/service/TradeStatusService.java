@@ -8,7 +8,6 @@ import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.repository.TradeStatusRepository;
 import com.ant.hurry.chat.entity.ChatRoom;
-import com.ant.hurry.chat.repository.ChatRoomRepository;
 import com.ant.hurry.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,6 @@ public class TradeStatusService {
 
     private final TradeStatusRepository tradeStatusRepository;
     private final ChatRoomService chatRoomService;
-    private final ChatRoomRepository chatRoomRepository;
     private final MemberService memberService;
 
     @Transactional
@@ -68,7 +66,7 @@ public class TradeStatusService {
         if (!target.equals(INPROGRESS) && status.equals(COMPLETE)) {
             return RsData.of(COMPLETE_FAILED);
         }
-        if(target.equals(COMPLETE) && !status.equals(CANCELED)) {
+        if (target.equals(COMPLETE) && !status.equals(CANCELED)) {
             return RsData.of(ALREADY_COMPLETED);
         }
         return RsData.of(CAN_UPDATE);
