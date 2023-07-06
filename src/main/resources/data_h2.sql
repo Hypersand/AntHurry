@@ -1,10 +1,20 @@
+INSERT INTO ROLE (name) values ('ROLE_ADMIN');
+INSERT INTO ROLE (name) values ('ROLE_MEMBER');
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user1', 'User1', 'password123', '01012345678', 1, 'kakao', 1000, 3.5, 1);
+INSERT INTO member_roles (member_id, role_id) VALUES (1, 2);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user2', 'User2', 'password123', '01023456789', 1, 'kakao', 0, 5.0, 1);
+INSERT INTO member_roles (member_id, role_id) VALUES (2, 2);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user3', 'User3', 'password123', '01034567890', 1, 'kakao', 0, 1.0, 2);
+INSERT INTO member_roles (member_id, role_id) VALUES (3, 2);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user4', 'User4', 'password123', '01045678901', 1, 'kakao', 0, 3.5, 2);
+INSERT INTO member_roles (member_id, role_id) VALUES (4, 2);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('user5', 'User5', 'password123', '01056789012', 1, 'kakao', 0, 0, 0);
+INSERT INTO member_roles (member_id, role_id) VALUES (5, 2);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('admin', 'admin', 'password123', '01026749612', 1, 'kakao', 0, 0, 0);
+INSERT INTO member_roles (member_id, role_id) VALUES (6, 1);
+INSERT INTO member_roles (member_id, role_id) VALUES (6, 2);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('KAKAO__12345678', 'bigsand', 'password12311', '01053833333', 1, 'kakao', 0, 0, 0);
+INSERT INTO member_roles (member_id, role_id) VALUES (7, 2);
 
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (1, 2, '채팅시작테스트', 'START', NOW());
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (1, 3, '거래취소테스트', 'CANCEL', NOW());
