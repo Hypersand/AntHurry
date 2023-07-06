@@ -1,5 +1,6 @@
 package com.ant.hurry.boundedContext.tradeStatus.repository;
 
+import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,4 +28,6 @@ public interface TradeStatusRepository extends JpaRepository<TradeStatus, Long> 
     Long countMemberCompleteTradeStatus(@Param("memberId") Long memberId);
 
 
+    @Query("select t from TradeStatus t join fetch t.board b join fetch t.helper h where b.id = :boardId and h.id = :memberId")
+    Optional<TradeStatus> findByHelper(@Param("boardId") Long boardId, @Param("memberId") Long memberId);
 }

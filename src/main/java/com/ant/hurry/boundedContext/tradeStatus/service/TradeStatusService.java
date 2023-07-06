@@ -1,5 +1,6 @@
 package com.ant.hurry.boundedContext.tradeStatus.service;
 
+import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.member.entity.Member;
@@ -25,6 +26,7 @@ public class TradeStatusService {
 
     private final TradeStatusRepository tradeStatusRepository;
     private final MemberService memberService;
+    private final Rq rq;
 
     @Transactional
     public RsData<TradeStatus> create(Board board, Member requester, Member helper) {
@@ -92,5 +94,10 @@ public class TradeStatusService {
     public Long getComleteTradeStatusCount(Long id) {
         return tradeStatusRepository.countMemberCompleteTradeStatus(id);
 
+    }
+
+    public boolean getHelper(Long boardId) {
+        Optional<TradeStatus> tradeStatus = tradeStatusRepository.findByHelper(boardId, rq.getMember().getId());
+        return tradeStatus.isPresent();
     }
 }

@@ -11,6 +11,8 @@ import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.ant.hurry.base.region.entity.Region;
 import com.ant.hurry.base.region.service.RegionSearchService;
 import com.ant.hurry.boundedContext.board.service.BoardService;
+import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
+import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -42,6 +44,7 @@ public class BoardController {
     private final BoardService boardService;
     private final Rq rq;
     private final RegionSearchService regionService;
+    private final TradeStatusService tradeStatusService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
@@ -80,6 +83,8 @@ public class BoardController {
         if (board == null) {
             return rq.historyBack("존재하지 않는 게시판 입니다.");
         }
+        boolean helper = tradeStatusService.getHelper(id);
+        model.addAttribute("helper", helper);
         model.addAttribute("board", board);
         return "/board/board";
     }
