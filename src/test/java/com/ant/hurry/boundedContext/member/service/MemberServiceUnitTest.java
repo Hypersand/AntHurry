@@ -6,8 +6,11 @@ import com.ant.hurry.base.s3.S3ProfileUploader;
 import com.ant.hurry.boundedContext.coin.service.CoinService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.entity.ProfileImage;
+import com.ant.hurry.boundedContext.member.entity.Role;
+import com.ant.hurry.boundedContext.member.entity.RoleType;
 import com.ant.hurry.boundedContext.member.repository.MemberRepository;
 import com.ant.hurry.boundedContext.member.repository.ProfileImageRepository;
+import com.ant.hurry.boundedContext.member.repository.RoleRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +47,9 @@ class MemberServiceUnitTest {
     @Mock
     ProfileImageRepository profileImageRepository;
 
+    @Mock
+    RoleRepository roleRepository;
+
 
     @Test
     @DisplayName("whenSocialLogin() - 기존 사용자 로그인")
@@ -73,9 +79,10 @@ class MemberServiceUnitTest {
         String providerTypeCode = "KAKAO";
 
         Member member = new Member();
+        Optional<Role> role = Optional.of(new Role(RoleType.ROLE_MEMBER));
         when(memberRepository.findByUsername(username)).thenReturn(Optional.empty());
         when(memberRepository.save(any(Member.class))).thenReturn(member);
-
+        when(roleRepository.findByName(RoleType.ROLE_MEMBER)).thenReturn(role);
         //when
         RsData<Member> result = memberService.whenSocialLogin(providerTypeCode, username);
 
