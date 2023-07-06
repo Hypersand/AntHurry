@@ -153,7 +153,7 @@
     }
 
     function isValidNickname(nickname) {
-      // 4~10글자의 영어,한글,숫자를 검사하는 정규 표현식
+      // 4~12글자의 영어,한글,숫자를 검사하는 정규 표현식
       var regex = /^[a-zA-Z0-9가-힣-_]{4,12}$/;
       return regex.test(nickname);
     }

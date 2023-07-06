@@ -11,6 +11,10 @@ import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.ant.hurry.base.region.entity.Region;
 import com.ant.hurry.base.region.service.RegionSearchService;
 import com.ant.hurry.boundedContext.board.service.BoardService;
+import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
+import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -37,11 +41,13 @@ import java.util.Map;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/board")
+@Tag(name = "BoardController" , description = "게시글 정보 API")
 public class BoardController {
 
     private final BoardService boardService;
     private final Rq rq;
     private final RegionSearchService regionService;
+    private final TradeStatusService tradeStatusService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
@@ -63,9 +69,11 @@ public class BoardController {
         if (createRequest.getAddress().isBlank()) {
             return rq.historyBack("주소를 입력해주세요.");
         }
-        RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
-        if (checkUserCoin.isFail()) {
-            return rq.historyBack(checkUserCoin);
+        if(createRequest.getBoardType().equals(BoardType.나급해요)){
+            RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
+            if (checkUserCoin.isFail()) {
+                return rq.historyBack(checkUserCoin);
+            }
         }
         CreateConvertDTO boardInfo = boardService.addressConvert(createRequest);
         RsData<Board> boardRs = boardService.write(rq.getMember(), boardInfo);
@@ -80,6 +88,9 @@ public class BoardController {
         if (board == null) {
             return rq.historyBack("존재하지 않는 게시판 입니다.");
         }
+
+        boolean helper = tradeStatusService.getHelper(id, rq.getMember().getId());
+        model.addAttribute("helper", helper);
         model.addAttribute("board", board);
         return "/board/board";
     }
@@ -164,6 +175,7 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/enterRegion/{lastId}")
     @ResponseBody
+    @Operation(summary = "지역별 게시판의 전체 게시글 조회")
     public ResponseEntity<?> enterRegion(@PathVariable("lastId") Long lastId,
                                          @RequestParam("code") String code) {
 
@@ -198,6 +210,7 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/online/{lastId}")
     @ResponseBody
+    @Operation(summary = "온라인 게시판에서 검색된 게시글 조회")
     public ResponseEntity<?> showOnlineBoard(@PathVariable("lastId") Long lastId,
                                               @RequestParam("title") String title) {
 
