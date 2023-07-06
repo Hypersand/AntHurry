@@ -17,7 +17,10 @@
             </div>
         </div>
         <div class="navbar-center">
-            <a class="font-black" th:text="|${otherMember.getUsername()} 님과의 채팅|"></a>
+            <span th:if="${otherMember.getUsername().length() > 15}"
+                  class="font-black" th:text="|${otherMember.getUsername().substring(0, 15)}... 님과의 채팅|"></span>
+            <span th:if="${otherMember.getUsername().length() <= 15}"
+                  class="font-black" th:text="|${otherMember.getUsername()} 님과의 채팅|"></span>
         </div>
         <div class="navbar-end">
             <label for="my_modal_7" class="btn btn-ghost btn-circle">
@@ -28,7 +31,7 @@
                 <div class="modal-box">
                     <a th:if="${room.tradeStatus.status.msg.equals('거래 전')}" class="btn btn-ghost block pt-4"
                        th:href="@{/trade/start/{id}(id=${room.tradeStatus.id})}">거래 시작</a>
-                    <a th:if="${room.tradeStatus.status.msg.equals('거래 중')}" class="btn btn-ghost block pt-4"
+                    <a th:if="${!room.tradeStatus.status.msg.equals('거래 전')}" class="btn btn-ghost block pt-4"
                        th:href="@{/trade/complete/{id}(id=${room.tradeStatus.id})}">거래 완료</a>
                     <hr>
                     <a th:href="@{/chat/exit/{id}(id=${room.id})}" class="btn btn-ghost block pt-4">채팅방 나가기</a>
@@ -39,35 +42,44 @@
     </div>
 </header>
 
-<main layout:fragment="main" class="flex-grow flex items-center justify-center w-screen h-[750px] p-8">
+<main layout:fragment="main" class="flex-grow flex items-center justify-center w-screen h-[740px] p-8">
     <div id="chat-area" class="flex flex-col w-[650px] h-full">
-        <div id="messages" class="flex text-center w-full justify-end" th:each="message : ${chatMessages}">
-            <div class="chat chat-start" th:if="${!@rq.getMember().getNickname().equals(message.writer)}">
-                <div class="chat-image avatar">
-                    <div class="w-10 rounded-full bg-pink-400"></div>
+        <div id="msg-area" class="overflow-y-auto h-[600px]">
+            <div id="messages"
+                 th:class="${@rq.getMember().getNickname().equals(message.writer)} ? 'flex w-full justify-end' : 'flex w-full justify-start'"
+                 th:each="message : ${chatMessages}">
+                <div class="chat chat-start flex" th:if="${!@rq.getMember().getNickname().equals(message.writer)}">
+                    <div class="chat-image avatar">
+                        <div class="w-10 rounded-full bg-pink-400"></div>
+                    </div>
+                    <div class="chat-bubble" th:text="${message.message}"></div>
+                    <div class="chat-header mt-6">
+                        <time class="text-xs opacity-50"
+                              th:text="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
+                    </div>
                 </div>
-                <div class="chat-header">
-                    <time class="text-xs opacity-50" th:text="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
-                </div>
-                <div class="chat-bubble" th:text="${message.message}"></div>
-            </div>
-            <div class="chat chat-end flex justify-end" th:if="${@rq.getMember().getNickname().equals(message.writer)}">
-                <div class="chat-header">
-                    <time class="text-xs opacity-50" th:text="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
-                </div>
-                <div class="chat-bubble" th:text="${message.message}"></div>
-                <div class="chat-image avatar">
-                    <div class="w-10 rounded-full bg-pink-400"></div>
+                <div class="chat chat-end flex" th:if="${@rq.getMember().getNickname().equals(message.writer)}">
+                    <div class="chat-header">
+                        <time class="text-xs opacity-50"
+                              th:text="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
+                    </div>
+                    <div class="chat-bubble" th:text="${message.message}"></div>
+                    <div class="chat-image avatar">
+                        <div class="w-10 rounded-full bg-pink-400"></div>
+                    </div>
                 </div>
             </div>
         </div>
         <div id="input-area" class="flex order-1 justify-center mt-auto mb-12">
             <input id="send-msg" type="text" class="input input-bordered w-full max-w-sm"/>
             <button id="send-button" class="btn btn-outline"><i class="fa-regular fa-paper-plane"></i></button>
-            <button class="btn" onclick="my_modal_1.showModal()"><i class="fa-solid fa-paperclip"></i></button>
+            <button class="btn btn-outline" onclick="my_modal_1.showModal()"><i class="fa-solid fa-paperclip"></i>
+            </button>
             <dialog id="my_modal_1" class="modal">
-                <form method="dialog" class="modal-box" enctype="multipart/form-data" th:action="@{/chat/file(roomId=${room.id})}">
-                    <input type="file" class="file-input file-input-bordered file-input-sm w-full max-w-sm" name="file" />
+                <form method="dialog" class="modal-box" enctype="multipart/form-data"
+                      th:action="@{/chat/file(roomId=${room.id})}">
+                    <input type="file" class="file-input file-input-bordered file-input-sm w-full max-w-sm"
+                           name="file"/>
                     <div class="modal-action">
                         <button id="file-send" type="submit" class="btn">보내기</button>
                         <button class="btn">닫기</button>
@@ -81,6 +93,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script th:inline="javascript">
         $(document).ready(function () {
+
+            function scrollToBottom() {
+                var msgArea = document.getElementById("msg-area");
+                msgArea.scrollTop = msgArea.scrollHeight;
+            }
+
+            scrollToBottom();
+
             var sockJs = new SockJS("/ws/chat");
             var stomp = Stomp.over(sockJs);
 
@@ -93,15 +113,27 @@
                     var writer = content.writer;
 
                     var msg = document.createElement("div");
-                    msg.className = writer === username ? "chat chat-end" : "chat chat-start";
-                    msg.innerHTML = "<div class='chat-image avatar'><div class='w-10 rounded-full bg-pink-400'></div></div>" +
+                    var currentTime = new Date().toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    });
+
+                    msg.className = writer === username ? "items-start chat chat-end flex flex-row justify-end" :
+                        "items-start chat chat-start flex flex-row justify-start";
+                    msg.innerHTML = writer === username ?
                         "<div class='chat-header'>" +
-                        "<time class='text-xs opacity-50' th:utext='${#temporals.format(message.getCreatedAt(), 'HH:mm')}'></time>" +
-                        "</div>" +
-                        "<div class='chat-bubble'>" + content.message + "</div>";
+                        "<time class='text-xs opacity-50'>" + currentTime + "</time>" + "</div>" +
+                        "<div class='chat-bubble'>" + content.message + "</div>" +
+                        "<div class='chat-image avatar'><div class='w-10 rounded-full bg-pink-400'></div></div>" :
+                        "<div class='chat-image avatar'><div class='w-10 rounded-full bg-pink-400'></div></div>" +
+                        "<div class='chat-header'>" +
+                        "</div>" + "<div class='chat-bubble'>" + content.message + "</div>" +
+                        "<time class='text-xs opacity-50'>" + currentTime + "</time>";
+
 
                     $("#chat-area").append(msg);
-                    $("#chat-area").scrollTop($("#chat-area")[0].scrollHeight);
+                    scrollToBottom();
                 });
 
                 if (msg.value != null) {
@@ -129,6 +161,7 @@
                     writer: username
                 }));
                 msg.value = '';
+                scrollToBottom();
             });
 
             $("#file-send").on("click", function (event) {

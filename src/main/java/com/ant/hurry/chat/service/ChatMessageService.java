@@ -3,6 +3,7 @@ package com.ant.hurry.chat.service;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
+import com.ant.hurry.chat.baseEntity.BaseMessage;
 import com.ant.hurry.chat.baseEntity.Message;
 import com.ant.hurry.chat.config.MongoConfig;
 import com.ant.hurry.chat.dto.ChatMessageDto;
@@ -80,6 +81,7 @@ public class ChatMessageService {
                 .roomId(dto.getRoomId())
                 .writer(writer.getNickname())
                 .message(dto.getMessage())
+                .createdAt(LocalDateTime.now())
                 .build();
         chatMessageRepository.save(message);
 
@@ -184,6 +186,13 @@ public class ChatMessageService {
 
     private GridFSBucket createGridBucket() {
         return GridFSBuckets.create(mongoConfig.mongoClient().getDatabase(databaseName));
+    }
+
+    public void markAsRead(Message message) {
+        message.markAsRead();
+        if(message instanceof ChatMessage)
+            chatMessageRepository.save((ChatMessage) message);
+        else chatFileMessageRepository.save((ChatFileMessage) message);
     }
 
     public RsData deleteSoft(ChatMessage chatMessage) {

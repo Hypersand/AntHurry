@@ -46,7 +46,7 @@
                    class="text-lg text-start"></p>
             </div>
             <div th:if="${chatRoom.getValue().message != null && @rq.getMember().getNickname() != chatRoom.getValue().sender && chatRoom.getValue().message.isNotRead()}"
-                 class="bg-[#ff626f] w-16 text-white font-semibold rounded-xl">new
+                 class="bg-[#ff626f] w-12 text-white text-center font-semibold rounded-xl">new
             </div>
         </a>
     </div>
