@@ -195,8 +195,6 @@ public class MemberController {
                 String errorMessage = error.getDefaultMessage();
                 errors.put(fieldName, errorMessage);
             });
-            System.out.println(profileRequestDto);
-            System.out.println(file.getOriginalFilename());
             return new ResponseEntity<>(errors, HttpStatusCode.valueOf(HTTPResponse.SC_BAD_REQUEST));
         }
         Member member = rq.getMember();
