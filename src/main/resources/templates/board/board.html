@@ -24,7 +24,7 @@
         </div>
         <div class="navbar-end">
             <button class="btn btn-ghost text-white" style="background-color: #FF626F"
-                    th:if="${board.member != @rq.getMember()} || ${!helper}">
+                    th:if="${!helper}">
                 <a th:href="@{/trade/create/{id}(id=${board.id})}">채팅하기</a>
             </button>
 
