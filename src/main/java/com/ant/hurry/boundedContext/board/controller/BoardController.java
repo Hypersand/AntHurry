@@ -66,9 +66,11 @@ public class BoardController {
         if (createRequest.getAddress().isBlank()) {
             return rq.historyBack("주소를 입력해주세요.");
         }
-        RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
-        if (checkUserCoin.isFail()) {
-            return rq.historyBack(checkUserCoin);
+        if(createRequest.getBoardType().equals(BoardType.나잘해요)){
+            RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
+            if (checkUserCoin.isFail()) {
+                return rq.historyBack(checkUserCoin);
+            }
         }
         CreateConvertDTO boardInfo = boardService.addressConvert(createRequest);
         RsData<Board> boardRs = boardService.write(rq.getMember(), boardInfo);
@@ -83,7 +85,8 @@ public class BoardController {
         if (board == null) {
             return rq.historyBack("존재하지 않는 게시판 입니다.");
         }
-        boolean helper = tradeStatusService.getHelper(id);
+
+        boolean helper = tradeStatusService.getHelper(id, rq.getMember().getId());
         model.addAttribute("helper", helper);
         model.addAttribute("board", board);
         return "/board/board";

@@ -26,7 +26,6 @@ public class TradeStatusService {
 
     private final TradeStatusRepository tradeStatusRepository;
     private final MemberService memberService;
-    private final Rq rq;
 
     @Transactional
     public RsData<TradeStatus> create(Board board, Member requester, Member helper) {
@@ -96,8 +95,8 @@ public class TradeStatusService {
 
     }
 
-    public boolean getHelper(Long boardId) {
-        Optional<TradeStatus> tradeStatus = tradeStatusRepository.findByHelper(boardId, rq.getMember().getId());
+    public boolean getHelper(Long boardId, Long memberId) {
+        Optional<TradeStatus> tradeStatus = tradeStatusRepository.findByHelper(boardId, memberId);
         return tradeStatus.isPresent();
     }
 }
