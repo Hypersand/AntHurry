@@ -1,6 +1,5 @@
 package com.ant.hurry.chat.entity;
 
-import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.chat.baseEntity.BaseMessage;
 import com.ant.hurry.chat.baseEntity.Message;
 import lombok.Getter;
@@ -18,7 +17,7 @@ public class ChatMessage extends BaseMessage implements Message {
 
     private String message;
 
-    private Member writer;
+    private String writer;
 
     private LocalDateTime deletedAt;
 

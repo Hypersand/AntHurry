@@ -20,7 +20,7 @@ public class ChatFileMessage extends BaseMessage implements Message {
 
     private String uploadFileId;
 
-    private Member sender;
+    private String sender;
 
     private LocalDateTime deletedAt;
 
@@ -34,4 +34,8 @@ public class ChatFileMessage extends BaseMessage implements Message {
         return readAt == null;
     }
 
+    @Override
+    public String getMessage() {
+        return "파일을 다운로드할 수 있습니다.";
+    }
 }

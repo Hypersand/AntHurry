@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class CustomChatMessageRepositoryImpl implements CustomChatMessageRepository {
@@ -20,5 +21,12 @@ public class CustomChatMessageRepositoryImpl implements CustomChatMessageReposit
         Update update = new Update().set("deletedAt", LocalDateTime.now());
         mongoTemplate.findAndModify(query, update, ChatMessage.class);
         return mongoTemplate.findOne(query, ChatMessage.class);
+    }
+
+    @Override
+    public List<ChatMessage> findByChatRoomId(String roomId) {
+        Criteria criteria = Criteria.where("roomId").is(roomId);
+        Query query = Query.query(criteria);
+        return mongoTemplate.find(query, ChatMessage.class);
     }
 }

@@ -9,7 +9,7 @@
     <div class="navbar max-w-2xl mx-auto bg-base-100">
         <div class="navbar-start">
             <div>
-                <a tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                <a tabIndex="0" class="btn btn-ghost btn-circle" onClick="history.back()">
                     <i class="fa-solid fa-angle-left"></i>
                 </a>
             </div>
@@ -18,19 +18,49 @@
             <a class="font-black" th:text="|${otherMember.getUsername()} 님과의 채팅|"></a>
         </div>
         <div class="navbar-end">
-            <button class="btn btn-ghost btn-circle">
-                <!-- ellipsis 클릭 시 채팅방 나가기, 거래 시작/완료 등 선택할 수 있도록 할 예정 -->
+            <label for="my_modal_7" class="btn btn-ghost btn-circle">
                 <i class="fa-solid fa-ellipsis-vertical"></i>
-            </button>
+            </label>
+            <input type="checkbox" id="my_modal_7" class="modal-toggle"/>
+            <div class="modal">
+                <div class="modal-box">
+                    <a th:if="${room.tradeStatus.status.name() == 'BEFORE'}" class="btn btn-ghost block pt-4"
+                       th:href="@{/trade/start/{id}(id=${room.tradeStatus.id})}">거래 시작</a>
+                    <hr>
+                    <a th:if="${room.tradeStatus.status.name() != 'BEFORE'}" class="btn btn-ghost block pt-4"
+                       th:href="@{/trade/complete/{id}(id=${room.tradeStatus.id})}">거래 완료</a>
+                    <hr>
+                    <a class="btn btn-ghost block pt-4">채팅방 나가기</a>
+                </div>
+                <label class="modal-backdrop" for="my_modal_7">Close</label>
+            </div>
         </div>
     </div>
 </header>
 
-<main layout:fragment="main" class="flex-grow flex items-center justify-center w-screen">
-    <div id="chat-area" class="flex flex-col w-full h-[1000px]">
-        <div id="messages" class="flex text-center w-full m-8">
+<main layout:fragment="main" class="flex-grow flex items-center justify-center w-screen h-[1000px] p-8">
+    <div id="chat-area" class="flex flex-col w-[650px] h-full">
+        <div id="messages" class="flex text-center w-full justify-end" th:each="message : ${chatMessages}">
+            <div class="chat chat-start" th:if="${!@rq.getMember().getNickname().equals(message.writer)}">
+                <div class="chat-image avatar">
+                    <div class="w-10 rounded-full bg-pink-400"></div>
+                </div>
+                <div class="chat-header">
+                    <time class="text-xs opacity-50" th:text="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
+                </div>
+                <div class="chat-bubble" th:text="${message.message}"></div>
+            </div>
+            <div class="chat chat-end flex justify-end" th:if="${@rq.getMember().getNickname().equals(message.writer)}">
+                <div class="chat-header">
+                    <time class="text-xs opacity-50" th:text="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
+                </div>
+                <div class="chat-bubble" th:text="${message.message}"></div>
+                <div class="chat-image avatar">
+                    <div class="w-10 rounded-full bg-pink-400"></div>
+                </div>
+            </div>
         </div>
-        <div id="input-area" class="flex justify-center mt-auto mb-24">
+        <div id="input-area" class="flex order-1 justify-center mt-auto mb-12">
             <input id="send-msg" type="text" class="input input-bordered w-full max-w-sm"/>
             <button id="send-button" class="btn btn-outline"><i class="fa-regular fa-paper-plane"></i></button>
         </div>
@@ -57,25 +87,31 @@
                         "<div class='chat-header'>" +
                         "<time class='text-xs opacity-50' th:utext='${#temporals.format(message.getCreatedAt(), 'HH:mm')}'></time>" +
                         "</div>" +
-                        "<div class='chat-bubble' th:text='" + content.message + "'></div>";
+                        "<div class='chat-bubble'>" + content.message + "</div>";
 
-                    $("#messages").append(msg);
-                    $("#messages").scrollTop($("#messages")[0].scrollHeight);
+                    $("#chat-area").append(msg);
+                    $("#chat-area").scrollTop($("#chat-area")[0].scrollHeight);
                 });
 
-                stomp.send('/pub/chat/message', {}, JSON.stringify({ roomId: roomId, writer: username }));
+                if (msg.value != null) {
+                    stomp.send('/pub/chat/message', {}, JSON.stringify({roomId: roomId, writer: username}));
+                }
             });
 
             $("#send-msg").on("keydown", function (event) {
                 if (event.keyCode === 13) {
                     event.preventDefault();
-                    document.getElementById('send-button').click();
+                    document.getElementById("send-button").click();
                 }
             });
 
             $("#send-button").on("click", function (event) {
                 var msg = document.getElementById("send-msg");
-                stomp.send('/pub/chat/message', {}, JSON.stringify({ roomId: roomId, message: msg.value, writer: username }));
+                stomp.send('/pub/chat/message', {}, JSON.stringify({
+                    roomId: roomId,
+                    message: msg.value,
+                    writer: username
+                }));
                 msg.value = '';
             });
         });
