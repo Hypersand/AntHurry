@@ -54,7 +54,7 @@ public class TradeStatusService {
 
     private RsData canUpdateStatus(TradeStatus tradeStatus, Status status) {
         Status target = tradeStatus.getStatus();
-        if (!target.equals(BEFORE) && status.equals(INPROGRESS)) {
+        if (!target.equals(BEFORE) && !target.equals(COMPLETE) && status.equals(INPROGRESS)) {
             return RsData.of(ALREADY_IN_PROGRESS);
         }
         if (!target.equals(INPROGRESS) && status.equals(COMPLETE)) {
