@@ -86,18 +86,17 @@ public class ChatRoomService {
     }
 
     public RsData exit(ChatRoom chatRoom, Member member) {
-        List<Member> members = chatRoom.getMembers();
-        members.remove(member);
         List<Member> exitedMembers = chatRoom.getExitedMembers();
         exitedMembers.add(member);
 
         ChatRoom chatRoomMemberExited = chatRoom.toBuilder()
-                .members(members)
                 .exitedMembers(exitedMembers)
                 .build();
         chatRoomRepository.save(chatRoomMemberExited);
 
-        if (chatRoomMemberExited.getExitedMembers().size() == 2) {
+        chatRoomRepository.deleteMembers(chatRoom, member);
+
+        if (chatRoomMemberExited.getMembers().size() == 0) {
             delete(chatRoomMemberExited);
         }
         return RsData.of(CHATROOM_EXITED);

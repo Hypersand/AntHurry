@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,8 +63,8 @@ public class ChatRoomController {
     @GetMapping("/exit/{id}")
     public String exit(@PathVariable String id) {
         RsData<ChatRoom> rs = chatRoomService.findByIdAndVerify(id, rq.getMember());
-        RsData exitRs = chatRoomService.exit(rs.getData(), rq.getMember());
-        return rq.redirectWithMsg("chat/myRooms", exitRs.getMsg());
+        chatRoomService.exit(rs.getData(), rq.getMember());
+        return "redirect:/chat/myRooms";
     }
 
 }

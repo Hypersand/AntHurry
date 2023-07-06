@@ -1,5 +1,6 @@
 package com.ant.hurry.chat.repository;
 
+import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.chat.entity.ChatRoom;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,14 @@ public class CustomChatRoomRepositoryImpl implements CustomChatRoomRepository {
         Criteria criteria = Criteria.where("_id").is(chatRoom.getId());
         Query query = Query.query(criteria);
         Update update = Update.update("tradeStatus.status", status);
+        mongoTemplate.updateFirst(query, update, ChatRoom.class);
+    }
+
+    @Override
+    public void deleteMembers(ChatRoom chatRoom, Member member) {
+        Criteria criteria = Criteria.where("_id").is(chatRoom.getId());
+        Query query = Query.query(criteria);
+        Update update = new Update().pull("members", member);
         mongoTemplate.updateFirst(query, update, ChatRoom.class);
     }
 
