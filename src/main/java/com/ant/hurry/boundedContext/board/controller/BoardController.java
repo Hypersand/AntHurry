@@ -66,7 +66,7 @@ public class BoardController {
         if (createRequest.getAddress().isBlank()) {
             return rq.historyBack("주소를 입력해주세요.");
         }
-        if(createRequest.getBoardType().equals(BoardType.나잘해요)){
+        if(createRequest.getBoardType().equals(BoardType.나급해요)){
             RsData checkUserCoin = boardService.hasEnoughCoin(createRequest.getRewardCoin());
             if (checkUserCoin.isFail()) {
                 return rq.historyBack(checkUserCoin);
