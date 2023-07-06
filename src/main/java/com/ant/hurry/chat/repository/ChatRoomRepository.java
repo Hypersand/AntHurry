@@ -6,8 +6,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ChatRoomRepository extends MongoRepository<ChatRoom, String>, CustomChatRoomRepository {
     List<ChatRoom> findByMembersContaining(Member member);
+
+    Optional<ChatRoom> findByTradeStatusId(Long id);
 }

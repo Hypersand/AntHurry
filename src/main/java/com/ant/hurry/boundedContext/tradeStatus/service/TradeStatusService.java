@@ -7,6 +7,9 @@ import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.repository.TradeStatusRepository;
+import com.ant.hurry.chat.entity.ChatRoom;
+import com.ant.hurry.chat.repository.ChatRoomRepository;
+import com.ant.hurry.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +27,8 @@ import static com.ant.hurry.boundedContext.tradeStatus.entity.Status.*;
 public class TradeStatusService {
 
     private final TradeStatusRepository tradeStatusRepository;
+    private final ChatRoomService chatRoomService;
+    private final ChatRoomRepository chatRoomRepository;
     private final MemberService memberService;
 
     @Transactional
@@ -48,6 +53,10 @@ public class TradeStatusService {
 
         TradeStatus modifiedTradeStatus = tradeStatus.toBuilder().status(status).build();
         tradeStatusRepository.save(modifiedTradeStatus);
+
+        ChatRoom chatRoom = chatRoomService.findByTradeStatus(modifiedTradeStatus).getData();
+        ChatRoom updateChatRoom = chatRoom.toBuilder().tradeStatus(modifiedTradeStatus).build();
+        chatRoomRepository.save(updateChatRoom);
 
         return RsData.of(UPDATE_SUCCESS, modifiedTradeStatus);
     }

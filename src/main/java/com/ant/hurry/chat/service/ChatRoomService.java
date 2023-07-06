@@ -57,6 +57,14 @@ public class ChatRoomService {
         return RsData.of(CHATROOM_FOUND, chatRoomRepository.findByMembersContaining(member));
     }
 
+    public RsData<ChatRoom> findByTradeStatus(TradeStatus tradeStatus) {
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByTradeStatusId(tradeStatus.getId());
+
+        return chatRoom.map(room -> RsData.of(CHATROOM_FOUND, room))
+                .orElseGet(() -> RsData.of(CHATROOM_NO_EXISTS));
+
+    }
+
     public RsData<List<ChatRoom>> findAll() {
         return RsData.of(CHATROOM_FOUND, chatRoomRepository.findAll());
     }

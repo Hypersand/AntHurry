@@ -26,10 +26,9 @@
             <input type="checkbox" id="my_modal_7" class="modal-toggle"/>
             <div class="modal">
                 <div class="modal-box">
-                    <a th:if="${room.tradeStatus.status.name() == 'BEFORE'}" class="btn btn-ghost block pt-4"
+                    <a th:if="${room.tradeStatus.status.msg.equals('거래 전')}" class="btn btn-ghost block pt-4"
                        th:href="@{/trade/start/{id}(id=${room.tradeStatus.id})}">거래 시작</a>
-                    <hr>
-                    <a th:if="${room.tradeStatus.status.name() == 'INPROGRESS'}" class="btn btn-ghost block pt-4"
+                    <a th:if="${room.tradeStatus.status.msg.equals('거래 중')}" class="btn btn-ghost block pt-4"
                        th:href="@{/trade/complete/{id}(id=${room.tradeStatus.id})}">거래 완료</a>
                     <hr>
                     <a class="btn btn-ghost block pt-4">채팅방 나가기</a>
