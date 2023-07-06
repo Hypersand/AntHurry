@@ -54,9 +54,8 @@ public class TradeStatusService {
         TradeStatus modifiedTradeStatus = tradeStatus.toBuilder().status(status).build();
         tradeStatusRepository.save(modifiedTradeStatus);
 
-        ChatRoom chatRoom = chatRoomService.findByTradeStatus(modifiedTradeStatus).getData();
-        ChatRoom updateChatRoom = chatRoom.toBuilder().tradeStatus(modifiedTradeStatus).build();
-        chatRoomRepository.save(updateChatRoom);
+        ChatRoom chatRoom = chatRoomService.findByTradeStatusId(modifiedTradeStatus.getId()).getData();
+        chatRoomService.updateStatusOfChatRoom(chatRoom, status);
 
         return RsData.of(UPDATE_SUCCESS, modifiedTradeStatus);
     }

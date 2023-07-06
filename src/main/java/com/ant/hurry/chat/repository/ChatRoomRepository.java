@@ -11,6 +11,4 @@ import java.util.Optional;
 @Repository
 public interface ChatRoomRepository extends MongoRepository<ChatRoom, String>, CustomChatRoomRepository {
     List<ChatRoom> findByMembersContaining(Member member);
-
-    Optional<ChatRoom> findByTradeStatusId(Long id);
 }

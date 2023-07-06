@@ -2,6 +2,7 @@ package com.ant.hurry.chat.service;
 
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.entity.DeletedChatRoom;
@@ -57,8 +58,8 @@ public class ChatRoomService {
         return RsData.of(CHATROOM_FOUND, chatRoomRepository.findByMembersContaining(member));
     }
 
-    public RsData<ChatRoom> findByTradeStatus(TradeStatus tradeStatus) {
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findByTradeStatusId(tradeStatus.getId());
+    public RsData<ChatRoom> findByTradeStatusId(Long id) {
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByTradeStatusId(id);
 
         return chatRoom.map(room -> RsData.of(CHATROOM_FOUND, room))
                 .orElseGet(() -> RsData.of(CHATROOM_NO_EXISTS));
@@ -119,4 +120,7 @@ public class ChatRoomService {
         return RsData.of(CHATROOM_DELETED);
     }
 
+    public void updateStatusOfChatRoom(ChatRoom chatRoom, Status status) {
+        chatRoomRepository.updateStatusOfChatRoom(chatRoom, status.name());
+    }
 }
