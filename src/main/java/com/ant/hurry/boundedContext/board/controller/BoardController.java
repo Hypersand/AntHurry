@@ -13,6 +13,8 @@ import com.ant.hurry.base.region.service.RegionSearchService;
 import com.ant.hurry.boundedContext.board.service.BoardService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -39,6 +41,7 @@ import java.util.Map;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/board")
+@Tag(name = "BoardController" , description = "게시글 정보 API")
 public class BoardController {
 
     private final BoardService boardService;
@@ -172,6 +175,7 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/enterRegion/{lastId}")
     @ResponseBody
+    @Operation(summary = "지역별 게시판의 전체 게시글 조회")
     public ResponseEntity<?> enterRegion(@PathVariable("lastId") Long lastId,
                                          @RequestParam("code") String code) {
 
@@ -206,6 +210,7 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/online/{lastId}")
     @ResponseBody
+    @Operation(summary = "온라인 게시판에서 검색된 게시글 조회")
     public ResponseEntity<?> showOnlineBoard(@PathVariable("lastId") Long lastId,
                                               @RequestParam("title") String title) {
 
