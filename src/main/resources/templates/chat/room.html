@@ -2,6 +2,8 @@
 
 <head>
     <title th:text="|${otherMember.getUsername()} 님과의 채팅|"></title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 
 <body>
@@ -27,7 +29,7 @@
                     <a th:if="${room.tradeStatus.status.name() == 'BEFORE'}" class="btn btn-ghost block pt-4"
                        th:href="@{/trade/start/{id}(id=${room.tradeStatus.id})}">거래 시작</a>
                     <hr>
-                    <a th:if="${room.tradeStatus.status.name() != 'BEFORE'}" class="btn btn-ghost block pt-4"
+                    <a th:if="${room.tradeStatus.status.name() == 'INPROGRESS'}" class="btn btn-ghost block pt-4"
                        th:href="@{/trade/complete/{id}(id=${room.tradeStatus.id})}">거래 완료</a>
                     <hr>
                     <a class="btn btn-ghost block pt-4">채팅방 나가기</a>
@@ -107,6 +109,11 @@
 
             $("#send-button").on("click", function (event) {
                 var msg = document.getElementById("send-msg");
+                var csrfToken = $("meta[name='_csrf']").attr("content");
+                var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+                var headers = {};
+                headers[csrfHeader] = csrfToken;
+
                 stomp.send('/pub/chat/message', {}, JSON.stringify({
                     roomId: roomId,
                     message: msg.value,
