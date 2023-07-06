@@ -46,7 +46,7 @@ public class Member extends BaseEntity {
 
 
     public boolean isPhoneAuth(){
-        if(phoneAuth == 1 && !phoneNumber.trim().equals("") && !phoneNumber.isEmpty())
+        if(phoneAuth == 1 && phoneNumber != null)
             return true;
         return false;
     }

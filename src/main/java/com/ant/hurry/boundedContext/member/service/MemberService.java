@@ -52,7 +52,7 @@ public class MemberService {
             return RsData.of("S-2", "로그인 되었습니다.", opMember.get());
 
         // 소셜 로그인를 통한 가입시 비번은 없다.
-        return createAndSave(username, "", "", providerTypeCode); // 최초 로그인 시 딱 한번 실행
+        return createAndSave(username, "", null, providerTypeCode); // 최초 로그인 시 딱 한번 실행
     }
 
     private RsData<Member> createAndSave(String username, String password, String phone, String providerTypeCode) {
