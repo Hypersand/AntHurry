@@ -2,6 +2,8 @@
 
 <head>
     <title th:text="|${otherMember.getUsername()} 님과의 채팅|"></title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 
 <body>
@@ -24,13 +26,12 @@
             <input type="checkbox" id="my_modal_7" class="modal-toggle"/>
             <div class="modal">
                 <div class="modal-box">
-                    <a th:if="${room.tradeStatus.status.name() == 'BEFORE'}" class="btn btn-ghost block pt-4"
+                    <a th:if="${room.tradeStatus.status.msg.equals('거래 전')}" class="btn btn-ghost block pt-4"
                        th:href="@{/trade/start/{id}(id=${room.tradeStatus.id})}">거래 시작</a>
-                    <hr>
-                    <a th:if="${room.tradeStatus.status.name() != 'BEFORE'}" class="btn btn-ghost block pt-4"
+                    <a th:if="${room.tradeStatus.status.msg.equals('거래 중')}" class="btn btn-ghost block pt-4"
                        th:href="@{/trade/complete/{id}(id=${room.tradeStatus.id})}">거래 완료</a>
                     <hr>
-                    <a class="btn btn-ghost block pt-4">채팅방 나가기</a>
+                    <a th:href="@{/chat/exit/{id}(id=${room.id})}" class="btn btn-ghost block pt-4">채팅방 나가기</a>
                 </div>
                 <label class="modal-backdrop" for="my_modal_7">Close</label>
             </div>
@@ -63,6 +64,16 @@
         <div id="input-area" class="flex order-1 justify-center mt-auto mb-12">
             <input id="send-msg" type="text" class="input input-bordered w-full max-w-sm"/>
             <button id="send-button" class="btn btn-outline"><i class="fa-regular fa-paper-plane"></i></button>
+            <button class="btn" onclick="my_modal_1.showModal()"><i class="fa-solid fa-paperclip"></i></button>
+            <dialog id="my_modal_1" class="modal">
+                <form method="dialog" class="modal-box" enctype="multipart/form-data" th:action="@{/chat/file(roomId=${room.id})}">
+                    <input type="file" class="file-input file-input-bordered file-input-sm w-full max-w-sm" name="file" />
+                    <div class="modal-action">
+                        <button type="submit" class="btn">보내기</button>
+                        <button class="btn">닫기</button>
+                    </div>
+                </form>
+            </dialog>
         </div>
     </div>
 
@@ -107,6 +118,11 @@
 
             $("#send-button").on("click", function (event) {
                 var msg = document.getElementById("send-msg");
+                var csrfToken = $("meta[name='_csrf']").attr("content");
+                var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+                var headers = {};
+                headers[csrfHeader] = csrfToken;
+
                 stomp.send('/pub/chat/message', {}, JSON.stringify({
                     roomId: roomId,
                     message: msg.value,

@@ -7,6 +7,8 @@ import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.repository.TradeStatusRepository;
+import com.ant.hurry.chat.entity.ChatRoom;
+import com.ant.hurry.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,7 @@ import static com.ant.hurry.boundedContext.tradeStatus.entity.Status.*;
 public class TradeStatusService {
 
     private final TradeStatusRepository tradeStatusRepository;
+    private final ChatRoomService chatRoomService;
     private final MemberService memberService;
 
     @Transactional
@@ -49,18 +52,21 @@ public class TradeStatusService {
         TradeStatus modifiedTradeStatus = tradeStatus.toBuilder().status(status).build();
         tradeStatusRepository.save(modifiedTradeStatus);
 
+        ChatRoom chatRoom = chatRoomService.findByTradeStatusId(modifiedTradeStatus.getId()).getData();
+        chatRoomService.updateStatusOfChatRoom(chatRoom, status);
+
         return RsData.of(UPDATE_SUCCESS, modifiedTradeStatus);
     }
 
     private RsData canUpdateStatus(TradeStatus tradeStatus, Status status) {
         Status target = tradeStatus.getStatus();
-        if (!target.equals(BEFORE) && status.equals(INPROGRESS)) {
+        if (!(target.equals(BEFORE) || target.equals(COMPLETE)) && status.equals(INPROGRESS)) {
             return RsData.of(ALREADY_IN_PROGRESS);
         }
         if (!target.equals(INPROGRESS) && status.equals(COMPLETE)) {
             return RsData.of(COMPLETE_FAILED);
         }
-        if(target.equals(COMPLETE) && !status.equals(CANCELED)) {
+        if (target.equals(COMPLETE) && !status.equals(CANCELED)) {
             return RsData.of(ALREADY_COMPLETED);
         }
         return RsData.of(CAN_UPDATE);

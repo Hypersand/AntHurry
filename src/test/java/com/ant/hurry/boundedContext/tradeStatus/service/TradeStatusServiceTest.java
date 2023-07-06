@@ -7,6 +7,7 @@ import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.repository.TradeStatusRepository;
+import com.ant.hurry.chat.service.ChatRoomService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,8 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusSuccessCode.CREATE_SUCCESS;
-import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusSuccessCode.REDIRECT_TO_PAGE;
+import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusErrorCode.ALREADY_COMPLETED;
+import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusErrorCode.COMPLETE_FAILED;
+import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusSuccessCode.*;
+import static com.ant.hurry.boundedContext.tradeStatus.entity.Status.*;
+import static com.ant.hurry.boundedContext.tradeStatus.entity.Status.INPROGRESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,8 +38,10 @@ public class TradeStatusServiceTest {
     TradeStatusService tradeStatusService;
 
     @Test
-    void create_tradeStatus() {
+    @DisplayName("신규 거래 상태를 생성합니다.")
+    void tradeStatus_create() {
         TradeStatusRepository tradeStatusRepository = Mockito.mock(TradeStatusRepository.class);
+        ChatRoomService chatRoomService = Mockito.mock(ChatRoomService.class);
         MemberService memberService = Mockito.mock(MemberService.class);
 
         Member requester = Member.builder().build();
@@ -45,7 +51,7 @@ public class TradeStatusServiceTest {
         when(tradeStatusRepository.save(any(TradeStatus.class))).thenReturn(new TradeStatus());
         when(memberService.getMember()).thenReturn(requester);
 
-        TradeStatusService tradeStatusService = new TradeStatusService(tradeStatusRepository, memberService);
+        TradeStatusService tradeStatusService = new TradeStatusService(tradeStatusRepository, chatRoomService, memberService);
 
         RsData<TradeStatus> rs = tradeStatusService.create(board, requester, helper);
 
@@ -60,7 +66,7 @@ public class TradeStatusServiceTest {
 
         //given
         String username = "member_not_exists";
-        Status status = Status.COMPLETE;
+        Status status = COMPLETE;
 
         //when
         RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(username, status);
@@ -79,7 +85,7 @@ public class TradeStatusServiceTest {
 
         //given
         String username = "user3";
-        Status status = Status.COMPLETE;
+        Status status = COMPLETE;
 
         //when
         RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(username, status);
@@ -100,7 +106,7 @@ public class TradeStatusServiceTest {
 
         //given
         String username = "user1";
-        Status status = Status.BEFORE;
+        Status status = BEFORE;
 
         //when
         RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(username, status);
@@ -121,7 +127,7 @@ public class TradeStatusServiceTest {
 
         //given
         String username = "user3";
-        Status status = Status.CANCELED;
+        Status status = CANCELED;
 
         //when
         RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(username, status);
@@ -135,7 +141,6 @@ public class TradeStatusServiceTest {
 
         );
     }
-
 
     @Test
     @DisplayName("유효한 거래 완료 횟수를 반환한다.")
@@ -151,5 +156,26 @@ public class TradeStatusServiceTest {
         assertThat(count).isEqualTo(2L);
     }
 
+    @Test
+    @DisplayName("이미 완료된 거래를 INPROGRESS로 변경 시도합니다.")
+    void tradeStatus_fail_updateToINPROGRESS() {
+        TradeStatus completeTradeStatus = TradeStatus.builder().status(COMPLETE).build();
+        RsData<TradeStatus> rs = tradeStatusService.updateStatus(completeTradeStatus, INPROGRESS);
+
+        assertEquals(ALREADY_COMPLETED.getCode(), rs.getResultCode());
+        assertEquals(ALREADY_COMPLETED.getMessage(), rs.getMsg());
+    }
+
+    @Test
+    @DisplayName("취소된 거래를 COMPLETE로 변경 시도합니다.")
+    void tradeStatus_fail_updateToCOMPLETE() {
+        List<TradeStatus> tradeStatuses = tradeStatusService.findMyTradeStatusList("user1", CANCELED).getData();
+        TradeStatus canceledTradeStatus = tradeStatuses.get(0);
+
+        RsData<TradeStatus> rs = tradeStatusService.updateStatus(canceledTradeStatus, COMPLETE);
+
+        assertEquals(COMPLETE_FAILED.getCode(), rs.getResultCode());
+        assertEquals(COMPLETE_FAILED.getMessage(), rs.getMsg());
+    }
 
 }

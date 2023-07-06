@@ -8,8 +8,8 @@ import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.service.ChatMessageService;
 import com.ant.hurry.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -35,9 +35,8 @@ public class ChatMessageController {
         messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(dto.getRoomId()), dto);
     }
 
-    @MessageMapping("/room/{id}/file/message")
-    public void sendFileMessage(@PathVariable("id") String roomId, @RequestPart("file") MultipartFile file)
-            throws IOException {
+    @MessageMapping("/chat/file")
+    public void sendFileMessage(@RequestParam String roomId, @Payload MultipartFile file) throws IOException {
         ChatRoom chatRoom = chatRoomService.findById(roomId).getData();
         RsData<ChatFileMessage> rs = chatMessageService.sendFile(file, rq.getMember(), chatRoom);
         ChatFileMessage message = rs.getData();
@@ -47,11 +46,12 @@ public class ChatMessageController {
     @GetMapping("/download/{messageId}")
     public ResponseEntity<StreamingResponseBody> downloadFile(@PathVariable("messageId") String messageId) {
         RsData<ChatFileMessage> findRs = chatMessageService.findFileMessageById(messageId);
+
         if (findRs.getData() == null) {
             return ResponseEntity.notFound().build();
         }
-        ChatFileMessage message = findRs.getData();
 
+        ChatFileMessage message = findRs.getData();
         return chatMessageService.downloadFile(message);
     }
 
