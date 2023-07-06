@@ -7,8 +7,11 @@ import com.ant.hurry.boundedContext.coin.entity.CoinChargeLog;
 import com.ant.hurry.boundedContext.coin.service.CoinService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.entity.ProfileImage;
+import com.ant.hurry.boundedContext.member.entity.Role;
+import com.ant.hurry.boundedContext.member.entity.RoleType;
 import com.ant.hurry.boundedContext.member.repository.MemberRepository;
 import com.ant.hurry.boundedContext.member.repository.ProfileImageRepository;
+import com.ant.hurry.boundedContext.member.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.ant.hurry.boundedContext.coin.code.ExchangeErrorCode.*;
 import static com.ant.hurry.boundedContext.coin.code.ExchangeSuccessCode.COIN_ENOUGH;
@@ -34,6 +39,8 @@ public class MemberService {
     private final S3ProfileUploader profileUploader;
     private final ProfileImageRepository profileImageRepository;
 
+    private final RoleRepository roleRepository;
+
 
 
     // 소셜 로그인(카카오, 구글, 네이버) 로그인이 될 때 마다 실행되는 함수
@@ -49,6 +56,12 @@ public class MemberService {
     }
 
     private RsData<Member> createAndSave(String username, String password, String phone, String providerTypeCode) {
+        //기본적으로 회원은 ROLE_MEMBER 라는 권한을 가진다.
+        Role memberRole = roleRepository.findByName(RoleType.ROLE_MEMBER)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        Set<Role> roles = new HashSet<>();
+        roles.add(memberRole);
+
         Member member = Member
                 .builder()
                 .username(username)
@@ -58,8 +71,8 @@ public class MemberService {
                 .providerTypeCode(providerTypeCode)
                 .coin(0)
                 .phoneAuth(0)
+                .roles(roles)
                 .build();
-
         Member savedMember = memberRepository.save(member);
         return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
     }

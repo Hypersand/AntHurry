@@ -1,8 +1,7 @@
 package com.ant.hurry.boundedContext.member.entity;
 
 import com.ant.hurry.base.baseEntity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -66,14 +67,21 @@ public class Member extends BaseEntity {
 
     private int reviewCount = 0;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "member_roles",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     public List<? extends GrantedAuthority> getGrantedAuthorities() {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-        grantedAuthorities.add(new SimpleGrantedAuthority("member"));
-
-        if ("admin".equals(nickname)) {
-            grantedAuthorities.add(new SimpleGrantedAuthority("admin"));
+        if(this.roles != null){
+            for (Role role : this.roles) {
+                grantedAuthorities.add(new SimpleGrantedAuthority(role.getName().toString()));
+            }
         }
 
         return grantedAuthorities;
