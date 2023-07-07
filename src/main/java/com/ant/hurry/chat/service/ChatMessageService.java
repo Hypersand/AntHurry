@@ -80,6 +80,7 @@ public class ChatMessageService {
                 .roomId(dto.getRoomId())
                 .writer(writer.getNickname())
                 .message(dto.getMessage())
+                .createdAt(LocalDateTime.now())
                 .build();
         chatMessageRepository.save(message);
 
@@ -113,7 +114,7 @@ public class ChatMessageService {
                 .uploadFilePath(filePath)
                 .uploadFileId(fileId.toString())
                 .roomId(chatRoom.getId())
-                .sender(sender.getNickname())
+                .writer(sender.getNickname())
                 .createdAt(LocalDateTime.now())
                 .build();
         chatFileMessageRepository.insert(chatFileMessage);
@@ -184,6 +185,13 @@ public class ChatMessageService {
 
     private GridFSBucket createGridBucket() {
         return GridFSBuckets.create(mongoConfig.mongoClient().getDatabase(databaseName));
+    }
+
+    public void markAsRead(Message message) {
+        message.markAsRead();
+        if(message instanceof ChatMessage)
+            chatMessageRepository.save((ChatMessage) message);
+        else chatFileMessageRepository.save((ChatFileMessage) message);
     }
 
     public RsData deleteSoft(ChatMessage chatMessage) {

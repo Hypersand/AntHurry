@@ -95,14 +95,16 @@ public class TradeStatusController {
     public String start(@PathVariable Long id) {
         TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, INPROGRESS);
-        return rq.historyBack(rs.getMsg());
+        ChatRoom chatRoom = chatRoomService.findByTradeStatusId(rs.getData().getId()).getData();
+        return rq.redirectWithMsg("chat/room/%s".formatted(chatRoom.getId()), rs.getMsg());
     }
 
     @GetMapping("/complete/{id}")
     public String complete(@PathVariable Long id) {
         TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, COMPLETE);
-        return rq.historyBack(rs.getMsg());
+        ChatRoom chatRoom = chatRoomService.findByTradeStatusId(rs.getData().getId()).getData();
+        return rq.redirectWithMsg("chat/room/%s".formatted(chatRoom.getId()), rs.getMsg());
     }
 
 }

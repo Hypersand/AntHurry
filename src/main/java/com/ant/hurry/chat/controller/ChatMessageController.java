@@ -9,7 +9,6 @@ import com.ant.hurry.chat.service.ChatMessageService;
 import com.ant.hurry.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -35,11 +34,17 @@ public class ChatMessageController {
         messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(dto.getRoomId()), dto);
     }
 
-    @MessageMapping("/chat/file")
-    public void sendFileMessage(@RequestParam String roomId, @Payload MultipartFile file) throws IOException {
+    @PostMapping("/file")
+    public void sendFile(@RequestParam String roomId, @Payload MultipartFile file) throws IOException {
         ChatRoom chatRoom = chatRoomService.findById(roomId).getData();
         RsData<ChatFileMessage> rs = chatMessageService.sendFile(file, rq.getMember(), chatRoom);
         ChatFileMessage message = rs.getData();
+
+        sendFileMessage(roomId, message);
+    }
+
+    @MessageMapping("/chat/file")
+    public void sendFileMessage(String roomId, ChatFileMessage message) {
         messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(roomId), message);
     }
 
