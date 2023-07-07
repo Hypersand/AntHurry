@@ -101,7 +101,7 @@ public class TradeStatusService {
 
     }
 
-    public boolean getHelper(Long boardId, Long memberId) {
-        return tradeStatusRepository.findByHelper(boardId, memberId).isPresent();
+    public Optional<TradeStatus> checkExistStatus(Long boardId, Long memberId) {
+        return tradeStatusRepository.findByBoardIdAndMemberId(boardId, memberId);
     }
 }

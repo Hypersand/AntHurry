@@ -42,9 +42,12 @@ public class TradeStatusController {
         Optional<Board> opBoard = boardService.findByIdWithMember(id);
 
         if (opBoard.isEmpty()) return rq.historyBack("존재하지 않는 게시물입니다.");
-
+        Optional<TradeStatus> checkExistStatus = tradeStatusService.checkExistStatus(id, rq.getMember().getId());
+        if(checkExistStatus.isPresent()){
+            RsData<ChatRoom> chatRoomRsData = chatRoomService.findByTradeStatusId(checkExistStatus.get().getId());
+            return "redirect:/chat/room/%s".formatted(chatRoomRsData.getData().getId());
+        }
         Board board = opBoard.get();
-
         Member requester;
         Member helper;
         if (board.getMember().equals(rq.getMember())) {
