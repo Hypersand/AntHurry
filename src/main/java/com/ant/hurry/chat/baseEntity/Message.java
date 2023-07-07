@@ -4,4 +4,5 @@ public interface Message {
     String getMessage();
     boolean isNotRead();
     void markAsRead();
+    boolean isFileMessage();
 }

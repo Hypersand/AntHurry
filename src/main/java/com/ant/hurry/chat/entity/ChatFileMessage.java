@@ -37,4 +37,9 @@ public class ChatFileMessage extends BaseMessage implements Message {
     public String getMessage() {
         return "파일을 다운로드할 수 있습니다.";
     }
+
+    @Override
+    public boolean isFileMessage() {
+        return true;
+    }
 }

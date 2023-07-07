@@ -30,4 +30,9 @@ public class ChatMessage extends BaseMessage implements Message {
     public boolean isNotRead() {
         return readAt == null;
     }
+
+    @Override
+    public boolean isFileMessage() {
+        return false;
+    }
 }
