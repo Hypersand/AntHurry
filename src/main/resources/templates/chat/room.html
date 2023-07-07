@@ -125,18 +125,16 @@
                         hour12: false
                     });
 
-                    msg.className = writer === username ? "items-start chat chat-end flex flex-row justify-end" :
-                        "items-start chat chat-start flex flex-row justify-start";
+                    msg.className = writer === username ? "chat chat-end flex flex-row justify-end" :
+                        "chat chat-start flex flex-row justify-start";
                     msg.innerHTML = writer === username ?
-                        "<div class='chat-header'>" +
+                        "<div class='chat-header items-end'>" +
                         "<time class='text-xs opacity-50'>" + currentTime + "</time>" + "</div>" +
                         "<div class='chat-bubble'>" + content.message + "</div>" +
                         "<div class='chat-image avatar'><div class='w-10 rounded-full bg-pink-400'></div></div>" :
                         "<div class='chat-image avatar'><div class='w-10 rounded-full bg-pink-400'></div></div>" +
-                        "<div class='chat-header'>" +
                         "</div>" + "<div class='chat-bubble'>" + content.message + "</div>" +
-                        "<time class='text-xs opacity-50'>" + currentTime + "</time>";
-
+                        "<div class='chat-header items-end'>" + "<time class='text-xs opacity-50'>" + currentTime + "</time>";
 
                     $("#chat-area").append(msg);
                     scrollToBottom();
