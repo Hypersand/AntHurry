@@ -17,7 +17,6 @@ INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, prov
 INSERT INTO member_roles (member_id, role_id) VALUES (7, 2);
 
 
-
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (1, 2, '채팅시작테스트', 'START', NOW());
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (1, 3, '거래취소테스트', 'CANCEL', NOW());
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (3, 4, '거래완료테스트', 'END', NOW());
