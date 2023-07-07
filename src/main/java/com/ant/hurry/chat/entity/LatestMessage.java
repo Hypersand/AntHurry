@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "latest_message")
 public class LatestMessage extends BaseMessage {
 
-    private String sender;
+    private String writer;
 
     @Builder.Default
     private Message message = null;
