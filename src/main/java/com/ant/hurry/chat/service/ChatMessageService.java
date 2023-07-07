@@ -3,7 +3,6 @@ package com.ant.hurry.chat.service;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
-import com.ant.hurry.chat.baseEntity.BaseMessage;
 import com.ant.hurry.chat.baseEntity.Message;
 import com.ant.hurry.chat.config.MongoConfig;
 import com.ant.hurry.chat.dto.ChatMessageDto;
@@ -115,7 +114,7 @@ public class ChatMessageService {
                 .uploadFilePath(filePath)
                 .uploadFileId(fileId.toString())
                 .roomId(chatRoom.getId())
-                .sender(sender.getNickname())
+                .writer(sender.getNickname())
                 .createdAt(LocalDateTime.now())
                 .build();
         chatFileMessageRepository.insert(chatFileMessage);

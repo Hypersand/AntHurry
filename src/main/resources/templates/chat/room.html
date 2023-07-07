@@ -78,6 +78,7 @@
             <dialog id="my_modal_1" class="modal">
                 <form method="dialog" class="modal-box" enctype="multipart/form-data"
                       th:action="@{/chat/file(roomId=${room.id})}">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <input type="file" class="file-input file-input-bordered file-input-sm w-full max-w-sm"
                            name="file"/>
                     <div class="modal-action">
@@ -168,14 +169,14 @@
                 var form = document.querySelector(".modal form");
                 var formData = new FormData(form);
 
-                var inputFile = $("input[name='file']");
-                var files = inputFile[0].files;
+                var csrfToken = $("input[name='_csrf']").val();
+                formData.append("_csrf", csrfToken);
 
                 $.ajax({
                     url: form.action,
                     type: "POST",
                     enctype: 'multipart/form-data',
-                    data: files,
+                    data: formData,
                     processData: false,
                     contentType: false,
                     success: function (data) {

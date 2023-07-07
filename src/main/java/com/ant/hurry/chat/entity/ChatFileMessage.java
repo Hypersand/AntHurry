@@ -19,7 +19,7 @@ public class ChatFileMessage extends BaseMessage implements Message {
 
     private String uploadFileId;
 
-    private String sender;
+    private String writer;
 
     private LocalDateTime deletedAt;
 
