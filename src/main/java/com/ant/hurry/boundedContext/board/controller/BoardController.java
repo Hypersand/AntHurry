@@ -84,7 +84,7 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public String showBoard(Model model, @PathVariable("id") Long id) {
-        Board board = boardService.findById(id).orElse(null);
+        Board board = boardService.findByIdWithMember(id).orElse(null);
         if (board == null) {
             return rq.historyBack("존재하지 않는 게시판 입니다.");
         }

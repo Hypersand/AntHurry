@@ -102,7 +102,6 @@ public class TradeStatusService {
     }
 
     public boolean getHelper(Long boardId, Long memberId) {
-        Optional<TradeStatus> tradeStatus = tradeStatusRepository.findByHelper(boardId, memberId);
-        return tradeStatus.isPresent();
+        return tradeStatusRepository.findByHelper(boardId, memberId).isPresent();
     }
 }
