@@ -99,7 +99,7 @@ public class TradeStatusController {
         TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, INPROGRESS);
         ChatRoom chatRoom = chatRoomService.findByTradeStatusId(rs.getData().getId()).getData();
-        return rq.redirectWithMsg("chat/room/%s".formatted(chatRoom.getId()), rs.getMsg());
+        return "redirect:/chat/room/%s".formatted(chatRoom.getId());
     }
 
     @GetMapping("/complete/{id}")
@@ -107,7 +107,7 @@ public class TradeStatusController {
         TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, COMPLETE);
         ChatRoom chatRoom = chatRoomService.findByTradeStatusId(rs.getData().getId()).getData();
-        return rq.redirectWithMsg("chat/room/%s".formatted(chatRoom.getId()), rs.getMsg());
+        return "redirect:/chat/room/%s".formatted(chatRoom.getId());
     }
 
 }

@@ -28,7 +28,6 @@ public class LatestMessageService {
         chatRooms.forEach(cr -> {
             LatestMessage latestMessage = latestMessageRepository.findByChatRoomId(cr.getId())
                     .orElseGet(() -> LatestMessage.builder()
-                            .sender(" ")
                             .roomId(cr.getId())
                             .createdAt(LocalDateTime.now())
                             .build());
@@ -41,7 +40,6 @@ public class LatestMessageService {
     public RsData<LatestMessage> findByChatRoomId(String roomId) {
         LatestMessage latestMessage = latestMessageRepository.findByChatRoomId(roomId)
                 .orElseGet(() -> LatestMessage.builder()
-                        .sender(" ")
                         .roomId(roomId)
                         .createdAt(LocalDateTime.now())
                         .build());

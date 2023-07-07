@@ -45,11 +45,10 @@
 <main layout:fragment="main" class="flex-grow flex items-center justify-center w-screen h-[740px] p-8">
     <div id="chat-area" class="flex flex-col w-[650px] h-full">
         <div id="msg-area" class="overflow-y-auto h-[600px]">
-            <div id="messages"
-                 th:class="${@rq.getMember().getNickname().equals(message.writer)} ?
+            <div id="messages" th:class="${@rq.getMember().getUsername().equals(message.writer)} ?
                  'flex w-full justify-end' : 'flex w-full justify-start'"
                  th:each="message : ${chatMessages}">
-                <div class="chat chat-start flex" th:if="${!@rq.getMember().getNickname().equals(message.writer)}">
+                <div class="chat chat-start flex" th:if="${!@rq.getMember().getUsername().equals(message.writer)}">
                     <div class="chat-image avatar">
                         <div class="w-10 rounded-full bg-pink-400"></div>
                     </div>
@@ -61,7 +60,7 @@
                     <a th:if="${message.isFileMessage()}" target="_blank" class="ml-2"
                        th:href="@{/download/{messageId}(messageId=${message.getId()})}">다운로드</a>
                 </div>
-                <div class="chat chat-end flex" th:if="${@rq.getMember().getNickname().equals(message.writer)}">
+                <div class="chat chat-end flex" th:if="${@rq.getMember().getUsername().equals(message.writer)}">
                     <div class="chat-header">
                         <time class="text-xs opacity-50"
                               th:text="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
@@ -111,7 +110,7 @@
             var stomp = Stomp.over(sockJs);
 
             var roomId = [[${room.id}]];
-            var username = [[${@rq.member.nickname}]];
+            var username = [[${@rq.member.username}]];
 
             stomp.connect({}, function () {
                 stomp.subscribe("/sub/chat/room/" + roomId, function (message) {
@@ -125,18 +124,16 @@
                         hour12: false
                     });
 
-                    msg.className = writer === username ? "items-start chat chat-end flex flex-row justify-end" :
-                        "items-start chat chat-start flex flex-row justify-start";
+                    msg.className = writer === username ? "chat chat-end flex flex-row justify-end" :
+                        "chat chat-start flex flex-row justify-start";
                     msg.innerHTML = writer === username ?
-                        "<div class='chat-header'>" +
+                        "<div class='chat-header items-end'>" +
                         "<time class='text-xs opacity-50'>" + currentTime + "</time>" + "</div>" +
                         "<div class='chat-bubble'>" + content.message + "</div>" +
                         "<div class='chat-image avatar'><div class='w-10 rounded-full bg-pink-400'></div></div>" :
                         "<div class='chat-image avatar'><div class='w-10 rounded-full bg-pink-400'></div></div>" +
-                        "<div class='chat-header'>" +
                         "</div>" + "<div class='chat-bubble'>" + content.message + "</div>" +
-                        "<time class='text-xs opacity-50'>" + currentTime + "</time>";
-
+                        "<div class='chat-header items-end'>" + "<time class='text-xs opacity-50'>" + currentTime + "</time>";
 
                     $("#chat-area").append(msg);
                     scrollToBottom();

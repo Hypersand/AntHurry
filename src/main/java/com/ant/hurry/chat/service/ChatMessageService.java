@@ -69,7 +69,7 @@ public class ChatMessageService {
 
     // 일반 메시지 전송
     public RsData<ChatMessage> send(ChatMessageDto dto) {
-        Member writer = memberService.findByNickname(dto.getWriter()).orElse(null);
+        Member writer = memberService.findByUsername(dto.getWriter()).orElse(null);
 
         if (writer == null) {
             return RsData.of("F_M-1", "존재하지 않는 회원입니다."); // 수정 필요
@@ -78,18 +78,18 @@ public class ChatMessageService {
         ChatMessage message = ChatMessage.builder()
                 .id(UUID.randomUUID().toString())
                 .roomId(dto.getRoomId())
-                .writer(writer.getNickname())
+                .writer(writer.getUsername())
                 .message(dto.getMessage())
                 .createdAt(LocalDateTime.now())
                 .build();
         chatMessageRepository.save(message);
 
-        saveLatestMessage(dto.getRoomId(), writer.getNickname(), message);
+        saveLatestMessage(dto.getRoomId(), writer.getUsername(), message);
         return RsData.of(MESSAGE_SENT, message);
     }
 
     // 파일 메시지 전송
-    public RsData<ChatFileMessage> sendFile(MultipartFile file, Member sender, ChatRoom chatRoom) throws IOException {
+    public RsData<ChatFileMessage> sendFile(MultipartFile file, Member writer, ChatRoom chatRoom) throws IOException {
         if (file.isEmpty()) {
             return RsData.of(FILE_NOT_EXISTS);
         }
@@ -97,8 +97,7 @@ public class ChatMessageService {
             return RsData.of(FILE_TOO_BIG);
         }
 
-        GridFSBucket gridBucket =
-                GridFSBuckets.create(mongoConfig.mongoClient().getDatabase(databaseName));
+        GridFSBucket gridBucket = GridFSBuckets.create(mongoConfig.mongoClient().getDatabase(databaseName));
 
         // 파일 업로드
         ObjectId fileId = saveFile(file).getData();
@@ -114,19 +113,19 @@ public class ChatMessageService {
                 .uploadFilePath(filePath)
                 .uploadFileId(fileId.toString())
                 .roomId(chatRoom.getId())
-                .writer(sender.getNickname())
+                .writer(writer.getUsername())
                 .createdAt(LocalDateTime.now())
                 .build();
         chatFileMessageRepository.insert(chatFileMessage);
 
-        saveLatestMessage(chatRoom.getId(), sender.getNickname(), chatFileMessage);
+        saveLatestMessage(chatRoom.getId(), writer.getUsername(), chatFileMessage);
         return RsData.of(MESSAGE_SENT, chatFileMessage);
     }
 
-    private void saveLatestMessage(String roomId, String sender, Message message) {
+    private void saveLatestMessage(String roomId, String writer, Message message) {
         LatestMessage latestMessage = latestMessageService.findByChatRoomId(roomId).getData();
         LatestMessage updateLatestMessage = latestMessage.toBuilder()
-                .sender(sender)
+                .writer(writer)
                 .message(message)
                 .createdAt(LocalDateTime.now())
                 .build();
