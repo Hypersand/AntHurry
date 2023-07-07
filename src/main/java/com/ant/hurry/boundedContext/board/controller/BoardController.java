@@ -86,8 +86,6 @@ public class BoardController {
             return rq.historyBack("존재하지 않는 게시판 입니다.");
         }
 
-        boolean helper = tradeStatusService.getHelper(id, rq.getMember().getId());
-        model.addAttribute("helper", helper);
         model.addAttribute("board", board);
         return "/board/board";
     }
