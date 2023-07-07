@@ -89,7 +89,7 @@ public class BoardController {
         }
 
         model.addAttribute("board", board);
-        return "/board/info";
+        return "board/board";
     }
 
     @PreAuthorize("isAuthenticated()")
