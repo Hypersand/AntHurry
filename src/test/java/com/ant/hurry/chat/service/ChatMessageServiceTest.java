@@ -52,7 +52,7 @@ public class ChatMessageServiceTest {
         dto = new ChatMessageDto();
         dto.setRoomId(chatRoom.getId());
         dto.setMessage("안녕하세요.");
-        dto.setWriter(member.getNickname());
+        dto.setWriter(member.getUsername());
         file = new MockMultipartFile(
                 "file",
                 "testFile.txt",
