@@ -4,6 +4,7 @@ package com.ant.hurry.boundedContext.notification.event.handler;
 import com.ant.hurry.boundedContext.notification.event.NotifyCancelMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyEndMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyNewMessageEvent;
+import com.ant.hurry.boundedContext.notification.event.NotifyStartMessageEvent;
 import com.ant.hurry.boundedContext.sms.service.SmsService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,6 @@ public class NotificationEventHandler {
 
 
     @EventListener
-
     public void notifyNewMessageEventListener(NotifyNewMessageEvent event) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
 
         //sms 전송
@@ -34,7 +34,16 @@ public class NotificationEventHandler {
     }
 
     @EventListener
-    public void notifyEndMessageEventListener(NotifyEndMessageEvent event) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+    public void notifyStartMessageEventListener(NotifyStartMessageEvent event) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+
+        //sms 전송
+        smsService.sendSms(event.getRequesterPhoneNumber(), event.getContent());
+        smsService.sendSms(event.getHelperPhoneNumber(), event.getContent());
+
+    }
+
+    @EventListener
+    public void notifyEndMessageEventListener(NotifyStartMessageEvent event) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
 
         //sms 전송
         smsService.sendSms(event.getRequesterPhoneNumber(), event.getContent());
