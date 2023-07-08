@@ -37,6 +37,7 @@ public class NotificationController {
     public String list(@AuthenticationPrincipal User user, Model model) {
 
         RsData<List<Notification>> notificationListRsData = notificationService.findNotificationList(user.getUsername());
+        notificationService.markRead(notificationListRsData.getData());
 
         model.addAttribute("notificationList", notificationListRsData.getData());
 

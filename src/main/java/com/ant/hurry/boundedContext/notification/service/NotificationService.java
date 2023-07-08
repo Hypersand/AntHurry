@@ -167,5 +167,16 @@ public class NotificationService {
         return RsData.of("S_N-2", "성공적으로 알림이 삭제되었습니다.");
     }
 
+    public void markRead(List<Notification> notifications) {
+        notifications.stream()
+                .filter(notification -> !notification.isRead())
+                .forEach(Notification::markRead);
+    }
+
+    public boolean countUnreadNotifications(Member member) {
+
+        return notificationRepository.countByMemberAndReadDateIsNull(member) > 0;
+    }
+
 
 }

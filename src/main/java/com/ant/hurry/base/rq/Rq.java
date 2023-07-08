@@ -3,6 +3,7 @@ package com.ant.hurry.base.rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
+import com.ant.hurry.boundedContext.notification.service.NotificationService;
 import com.ant.hurry.standard.util.Ut;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +24,7 @@ import java.util.Map;
 @RequestScope
 public class Rq {
     private final MemberService memberService;
+    private final NotificationService notificationService;
     private final HttpServletRequest req;
     private final MessageSource messageSource;
     private final LocaleResolver localeResolver;
@@ -32,10 +34,11 @@ public class Rq {
     private final User user;
     private Member member = null;
 
-    public Rq(MemberService memberService, MessageSource messageSource, LocaleResolver localeResolver, HttpServletRequest req, HttpServletResponse resp, HttpSession session) {
+    public Rq(MemberService memberService, NotificationService notificationService, MessageSource messageSource, LocaleResolver localeResolver, HttpServletRequest req, HttpServletResponse resp, HttpSession session) {
         this.messageSource = messageSource;
         this.localeResolver = localeResolver;
         this.memberService = memberService;
+        this.notificationService = notificationService;
         this.req = req;
         this.resp = resp;
         this.session = session;
@@ -153,5 +156,13 @@ public class Rq {
         Map<String, String[]> parameterMap = req.getParameterMap();
 
         return Ut.json.toStr(parameterMap);
+    }
+
+    public boolean hasUnreadNotifications() {
+        if (isLogout()) return false;
+
+        Member member = getMember();
+
+        return notificationService.countUnreadNotifications(member);
     }
 }

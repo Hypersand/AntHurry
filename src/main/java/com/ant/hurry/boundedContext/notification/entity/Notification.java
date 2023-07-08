@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @AllArgsConstructor
@@ -24,6 +26,8 @@ public class Notification extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member helper;
 
+    private LocalDateTime readDate;
+
     public Notification() {
     }
 
@@ -35,5 +39,13 @@ public class Notification extends BaseEntity {
                 .helper(helper)
                 .build();
 
+    }
+
+    public boolean isRead() {
+        return readDate != null;
+    }
+
+    public void markRead() {
+        readDate = LocalDateTime.now();
     }
 }
