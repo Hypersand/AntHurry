@@ -54,13 +54,23 @@
 <main layout:fragment="main">
 
     <div class="px-5 mb-8">
-        <button class="hover:bg-gray-50 active:bg-gray-100 border-2 border-solid border-gray-100 rounded-lg w-full px-8 py-6 mb-6 flex items-center">
-            <div class="chat-image avatar">
-                <div class="w-10 rounded-full bg-pink-400"></div>
-            </div>
-            <div><p class="font-black text-sm text-start pl-2 pr-12" th:text="${board.member.nickname}"></p>
-            </div>
-            <div class="bg-pink-600 text-center w-16 text-white font-semibold rounded-xl">별점</div>
+        <button class="border-2 w-full px-8 py-6 mb-6 flex items-center bg-white" th:if="${board.member != @rq.getMember()}">
+            <a class="btn bg-white border-0" th:href="@{/usr/member/profile/{id}(id=${board.member.id})}" tabindex="0">
+                    <img th:if="${profileImage != null}" class="w-10 rounded-full bg-pink-300 mr-4"
+                         th:src="${profileImage.fullPath}" alt=" ">
+                    <img th:if="${profileImage == null}" class="w-10 rounded-full bg-pink-300 mr-4" src="#" alt=" ">
+                <div><p class="font-black text-sm text-start pl-2 pr-12" th:text="${board.member.nickname}"></p>
+                </div>
+            </a>
+        </button>
+        <button class="border-2 w-full px-8 py-6 mb-6 flex items-center bg-white" th:if="${board.member == @rq.getMember()}">
+            <a class="btn bg-white border-0" th:href="@{/usr/member/profile}" tabindex="0">
+                <img th:if="${profileImage != null}" class="w-10 rounded-full bg-pink-300 mr-4"
+                     th:src="${profileImage.fullPath}" alt=" ">
+                <img th:if="${profileImage == null}" class="w-10 rounded-full bg-pink-300 mr-4" src="#" alt=" ">
+                <div><p class="font-black text-sm text-start pl-2 pr-12" th:text="${board.member.nickname}"></p>
+                </div>
+            </a>
         </button>
         <div class="mt-3">
             <h1 class=" font-black text-xl" th:text="${board.title}"></h1>

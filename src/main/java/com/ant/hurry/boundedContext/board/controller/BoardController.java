@@ -11,6 +11,8 @@ import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.ant.hurry.base.region.entity.Region;
 import com.ant.hurry.base.region.service.RegionSearchService;
 import com.ant.hurry.boundedContext.board.service.BoardService;
+import com.ant.hurry.boundedContext.member.entity.ProfileImage;
+import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -47,6 +50,7 @@ public class BoardController {
     private final Rq rq;
     private final RegionSearchService regionService;
     private final TradeStatusService tradeStatusService;
+    private final MemberService memberService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
@@ -87,7 +91,8 @@ public class BoardController {
         if (board == null) {
             return rq.historyBack("존재하지 않는 게시판 입니다.");
         }
-
+        Optional<ProfileImage> profileImage = memberService.findProfileImage(board.getMember());
+        model.addAttribute("profileImage", profileImage.orElse(null));
         model.addAttribute("board", board);
         return "board/board";
     }
