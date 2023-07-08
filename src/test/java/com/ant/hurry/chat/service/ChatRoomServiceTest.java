@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ChatRoomServiceTest {
+class ChatRoomServiceTest {
 
     @Autowired
     ChatRoomService chatRoomService;
@@ -25,8 +25,7 @@ public class ChatRoomServiceTest {
     @Autowired
     DeletedChatRoomRepository deletedChatRoomRepository;
 
-    @BeforeEach
-    @AfterAll
+    @AfterEach
     void refresh() {
         chatRoomRepository.deleteAll();
         deletedChatRoomRepository.deleteAll();
