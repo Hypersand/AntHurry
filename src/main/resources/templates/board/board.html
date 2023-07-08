@@ -58,7 +58,9 @@
             <a class="btn bg-white border-0" th:href="@{/usr/member/profile/{id}(id=${board.member.id})}" tabindex="0">
                     <img th:if="${profileImage != null}" class="w-10 rounded-full bg-pink-300 mr-4"
                          th:src="${profileImage.fullPath}" alt=" ">
-                    <img th:if="${profileImage == null}" class="w-10 rounded-full bg-pink-300 mr-4" src="#" alt=" ">
+                <div class="chat-image avatar" th:if="${profileImage == null}">
+                    <i class="fa-solid fa-user fa-xl bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center"></i>
+                </div>
                 <div><p class="font-black text-sm text-start pl-2 pr-12" th:text="${board.member.nickname}"></p>
                 </div>
             </a>
@@ -67,7 +69,9 @@
             <a class="btn bg-white border-0" th:href="@{/usr/member/profile}" tabindex="0">
                 <img th:if="${profileImage != null}" class="w-10 rounded-full bg-pink-300 mr-4"
                      th:src="${profileImage.fullPath}" alt=" ">
-                <img th:if="${profileImage == null}" class="w-10 rounded-full bg-pink-300 mr-4" src="#" alt=" ">
+                <div class="chat-image avatar" th:if="${profileImage == null}">
+                    <i class="fa-solid fa-user fa-xl bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center"></i>
+                </div>
                 <div><p class="font-black text-sm text-start pl-2 pr-12" th:text="${board.member.nickname}"></p>
                 </div>
             </a>

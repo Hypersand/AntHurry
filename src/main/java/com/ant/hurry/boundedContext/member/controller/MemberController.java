@@ -73,9 +73,11 @@ public class MemberController {
             return "redirect:/usr/member/login";
         }
         Member member = rq.getMember();
-        model.addAttribute("member", member);
         Optional<ProfileImage> profileImage = memberService.findProfileImage(member);
+        Long tradeStatusCount = tradeStatusService.getMemberTradeStatusCount(member.getId());
+        model.addAttribute("member", member);
         model.addAttribute("profileImage", profileImage.orElse(null));
+        model.addAttribute("tradeStatusCount", tradeStatusCount);
         return "usr/member/profile";
     }
 
@@ -234,7 +236,10 @@ public class MemberController {
 
         Long completeTradeCount = tradeStatusService.getComleteTradeStatusCount(id);
         Long reviewCount = reviewService.getReviewCount(id);
-
+        Optional<ProfileImage> profileImage = memberService.findProfileImage(rsData.getData());
+        RsData<Map<String, Object>> reviews = reviewService.getReviews(rsData.getData().getUsername(), rsData.getData().getId());
+        model.addAttribute("reviewData", reviews.getData());
+        model.addAttribute("profileImage", profileImage.orElse(null));
         model.addAttribute("member", rsData.getData());
         model.addAttribute("completeTradeCount", completeTradeCount);
         model.addAttribute("reviewCount", reviewCount);

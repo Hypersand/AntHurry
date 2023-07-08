@@ -34,7 +34,8 @@
             <div class="flex rounded-3xl bg-gray-100 dark:bg-gray-700  flex-row items-center px-4 py-7">
                 <img th:if="${profileImage != null}" class="h-20 w-20 rounded-full bg-pink-300 mr-4"
                      th:src="${profileImage.fullPath}" alt=" ">
-                <img th:if="${profileImage == null}" class="h-20 w-20 rounded-full bg-pink-300 mr-4" src="#" alt=" ">
+
+                <i class="fa-solid fa-user fa-xl bg-gray-200 rounded-full w-20 h-20 flex items-center justify-center" th:if="${profileImage == null}"></i>
                 <div class="flex-1 d-flex flex-row justify-content-between items-center ml-5">
                     <h4 class="text-xl font-bold text-navy-700 dark:text-white mb-2 mr-2"
                         th:text="${member.nickname}"></h4>
@@ -51,12 +52,12 @@
 
             <div class="px-7 py-2 flex items-center justify-around gap-2 ">
                 <div class=" flex flex-col items-center pl-2 ">
-                    <span class="text-lg font-bold text-white dark:text-gray-500">10</span>
+                    <span th:text="${tradeStatusCount}" class="text-lg font-bold text-white dark:text-gray-500"></span>
                     <span class="text-base text-white font-medium 0">거래</span>
                 </div>
                 <div class="divider divider-horizontal"></div>
                 <div class=" flex flex-col items-center  ">
-                    <span class="text-lg text-white font-bold dark:text-gray-500">5</span>
+                    <span th:text="${member.reviewCount}" class="text-lg text-white font-bold dark:text-gray-500"></span>
                     <span class="text-base text-white font-medium">후기</span>
                 </div>
                 <div class="divider divider-horizontal"></div>

@@ -31,4 +31,8 @@ public interface TradeStatusRepository extends JpaRepository<TradeStatus, Long> 
     @Query("select t from TradeStatus t join fetch t.board b join fetch t.helper h join fetch t.requester r " +
             "where b.id = :boardId and (h.id = :memberId or r.id = :memberId)")
     Optional<TradeStatus> findByBoardIdAndMemberId(@Param("boardId") Long boardId, @Param("memberId") Long memberId);
+
+    @Query("select count(t.id) from TradeStatus t inner join t.requester r inner join t.helper h " +
+            "where r.id = :memberId or h.id = :memberId")
+    Long countMemberTradeStatus(@Param("memberId") Long memberid);
 }
