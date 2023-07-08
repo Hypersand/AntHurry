@@ -51,14 +51,14 @@
                     <div class="chat-image avatar">
                         <div class="w-10 rounded-full bg-pink-400"></div>
                     </div>
-                    <div th:if="${!message.isFileMessage()}" class="chat-bubble" th:text="${message.message}"></div>
-                    <a th:if="${message.isFileMessage()}" target="_blank" class="chat-bubble underline"
-                       th:text="${message.message}"
-                       th:href="@{/chat/download/{messageId}(messageId=${message.getId()})}"></a>
+                    <div class="chat-bubble" th:text="${message.message}"></div>
                     <div class="chat-header mt-6">
                         <time class="text-xs opacity-50"
                               th:text="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
                     </div>
+                    <a th:if="${message.isFileMessage()}" target="_blank" class="btn btn-outline"
+                       th:href="@{/chat/download/{messageId}(messageId=${message.getId()})}">
+                        <i class='fa-solid fa-download'></i></a>
                 </div>
                 <div class="chat chat-end flex" th:if="${@rq.getMember().getUsername().equals(message.writer)}">
                     <div class="chat-header">
@@ -125,13 +125,22 @@
                     msg.className = writer === username ? "chat chat-end flex flex-row justify-end" :
                         "chat chat-start flex flex-row justify-start";
                     msg.innerHTML = writer === username ?
-                        "<div class='chat-header items-end'>" +
+                        "<div class='chat-header'>" +
                         "<time class='text-xs opacity-50'>" + currentTime + "</time>" + "</div>" +
                         "<div class='chat-bubble'>" + content.message + "</div>" +
                         "<div class='chat-image avatar'><div class='w-10 rounded-full bg-pink-400'></div></div>" :
                         "<div class='chat-image avatar'><div class='w-10 rounded-full bg-pink-400'></div></div>" +
                         "</div>" + "<div class='chat-bubble'>" + content.message + "</div>" +
-                        "<div class='chat-header items-end'>" + "<time class='text-xs opacity-50'>" + currentTime + "</time>";
+                        "<div class='chat-header mt-6'>" + "<time class='text-xs opacity-50'>" + currentTime + "</time>";
+
+                    if (content.fileMessage && writer !== username) {
+                        var downloadLink = document.createElement("a");
+                        downloadLink.href = "/chat/download/" + content.id;
+                        downloadLink.target = "_blank";
+                        downloadLink.className = "btn btn-outline";
+                        downloadLink.innerHTML = "<i class='fa-solid fa-download'></i>";
+                        msg.appendChild(downloadLink);
+                    }
 
                     $("#chat-area").append(msg);
                     scrollToBottom();
@@ -156,11 +165,13 @@
                 var headers = {};
                 headers[csrfHeader] = csrfToken;
 
-                stomp.send('/pub/chat/message', {}, JSON.stringify({
-                    roomId: roomId,
-                    message: msg.value,
-                    writer: username
-                }));
+                if (msg.value != '') {
+                    stomp.send('/pub/chat/message', {}, JSON.stringify({
+                        roomId: roomId,
+                        message: msg.value,
+                        writer: username
+                    }));
+                }
                 msg.value = '';
                 scrollToBottom();
             });
