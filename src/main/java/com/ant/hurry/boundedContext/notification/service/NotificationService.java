@@ -40,11 +40,11 @@ public class NotificationService {
         String message;
 
         if (member.equals(requester)) {
-            message = helper.getNickname() + "님 과의 채팅이 시작되었습니다.";
+            message = helper.getNickname() + "님과의 채팅이 시작되었습니다.";
         }
 
         else {
-            message = requester.getNickname() + "님 과의 채팅이 시작되었습니다.";
+            message = requester.getNickname() + "님과의 채팅이 시작되었습니다.";
         }
 
 
@@ -66,11 +66,11 @@ public class NotificationService {
         String message;
 
         if (member.equals(requester)) {
-            message = helper.getNickname() + "님 과의 거래가 시작되었습니다.";
+            message = helper.getNickname() + "님과의 거래가 시작되었습니다.";
         }
 
         else {
-            message = requester.getNickname() + "님 과의 거래가 시작되었습니다.";
+            message = requester.getNickname() + "님과의 거래가 시작되었습니다.";
         }
 
 
@@ -93,11 +93,11 @@ public class NotificationService {
         String message;
 
         if (member.equals(requester)) {
-            message = helper.getNickname() + "님 과의 거래가 종료되었습니다.";
+            message = helper.getNickname() + "님과의 거래가 종료되었습니다.";
         }
 
         else {
-            message = requester.getNickname() + "님 과의 거래가 종료되었습니다.";
+            message = requester.getNickname() + "님과의 거래가 종료되었습니다.";
         }
 
         //알림 엔티티 생성
@@ -119,11 +119,11 @@ public class NotificationService {
         String message;
 
         if (member.equals(requester)) {
-            message = helper.getNickname() + "님 과의 거래가 취소되었습니다.";
+            message = helper.getNickname() + "님과의 거래가 취소되었습니다.";
         }
 
         else {
-            message = requester.getNickname() + "님 과의 거래가 취소되었습니다.";
+            message = requester.getNickname() + "님과의 거래가 취소되었습니다.";
         }
 
         //알림 엔티티 생성
