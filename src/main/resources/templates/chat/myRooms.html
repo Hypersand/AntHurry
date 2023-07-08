@@ -32,21 +32,37 @@
     </div>
     <div th:if="${!#lists.isEmpty(chatRooms)}" class="max-w-xs">
         <a th:each="chatRoom : ${chatRooms}" th:href="@{/chat/room/{id}(id=${chatRoom.getKey().id})}"
-                class="hover:bg-gray-50 active:bg-gray-100 border-2 border-solid border-gray-100 w-[350px] rounded-lg px-8 py-6 mb-6 flex justify-between items-center">
+           class="hover:bg-gray-50 active:bg-gray-100 border-2 border-solid border-gray-100 w-[350px] rounded-lg px-8 py-6 mb-6 flex justify-between items-center">
             <div>
                 <div class="mb-2 text-start">
-                    <span style="padding: 0;" th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembersUsername().get(0))}"
-                          th:text="${chatRoom.getKey().getMembersUsername().get(1)}" class="font-black text-lg"></span>
-                    <span style="padding: 0;" th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembersUsername().get(1))}"
-                          th:text="${chatRoom.getKey().getMembersUsername().get(0)}" class="font-black text-lg"></span>
-                    <span th:text="${#temporals.format(chatRoom.getValue().createdAt, 'HH:mm')}" class="ml-2 text-gray-400"></span>
+                    <span style="padding: 0;" th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembersUsername().get(0))
+                    && chatRoom.getKey().getMembersUsername().get(1).length() > 15}"
+                          th:text="|${chatRoom.getKey().getMembersUsername().get(1).substring(0, 15)}... 님|"
+                          class="font-black text-lg"></span>
+                    <span style="padding: 0;" th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembersUsername().get(0))
+                    && chatRoom.getKey().getMembersUsername().get(1).length() <= 15}"
+                          th:text="|${chatRoom.getKey().getMembersUsername().get(1)} 님|"
+                          class="font-black text-lg"></span>
+                    <span style="padding: 0;"
+                          th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembersUsername().get(1))
+                    && chatRoom.getKey().getMembersUsername().get(0).length() > 15}"
+                          th:text="|${chatRoom.getKey().getMembersUsername().get(0).substring(0, 15)}... 님|"
+                          class="font-black text-lg"></span>
+                    <span style="padding: 0;"
+                          th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembersUsername().get(1))
+                    && chatRoom.getKey().getMembersUsername().get(0).length() <= 15}"
+                          th:text="|${chatRoom.getKey().getMembersUsername().get(0)} 님|"
+                          class="font-black text-lg"></span>
+                    <span th:text="${#temporals.format(chatRoom.getValue().createdAt, 'HH:mm')}"
+                          class="ml-2 text-gray-400"></span>
                 </div>
 
                 <p th:if="${chatRoom.getValue().message != null}" th:text="${chatRoom.getValue().message.getMessage()}"
                    class="text-lg text-start"></p>
             </div>
             <div th:if="${chatRoom.getValue().message != null && @rq.getMember().getUsername() != chatRoom.getValue().writer
-                && chatRoom.getValue().message.isNotRead()}" class="bg-[#ff626f] w-12 text-white text-center font-semibold rounded-xl">new
+                && chatRoom.getValue().message.isNotRead()}"
+                 class="bg-[#ff626f] w-12 text-white text-center font-semibold rounded-xl">new
             </div>
         </a>
     </div>

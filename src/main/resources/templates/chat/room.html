@@ -46,8 +46,7 @@
     <div id="chat-area" class="flex flex-col w-[650px] h-full">
         <div id="msg-area" class="overflow-y-auto h-[600px]">
             <div id="messages" th:class="${@rq.getMember().getUsername().equals(message.writer)} ?
-                 'flex w-full justify-end' : 'flex w-full justify-start'"
-                 th:each="message : ${chatMessages}">
+                 'flex w-full justify-end' : 'flex w-full justify-start'" th:each="message : ${chatMessages}">
                 <div class="chat chat-start flex" th:if="${!@rq.getMember().getUsername().equals(message.writer)}">
                     <div class="chat-image avatar">
                         <div class="w-10 rounded-full bg-pink-400"></div>
@@ -57,10 +56,12 @@
                         <time class="text-xs opacity-50"
                               th:text="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
                     </div>
-                    <a th:if="${message.isFileMessage()}" target="_blank" class="ml-2"
-                       th:href="@{/download/{messageId}(messageId=${message.getId()})}">다운로드</a>
+                    <a th:if="${message.isFileMessage()}" target="_blank" class="btn btn-circle btn-outline"
+                       th:href="@{/chat/download/{messageId}(messageId=${message.getId()})}">받기</a>
                 </div>
                 <div class="chat chat-end flex" th:if="${@rq.getMember().getUsername().equals(message.writer)}">
+                    <a th:if="${message.isFileMessage()}" target="_blank" class="btn btn-circle btn-outline"
+                       th:href="@{/chat/download/{messageId}(messageId=${message.getId()})}">받기</a>
                     <div class="chat-header">
                         <time class="text-xs opacity-50"
                               th:text="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
@@ -69,8 +70,6 @@
                     <div class="chat-image avatar">
                         <div class="w-10 rounded-full bg-pink-400"></div>
                     </div>
-                    <a th:if="${message.isFileMessage()}" target="_blank" class="ml-2"
-                       th:href="@{/download/{messageId}(messageId=${message.getId()})}">다운로드</a>
                 </div>
             </div>
         </div>

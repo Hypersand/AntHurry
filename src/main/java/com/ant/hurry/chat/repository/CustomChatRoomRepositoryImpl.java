@@ -40,12 +40,4 @@ public class CustomChatRoomRepositoryImpl implements CustomChatRoomRepository {
         mongoTemplate.updateFirst(query, update, ChatRoom.class);
     }
 
-    @Override
-    public void deleteMembers(ChatRoom chatRoom, Member member) {
-        Criteria criteria = Criteria.where("_id").is(chatRoom.getId());
-        Query query = Query.query(criteria);
-        Update update = new Update().pull("members", member);
-        mongoTemplate.updateFirst(query, update, ChatRoom.class);
-    }
-
 }

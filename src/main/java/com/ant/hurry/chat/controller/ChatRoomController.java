@@ -55,16 +55,14 @@ public class ChatRoomController {
         if (otherMember == null) return rq.historyBack("존재하지 않는 회원입니다.");
 
         model.addAttribute("otherMember", otherMember);
-        model.addAttribute("chatMessages",
-                chatMessageService.findByChatRoomId(chatRoom.getId()).getData());
+        model.addAttribute("chatMessages", chatMessageService.findAllMessagesByChatRoomId(id).getData());
         model.addAttribute("room", chatRoom);
         return "chat/room";
     }
 
     @GetMapping("/myRooms")
     public String showMyRooms(Model model) {
-        List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData()
-                .stream().sorted().toList();
+        List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData();
         Map<ChatRoom, LatestMessage> map = new HashMap<>();
         chatRooms.forEach(cr -> map.put(cr, latestMessageService.findByChatRoomId(cr.getId()).getData()));
 

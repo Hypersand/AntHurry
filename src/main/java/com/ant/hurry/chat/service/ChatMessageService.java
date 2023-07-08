@@ -3,6 +3,7 @@ package com.ant.hurry.chat.service;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
+import com.ant.hurry.chat.baseEntity.BaseMessage;
 import com.ant.hurry.chat.baseEntity.Message;
 import com.ant.hurry.chat.config.MongoConfig;
 import com.ant.hurry.chat.dto.ChatMessageDto;
@@ -35,9 +36,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static com.ant.hurry.chat.code.ChatMessageErrorCode.*;
 import static com.ant.hurry.chat.code.ChatMessageSuccessCode.*;
@@ -55,6 +58,14 @@ public class ChatMessageService {
 
     @Value("${spring.data.mongodb.database}")
     private String databaseName;
+
+    public RsData<List<? extends BaseMessage>> findAllMessagesByChatRoomId(String roomId) {
+        List<ChatMessage> chatMessages = findByChatRoomId(roomId).getData();
+        List<ChatFileMessage> chatFileMessages = chatFileMessageRepository.findByRoomId(roomId);
+        List<? extends BaseMessage> allMessages = Stream.concat(chatMessages.stream(), chatFileMessages.stream()).
+                sorted(Comparator.comparing(BaseMessage::getCreatedAt)).toList();
+        return RsData.of(MESSAGE_FOUND, allMessages);
+    }
 
     public RsData<ChatFileMessage> findFileMessageById(String id) {
         Optional<ChatFileMessage> message = chatFileMessageRepository.findById(id);
@@ -188,7 +199,7 @@ public class ChatMessageService {
 
     public void markAsRead(Message message) {
         message.markAsRead();
-        if(message instanceof ChatMessage)
+        if (message instanceof ChatMessage)
             chatMessageRepository.save((ChatMessage) message);
         else chatFileMessageRepository.save((ChatFileMessage) message);
     }
