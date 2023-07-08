@@ -31,8 +31,11 @@
                 <div class="modal-box">
                     <a th:if="${room.tradeStatus.status.msg.equals('거래 전')}" class="btn btn-ghost block pt-4"
                        th:href="@{/trade/start/{id}(id=${room.tradeStatus.id})}">거래 시작</a>
-                    <a th:if="${!room.tradeStatus.status.msg.equals('거래 전')}" class="btn btn-ghost block pt-4"
+                    <a th:if="${room.tradeStatus.status.msg.equals('거래 중') && !room.tradeStatus.status.msg.equals('거래 취소')}" class="btn btn-ghost block pt-4"
                        th:href="@{/trade/complete/{id}(id=${room.tradeStatus.id})}">거래 완료</a>
+                    <hr>
+                    <a th:if="${room.tradeStatus.status.msg.equals('거래 중') && !room.tradeStatus.status.msg.equals('거래 취소')}" class="btn btn-ghost block pt-4"
+                       th:href="@{/trade/cancel/{id}(id=${room.tradeStatus.id})}">거래 취소</a>
                     <hr>
                     <a th:href="@{/chat/exit/{id}(id=${room.id})}" class="btn btn-ghost block pt-4">채팅방 나가기</a>
                 </div>
