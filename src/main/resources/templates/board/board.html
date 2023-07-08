@@ -28,23 +28,22 @@
                 <a th:href="@{/trade/create/{id}(id=${board.id})}">채팅하기</a>
             </button>
 
-            <!-- The button to open modal -->
             <label for="modal" class="btn btn-ghost btn-circle" th:if="${board.member == @rq.getMember()}"><i class="fa-solid fa-ellipsis-vertical"></i></label>
 
             <!-- Put this part before </body> tag -->
             <input type="checkbox" id="modal" class="modal-toggle"/>
             <div class="modal">
                 <div class="modal-box">
-                    <div class="modal-action">
-                        <label for="modal" class="btn btn-sm btn-circle btn-ghost absolute top-2">✕</label>
-                        <a class="btn btn-sm btn-outline" th:href="@{/board/modify/{id}(id=${board.id})}">
-                            수정하기</a>
-                        <a class="btn btn-sm btn-outline" href="javascript:"
+                    <div class="modal-action flex-col items-center">
+                        <a class="btn btn-wide btn-outline my-2" th:href="@{/board/modify/{id}(id=${board.id})}">
+                            수정</a>
+                        <a class="btn btn-wide btn-outline my-2" href="javascript:"
                            onclick="if ( confirm('정말로 게시판을 삭제하시겠습니까?') ) $(this).next().submit();">
-                            삭제하기</a>
-                        <form hidden th:action method="POST" class="flex flex-col items-center justify-center">
+                            삭제</a>
+                        <form hidden th:action method="POST">
                             <input type="hidden" name="_method" value="delete">
                         </form>
+                        <label for="modal" class="btn btn-wide btn-outline my-2">닫기</label>
                     </div>
                 </div>
             </div>
