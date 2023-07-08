@@ -5,6 +5,7 @@ import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.service.BoardService;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.notification.service.NotificationService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
@@ -35,6 +36,7 @@ public class TradeStatusController {
     private final ChatRoomService chatRoomService;
     private final TradeStatusService tradeStatusService;
     private final BoardService boardService;
+    private final NotificationService notificationService;
     private final Rq rq;
 
     @GetMapping("/create/{id}")
@@ -60,6 +62,7 @@ public class TradeStatusController {
 
         RsData<TradeStatus> tradeStatus = tradeStatusService.create(board, requester, helper);
         RsData<ChatRoom> chatRoom = chatRoomService.create(tradeStatus.getData());
+        notificationService.notifyNew(requester, helper);
         return "redirect:/chat/room/%s".formatted(chatRoom.getData().getId());
     }
 
@@ -96,9 +99,21 @@ public class TradeStatusController {
 
     @GetMapping("/start/{id}")
     public String start(@PathVariable Long id) {
+
         TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, INPROGRESS);
         ChatRoom chatRoom = chatRoomService.findByTradeStatusId(rs.getData().getId()).getData();
+        notificationService.notifyStart(tradeStatus.getRequester(), tradeStatus.getHelper());
+        return "redirect:/chat/room/%s".formatted(chatRoom.getId());
+    }
+
+    @GetMapping("/cancel/{id}")
+    public String cancel(@PathVariable Long id) {
+
+        TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
+        RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, CANCELED);
+        ChatRoom chatRoom = chatRoomService.findByTradeStatusId(rs.getData().getId()).getData();
+        notificationService.notifyCancel(tradeStatus.getRequester(), tradeStatus.getHelper());
         return "redirect:/chat/room/%s".formatted(chatRoom.getId());
     }
 
@@ -107,6 +122,7 @@ public class TradeStatusController {
         TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, COMPLETE);
         ChatRoom chatRoom = chatRoomService.findByTradeStatusId(rs.getData().getId()).getData();
+        notificationService.notifyEnd(tradeStatus.getRequester(), tradeStatus.getHelper());
         return "redirect:/chat/room/%s".formatted(chatRoom.getId());
     }
 
