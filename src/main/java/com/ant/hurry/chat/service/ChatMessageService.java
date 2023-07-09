@@ -208,8 +208,15 @@ public class ChatMessageService {
         return RsData.of(MESSAGE_DELETED);
     }
 
-    public void save(ChatMessage message) {
-        chatMessageRepository.save(message);
+    public void saveNoticeMessage(ChatMessageDto dto) {
+        ChatMessage noticeMessage = ChatMessage.builder()
+                .id(UUID.randomUUID().toString())
+                .roomId(dto.getRoomId())
+                .writer(dto.getWriter())
+                .message(dto.getMessage())
+                .createdAt(LocalDateTime.now())
+                .build();
+        chatMessageRepository.save(noticeMessage);
     }
 
     // event

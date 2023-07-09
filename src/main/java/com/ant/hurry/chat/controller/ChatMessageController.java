@@ -49,15 +49,7 @@ public class ChatMessageController {
         dto.setRoomId(roomId);
         dto.setMessage("[알림]\n" + rq.getMember().getNickname() + " 님이 채팅방을 나가셨습니다.");
 
-        ChatMessage noticeMessage = ChatMessage.builder()
-                .id(UUID.randomUUID().toString())
-                .roomId(dto.getRoomId())
-                .writer(dto.getWriter())
-                .message(dto.getMessage())
-                .createdAt(LocalDateTime.now())
-                .build();
-        chatMessageService.save(noticeMessage);
-
+        chatMessageService.saveNoticeMessage(dto);
         messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(roomId), dto);
     }
 
