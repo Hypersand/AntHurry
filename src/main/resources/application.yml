@@ -16,11 +16,14 @@ spring:
       client:
         registration:
           naver:
+            clientId: ENC(oIK2jHOXapwCx4LUUcdjg+8KF8Kl+BlZCB2SH/M2SHk=)
+            client-secret: ENC(lr7fvmuSEgUw0iv8gdg4f95XSkq2JYWm)
             scope:
             client-name: Naver
             authorization-grant-type: authorization_code
             redirect-uri: '${custom.site.baseUrl}/{action}/oauth2/code/{registrationId}'
           kakao:
+            clientId: ENC(rLATDCxYJiVWCZU5YitqDQ/dYiHK8zLS06x5NfvkJVu265JKAtkiKxKKSgMf4Y02)
             scope:
             client-name: Kakao
             authorization-grant-type: authorization_code
@@ -46,6 +49,13 @@ spring:
       maxRequestSize: 10MB
       location: ${custom.dev_fileLocation}
       enabled: true
+  data:
+    redis:
+      host: ENC(Qukr1ETgUun/LiZVtEoaBgiPk+Kuxm8s)
+      port: 6379
+    mongodb:
+      database: ENC(VwPv5zYcWrzq1yyuEeL6t5L9OiAWpEcO)
+      uri: ENC(V/VP9t4l1rS1MEre4e8GNvVPxvgtHLXwyH/+lhQ/PHzYNNfgiFxLh+EBZNdWDmTEKspyiIXwneAHVi2a6yEOiRDOlr8etjb2/wzFONlQlSfGS5/zwo7Eo6Uj7Ah+clmH2vNGwk+3rP05bnfT7xyoZw==)
 
 naver-cloud:
   accessKey: ${custom.naver-cloud.accessKey}
@@ -58,3 +68,7 @@ naver-cloud:
     endpoint: https://kr.object.ncloudstorage.com
   region:
     static: ${custom.naver-cloud.region.static}
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
