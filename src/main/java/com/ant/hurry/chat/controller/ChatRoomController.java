@@ -3,6 +3,8 @@ package com.ant.hurry.chat.controller;
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.entity.ProfileImage;
+import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.entity.LatestMessage;
@@ -32,6 +34,7 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
     private final LatestMessageService latestMessageService;
+    private final MemberService memberService;
     private final Rq rq;
 
     @GetMapping("/room/{id}")
@@ -56,8 +59,13 @@ public class ChatRoomController {
 
         if (otherMember == null) return rq.historyBack("존재하지 않는 회원입니다.");
 
+        Optional<ProfileImage> myProfileImage = memberService.findProfileImage(rq.getMember());
+        Optional<ProfileImage> otherProfileImage = memberService.findProfileImage(otherMember);
+
         model.addAttribute("otherMember", otherMember);
         model.addAttribute("chatMessages", chatMessageService.findAllMessagesByChatRoomId(id).getData());
+        model.addAttribute("myProfileImage", myProfileImage.orElse(null));
+        model.addAttribute("otherProfileImage", otherProfileImage.orElse(null));
         model.addAttribute("room", chatRoom);
         return "chat/room";
     }

@@ -31,10 +31,12 @@
                 <div class="modal-box">
                     <a th:if="${room.tradeStatus.status.msg.equals('거래 전')}" class="btn btn-ghost block pt-4"
                        th:href="@{/trade/start/{id}(id=${room.tradeStatus.id})}">거래 시작</a>
-                    <a th:if="${room.tradeStatus.status.msg.equals('거래 중') && !room.tradeStatus.status.msg.equals('거래 취소')}" class="btn btn-ghost block pt-4"
+                    <a th:if="${room.tradeStatus.status.msg.equals('거래 중') && !room.tradeStatus.status.msg.equals('거래 취소')}"
+                       class="btn btn-ghost block pt-4"
                        th:href="@{/trade/complete/{id}(id=${room.tradeStatus.id})}">거래 완료</a>
                     <hr>
-                    <a th:if="${room.tradeStatus.status.msg.equals('거래 중') && !room.tradeStatus.status.msg.equals('거래 취소')}" class="btn btn-ghost block pt-4"
+                    <a th:if="${room.tradeStatus.status.msg.equals('거래 중') && !room.tradeStatus.status.msg.equals('거래 취소')}"
+                       class="btn btn-ghost block pt-4"
                        th:href="@{/trade/cancel/{id}(id=${room.tradeStatus.id})}">거래 취소</a>
                     <hr>
                     <a th:href="@{/chat/exit/{id}(id=${room.id})}" class="btn btn-ghost block pt-4">채팅방 나가기</a>
@@ -52,7 +54,10 @@
                  'flex w-full justify-end' : 'flex w-full justify-start'" th:each="message : ${chatMessages}">
                 <div class="chat chat-start flex" th:if="${!@rq.getMember().getUsername().equals(message.writer)}">
                     <div class="chat-image avatar">
-                        <div class="w-10 rounded-full bg-pink-400"></div>
+                        <img th:if="${otherProfileImage != null}" class="w-10 h-10 rounded-full bg-pink-300"
+                             th:src="${otherProfileImage.fullPath}" alt=" "/>
+                        <i th:if="${otherProfileImage == null}"
+                           class="fa-solid fa-user fa-xl bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center"></i>
                     </div>
                     <div class="chat-bubble" th:text="${message.message}"></div>
                     <div class="chat-header mt-6">
@@ -70,7 +75,10 @@
                     </div>
                     <div class="chat-bubble" th:text="${message.message}"></div>
                     <div class="chat-image avatar">
-                        <div class="w-10 rounded-full bg-pink-400"></div>
+                        <img th:if="${myProfileImage != null}" class="w-10 h-10 rounded-full bg-pink-300"
+                             th:src="${myProfileImage.fullPath}" alt=" "/>
+                        <i th:if="${myProfileImage == null}"
+                           class="fa-solid fa-user fa-xl bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center"></i>
                     </div>
                 </div>
             </div>
@@ -112,6 +120,8 @@
 
             var roomId = [[${room.id}]];
             var username = [[${@rq.member.username}]];
+            var myProfileImage = [[${myProfileImage}]];
+            var otherProfileImage = [[${otherProfileImage}]];
 
             stomp.connect({}, function () {
                 stomp.subscribe("/sub/chat/room/" + roomId, function (message) {
@@ -130,9 +140,10 @@
                     msg.innerHTML = writer === username ?
                         "<div class='chat-header'>" +
                         "<time class='text-xs opacity-50'>" + currentTime + "</time>" + "</div>" +
-                        "<div class='chat-bubble'>" + content.message + "</div>" +
-                        "<div class='chat-image avatar'><div class='w-10 rounded-full bg-pink-400'></div></div>" :
-                        "<div class='chat-image avatar'><div class='w-10 rounded-full bg-pink-400'></div></div>" +
+                        "<div class='chat-bubble'>" + content.message + "</div><div class='chat-image avatar'>" +
+                        "<i class='fa-solid fa-user fa-xl bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center'></i></div>" :
+                        "<div class='chat-image avatar'>" +
+                        "<i class='fa-solid fa-user fa-xl bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center'></i></div>" +
                         "</div>" + "<div class='chat-bubble'>" + content.message + "</div>" +
                         "<div class='chat-header mt-6'>" + "<time class='text-xs opacity-50'>" + currentTime + "</time>";
 
@@ -168,13 +179,11 @@
                 var headers = {};
                 headers[csrfHeader] = csrfToken;
 
-                if (msg.value != '') {
-                    stomp.send('/pub/chat/message', {}, JSON.stringify({
-                        roomId: roomId,
-                        message: msg.value,
-                        writer: username
-                    }));
-                }
+                stomp.send('/pub/chat/message', {}, JSON.stringify({
+                    roomId: roomId,
+                    message: msg.value,
+                    writer: username
+                }));
                 msg.value = '';
                 scrollToBottom();
             });
