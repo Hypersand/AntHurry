@@ -52,13 +52,19 @@
 
             <div class="px-7 py-2 flex items-center justify-around gap-2 ">
                 <div class=" flex flex-col items-center pl-2 ">
-                    <span th:text="${tradeStatusCount}" class="text-lg font-bold text-white dark:text-gray-500"></span>
-                    <span class="text-base text-white font-medium 0">거래</span>
+                    <a th:href="@{/trade/list}" class=" flex flex-col items-center pr-2 ">
+                        <span th:text="${tradeStatusCount}"
+                              class="text-lg font-bold text-white dark:text-gray-500"></span>
+                        <span class="text-base text-white font-medium 0">거래</span>
+                    </a>
                 </div>
                 <div class="divider divider-horizontal"></div>
                 <div class=" flex flex-col items-center  ">
-                    <span th:text="${member.reviewCount}" class="text-lg text-white font-bold dark:text-gray-500"></span>
-                    <span class="text-base text-white font-medium">후기</span>
+                    <a th:href="@{/review/list/{id}(id=${member.id})}" class=" flex flex-col items-center pr-2 ">
+                        <span th:text="${member.reviewCount}"
+                              class="text-lg text-white font-bold dark:text-gray-500"></span>
+                        <span class="text-base text-white font-medium">후기</span>
+                    </a>
                 </div>
                 <div class="divider divider-horizontal"></div>
                 <div class=" flex flex-col items-center pr-2 ">
