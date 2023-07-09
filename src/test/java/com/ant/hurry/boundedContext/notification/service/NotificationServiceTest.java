@@ -80,7 +80,7 @@ class NotificationServiceTest {
 
         //then
         verify(publisher, times(1)).publishEvent(any(NotifyNewMessageEvent.class));
-        assertThat(notification.getMessage()).isEqualTo(requester.getNickname() +  "님 과의 채팅이 시작되었습니다.");
+        assertThat(notification.getMessage()).isEqualTo(requester.getNickname() +  "님과의 채팅이 시작되었습니다.");
     }
 
     @Test
@@ -98,7 +98,7 @@ class NotificationServiceTest {
 
         //then
         verify(publisher, times(1)).publishEvent(any(NotifyStartMessageEvent.class));
-        assertThat(notification.getMessage()).isEqualTo(requester.getNickname() +  "님 과의 거래가 시작되었습니다.");
+        assertThat(notification.getMessage()).isEqualTo(requester.getNickname() +  "님과의 거래가 시작되었습니다.");
     }
 
     @Test
@@ -116,7 +116,7 @@ class NotificationServiceTest {
 
         //then
         verify(publisher, times(1)).publishEvent(any(NotifyEndMessageEvent.class));
-        assertThat(notification.getMessage()).isEqualTo(helper.getNickname() +  "님 과의 거래가 종료되었습니다.");
+        assertThat(notification.getMessage()).isEqualTo(helper.getNickname() +  "님과의 거래가 종료되었습니다.");
 
 
     }
@@ -136,7 +136,7 @@ class NotificationServiceTest {
 
         //then
         verify(publisher, times(1)).publishEvent(any(NotifyCancelMessageEvent.class));
-        assertThat(notification.getMessage()).isEqualTo(helper.getNickname() +  "님 과의 거래가 취소되었습니다.");
+        assertThat(notification.getMessage()).isEqualTo(helper.getNickname() +  "님과의 거래가 취소되었습니다.");
     }
 
 

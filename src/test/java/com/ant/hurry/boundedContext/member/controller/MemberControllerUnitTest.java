@@ -13,6 +13,7 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
+import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +49,9 @@ public class MemberControllerUnitTest {
 
     @Mock
     PhoneAuthService phoneAuthService;
+
+    @Mock
+    TradeStatusService tradeStatusService;
 
     @Mock
     ObjectMapper objectMapper;
@@ -97,6 +101,7 @@ public class MemberControllerUnitTest {
         Optional<ProfileImage> profileImage = Optional.of(new ProfileImage());
         when(rq.getMember()).thenReturn(member);
         when(memberService.findProfileImage(member)).thenReturn(profileImage);
+        Long tradeStatusCount = tradeStatusService.getMemberTradeStatusCount(member.getId());
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/usr/member/profile"));
@@ -106,6 +111,7 @@ public class MemberControllerUnitTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("usr/member/profile"))
                 .andExpect(model().attribute("member", member))
+                .andExpect(model().attribute("tradeStatusCount", tradeStatusCount))
                 .andExpect(model().attribute("profileImage", profileImage.orElse(null)));
     }
 
