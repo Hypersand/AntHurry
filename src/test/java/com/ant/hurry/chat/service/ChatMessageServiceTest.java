@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ChatMessageServiceTest {
+class ChatMessageServiceTest {
 
     @Autowired
     ChatMessageService chatMessageService;
@@ -52,7 +52,7 @@ public class ChatMessageServiceTest {
         dto = new ChatMessageDto();
         dto.setRoomId(chatRoom.getId());
         dto.setMessage("안녕하세요.");
-        dto.setWriter(member.getNickname());
+        dto.setWriter(member.getUsername());
         file = new MockMultipartFile(
                 "file",
                 "testFile.txt",
@@ -61,8 +61,7 @@ public class ChatMessageServiceTest {
         );
     }
 
-    @BeforeEach
-    @AfterAll
+    @AfterEach
     void refresh() {
         chatMessageRepository.deleteAll();
         chatFileMessageRepository.deleteAll();

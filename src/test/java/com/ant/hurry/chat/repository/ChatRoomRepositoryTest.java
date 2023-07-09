@@ -16,15 +16,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ChatRoomRepositoryTest {
+class ChatRoomRepositoryTest {
 
     @Autowired
     private ChatRoomRepository chatRoomRepository;
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    @BeforeEach
-    @AfterAll
+    @AfterEach
     void refresh() {
         chatRoomRepository.deleteAll();
     }

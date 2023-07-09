@@ -34,6 +34,15 @@ public class ChatMessageController {
         messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(dto.getRoomId()), dto);
     }
 
+    public void sendExitMessage(String roomId, String otherMember) {
+        ChatMessageDto dto = new ChatMessageDto();
+        dto.setWriter("admin");
+        dto.setRoomId(roomId);
+        dto.setMessage("[알림]\n" + otherMember + " 님이 채팅방을 나가셨습니다.");
+
+        messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(roomId), dto);
+    }
+
     @PostMapping("/file")
     public void sendFile(@RequestParam String roomId, @Payload MultipartFile file) throws IOException {
         ChatRoom chatRoom = chatRoomService.findById(roomId).getData();

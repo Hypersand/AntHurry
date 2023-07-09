@@ -13,6 +13,4 @@ public interface CustomChatRoomRepository {
     Optional<ChatRoom> findByTradeStatusId(Long id);
 
     void updateStatusOfChatRoom(ChatRoom chatRoom, String status);
-
-    void deleteMembers(ChatRoom chatRoom, Member member);
 }

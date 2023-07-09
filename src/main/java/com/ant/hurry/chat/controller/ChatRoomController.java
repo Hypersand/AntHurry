@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Controller
@@ -27,6 +28,7 @@ import java.util.Map;
 @PreAuthorize("isAuthenticated()")
 public class ChatRoomController {
 
+    private final ChatMessageController chatMessageController;
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
     private final LatestMessageService latestMessageService;
@@ -55,16 +57,15 @@ public class ChatRoomController {
         if (otherMember == null) return rq.historyBack("존재하지 않는 회원입니다.");
 
         model.addAttribute("otherMember", otherMember);
-        model.addAttribute("chatMessages",
-                chatMessageService.findByChatRoomId(chatRoom.getId()).getData());
+        model.addAttribute("chatMessages", chatMessageService.findAllMessagesByChatRoomId(id).getData());
         model.addAttribute("room", chatRoom);
         return "chat/room";
     }
 
     @GetMapping("/myRooms")
     public String showMyRooms(Model model) {
-        List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData()
-                .stream().sorted().toList();
+        List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData().stream()
+                .filter(cr -> !cr.getExitedMembers().contains(rq.getMember())).toList();
         Map<ChatRoom, LatestMessage> map = new HashMap<>();
         chatRooms.forEach(cr -> map.put(cr, latestMessageService.findByChatRoomId(cr.getId()).getData()));
 
@@ -75,6 +76,15 @@ public class ChatRoomController {
     @GetMapping("/exit/{id}")
     public String exit(@PathVariable String id) {
         RsData<ChatRoom> rs = chatRoomService.findByIdAndVerify(id, rq.getMember());
+        ChatRoom chatRoom = rs.getData();
+        Optional<Member> otherMember = chatRoom.getMembers().stream().filter(m -> !m.equals(rq.getMember())).findFirst();
+
+        if (otherMember.isEmpty()) {
+            return rq.historyBack("존재하지 않는 회원입니다."); // 수정 필요
+        }
+
+        chatMessageController.sendExitMessage(id, otherMember.get().getUsername());
+
         chatRoomService.exit(rs.getData(), rq.getMember());
         return "redirect:/chat/myRooms";
     }
