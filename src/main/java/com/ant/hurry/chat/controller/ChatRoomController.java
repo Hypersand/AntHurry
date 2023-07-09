@@ -48,10 +48,7 @@ public class ChatRoomController {
         ChatRoom chatRoom = rs.getData();
 
         List<ChatMessage> chatMessages = chatMessageService.findByChatRoomId(chatRoom.getId()).getData();
-        chatMessages.forEach(cm -> {
-            cm.markAsRead();
-            chatMessageService.markAsRead(cm);
-        });
+        chatMessages.forEach(chatMessageService::markAsRead);
 
         Member otherMember = chatRoom.getMembers()
                 .stream().filter(m -> !m.getUsername().equals(rq.getMember().getUsername()))
@@ -84,14 +81,8 @@ public class ChatRoomController {
     @GetMapping("/exit/{id}")
     public String exit(@PathVariable String id) {
         RsData<ChatRoom> rs = chatRoomService.findByIdAndVerify(id, rq.getMember());
-        ChatRoom chatRoom = rs.getData();
-        Optional<Member> otherMember = chatRoom.getMembers().stream().filter(m -> !m.equals(rq.getMember())).findFirst();
 
-        if (otherMember.isEmpty()) {
-            return rq.historyBack("존재하지 않는 회원입니다."); // 수정 필요
-        }
-
-        chatMessageController.sendExitMessage(id, otherMember.get().getUsername());
+        chatMessageController.sendExitMessage(id);
 
         chatRoomService.exit(rs.getData(), rq.getMember());
         return "redirect:/chat/myRooms";

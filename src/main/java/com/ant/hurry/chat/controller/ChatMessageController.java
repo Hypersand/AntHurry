@@ -2,6 +2,7 @@ package com.ant.hurry.chat.controller;
 
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.chat.dto.ChatMessageDto;
 import com.ant.hurry.chat.entity.ChatFileMessage;
 import com.ant.hurry.chat.entity.ChatMessage;
@@ -37,11 +38,11 @@ public class ChatMessageController {
         messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(dto.getRoomId()), dto);
     }
 
-    public void sendExitMessage(String roomId, String otherMember) {
+    public void sendExitMessage(String roomId) {
         ChatMessageDto dto = new ChatMessageDto();
         dto.setWriter("admin");
         dto.setRoomId(roomId);
-        dto.setMessage("[알림]\n" + otherMember + " 님이 채팅방을 나가셨습니다.");
+        dto.setMessage("[알림]\n" + rq.getMember().getNickname() + " 님이 채팅방을 나가셨습니다.");
 
         ChatMessage noticeMessage = ChatMessage.builder()
                 .id(UUID.randomUUID().toString())

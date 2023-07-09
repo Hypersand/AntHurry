@@ -1,7 +1,7 @@
 <html layout:decorate="~{usr/layout/layout.html}">
 
 <head>
-    <title th:text="|${otherMember.getUsername()} 님과의 채팅|"></title>
+    <title th:text="|${otherMember.getNickname()} 님과의 채팅|"></title>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
@@ -17,10 +17,10 @@
             </div>
         </div>
         <div class="navbar-center">
-            <span th:if="${otherMember.getUsername().length() > 15}"
-                  class="font-black" th:text="|${otherMember.getUsername().substring(0, 15)}... 님과의 채팅|"></span>
-            <span th:if="${otherMember.getUsername().length() <= 15}"
-                  class="font-black" th:text="|${otherMember.getUsername()} 님과의 채팅|"></span>
+            <span th:if="${otherMember.getNickname().length() > 15}"
+                  class="font-black" th:text="|${otherMember.getNickname().substring(0, 15)}... 님과의 채팅|"></span>
+            <span th:if="${otherMember.getNickname().length() <= 15}"
+                  class="font-black" th:text="|${otherMember.getNickname()} 님과의 채팅|"></span>
         </div>
         <div class="navbar-end">
             <label for="my_modal_7" class="btn btn-ghost btn-circle">
@@ -120,8 +120,6 @@
 
             var roomId = [[${room.id}]];
             var username = [[${@rq.member.username}]];
-            var myProfileImage = [[${myProfileImage}]];
-            var otherProfileImage = [[${otherProfileImage}]];
 
             stomp.connect({}, function () {
                 stomp.subscribe("/sub/chat/room/" + roomId, function (message) {
