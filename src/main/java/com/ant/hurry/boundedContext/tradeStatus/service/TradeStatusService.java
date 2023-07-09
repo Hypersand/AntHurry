@@ -108,4 +108,8 @@ public class TradeStatusService {
     public Long getMemberTradeStatusCount(Long memberId){
         return tradeStatusRepository.countMemberTradeStatus(memberId);
     }
+
+    public void deleteTradeStatusDueToBoard(Long boardId){
+        tradeStatusRepository.deleteByBoardId(boardId);
+    }
 }
