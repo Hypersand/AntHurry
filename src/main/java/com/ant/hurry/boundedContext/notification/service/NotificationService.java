@@ -8,6 +8,7 @@ import com.ant.hurry.boundedContext.notification.entity.Notification;
 import com.ant.hurry.boundedContext.notification.event.NotifyCancelMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyEndMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyNewMessageEvent;
+import com.ant.hurry.boundedContext.notification.event.NotifyStartMessageEvent;
 import com.ant.hurry.boundedContext.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,11 +40,11 @@ public class NotificationService {
         String message;
 
         if (member.equals(requester)) {
-            message = helper.getNickname() + "님 과의 채팅이 시작되었습니다.";
+            message = helper.getNickname() + "님과의 채팅이 시작되었습니다.";
         }
 
         else {
-            message = requester.getNickname() + "님 과의 채팅이 시작되었습니다.";
+            message = requester.getNickname() + "님과의 채팅이 시작되었습니다.";
         }
 
 
@@ -57,6 +58,32 @@ public class NotificationService {
         return notification;
     }
 
+    //거래 시작
+    public Notification notifyStart(Member requester, Member helper) {
+
+        //메시지 내용 생성
+        Member member = rq.getMember();
+        String message;
+
+        if (member.equals(requester)) {
+            message = helper.getNickname() + "님과의 거래가 시작되었습니다.";
+        }
+
+        else {
+            message = requester.getNickname() + "님과의 거래가 시작되었습니다.";
+        }
+
+
+        //알림 엔티티 생성
+        Notification notification = Notification.create(message, "INPROGRESS", requester, helper);
+        notificationRepository.save(notification);
+
+        //채팅시작알림 이벤트 발생 (content 수정 필요)
+        publisher.publishEvent(new NotifyStartMessageEvent(requester.getPhoneNumber(), helper.getPhoneNumber(), message));
+
+        return notification;
+    }
+
 
     //거래 완료
     public Notification notifyEnd(Member requester, Member helper) {
@@ -66,11 +93,11 @@ public class NotificationService {
         String message;
 
         if (member.equals(requester)) {
-            message = helper.getNickname() + "님 과의 거래가 종료되었습니다.";
+            message = helper.getNickname() + "님과의 거래가 종료되었습니다.";
         }
 
         else {
-            message = requester.getNickname() + "님 과의 거래가 종료되었습니다.";
+            message = requester.getNickname() + "님과의 거래가 종료되었습니다.";
         }
 
         //알림 엔티티 생성
@@ -92,11 +119,11 @@ public class NotificationService {
         String message;
 
         if (member.equals(requester)) {
-            message = helper.getNickname() + "님 과의 거래가 취소되었습니다.";
+            message = helper.getNickname() + "님과의 거래가 취소되었습니다.";
         }
 
         else {
-            message = requester.getNickname() + "님 과의 거래가 취소되었습니다.";
+            message = requester.getNickname() + "님과의 거래가 취소되었습니다.";
         }
 
         //알림 엔티티 생성
@@ -138,6 +165,17 @@ public class NotificationService {
         notificationRepository.deleteById(id);
 
         return RsData.of("S_N-2", "성공적으로 알림이 삭제되었습니다.");
+    }
+
+    public void markRead(List<Notification> notifications) {
+        notifications.stream()
+                .filter(notification -> !notification.isRead())
+                .forEach(Notification::markRead);
+    }
+
+    public boolean countUnreadNotifications(Member member) {
+
+        return notificationRepository.countByMemberAndReadDateIsNull(member) > 0;
     }
 
 

@@ -10,6 +10,7 @@ import com.ant.hurry.boundedContext.notification.entity.Notification;
 import com.ant.hurry.boundedContext.notification.event.NotifyCancelMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyEndMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyNewMessageEvent;
+import com.ant.hurry.boundedContext.notification.event.NotifyStartMessageEvent;
 import com.ant.hurry.boundedContext.notification.repository.NotificationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -80,6 +81,24 @@ class NotificationServiceTest {
         //then
         verify(publisher, times(1)).publishEvent(any(NotifyNewMessageEvent.class));
         assertThat(notification.getMessage()).isEqualTo(requester.getNickname() +  "님 과의 채팅이 시작되었습니다.");
+    }
+
+    @Test
+    @DisplayName("거래를 시작하면 알림 엔티티가 생성되고 알림 이벤트가 발생한다.")
+    void notifyStart() {
+
+        //given
+        Notification notification = new Notification();
+        when(memberService.findByUsername(anyString())).thenReturn(Optional.of(requester));
+        when(rq.getMember()).thenReturn(helper);
+        when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
+
+        //when
+        notification = notificationService.notifyStart(requester, helper);
+
+        //then
+        verify(publisher, times(1)).publishEvent(any(NotifyStartMessageEvent.class));
+        assertThat(notification.getMessage()).isEqualTo(requester.getNickname() +  "님 과의 거래가 시작되었습니다.");
     }
 
     @Test
