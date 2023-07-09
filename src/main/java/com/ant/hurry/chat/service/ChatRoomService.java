@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.ant.hurry.base.code.BasicErrorCode.UNAUTHORIZED;
+import static com.ant.hurry.chat.code.ChatRoomErrorCode.CHATROOM_ALREADY_EXITED;
 import static com.ant.hurry.chat.code.ChatRoomErrorCode.CHATROOM_NO_EXISTS;
 import static com.ant.hurry.chat.code.ChatRoomSuccessCode.*;
 
@@ -55,7 +56,9 @@ public class ChatRoomService {
     }
 
     public RsData<List<ChatRoom>> findByMember(Member member) {
-        return RsData.of(CHATROOM_FOUND, chatRoomRepository.findByMembersContaining(member));
+        List<ChatRoom> chatRooms = chatRoomRepository.findByMembersContaining(member).stream()
+                .filter(cm -> !cm.getExitedMembers().contains(member)).toList();
+        return RsData.of(CHATROOM_FOUND, chatRooms);
     }
 
     public RsData<ChatRoom> findByTradeStatusId(Long id) {
@@ -87,11 +90,17 @@ public class ChatRoomService {
 
     public RsData exit(ChatRoom chatRoom, Member member) {
         List<Member> exitedMembers = chatRoom.getExitedMembers();
+
+        if(exitedMembers.contains(member)) {
+            return RsData.of(CHATROOM_ALREADY_EXITED);
+        }
+
         exitedMembers.add(member);
 
         ChatRoom chatRoomMemberExited = chatRoomRepository.save(chatRoom.toBuilder()
                 .exitedMembers(exitedMembers)
                 .build());
+        chatRoomRepository.save(chatRoomMemberExited);
 
         if (chatRoomMemberExited.getExitedMembers().size() == 2) {
             delete(chatRoomMemberExited);
