@@ -21,6 +21,8 @@ public class ChatFileMessage extends BaseMessage implements Message {
 
     private String writer;
 
+    private String message;
+
     private LocalDateTime deletedAt;
 
     private LocalDateTime readAt;
@@ -31,11 +33,6 @@ public class ChatFileMessage extends BaseMessage implements Message {
 
     public boolean isNotRead() {
         return readAt == null;
-    }
-
-    @Override
-    public String getMessage() {
-        return "파일을 다운로드할 수 있습니다.";
     }
 
     @Override

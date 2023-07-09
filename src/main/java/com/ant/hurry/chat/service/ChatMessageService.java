@@ -125,6 +125,7 @@ public class ChatMessageService {
                 .uploadFileId(fileId.toString())
                 .roomId(chatRoom.getId())
                 .writer(writer.getUsername())
+                .message(file.getOriginalFilename())
                 .createdAt(LocalDateTime.now())
                 .build();
         chatFileMessageRepository.insert(chatFileMessage);

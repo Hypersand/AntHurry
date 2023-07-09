@@ -36,21 +36,21 @@
             <div>
                 <div class="mb-2 text-start">
                     <span style="padding: 0;" th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembersUsername().get(0))
-                    && chatRoom.getKey().getMembersUsername().get(1).length() > 15}"
-                          th:text="|${chatRoom.getKey().getMembersUsername().get(1).substring(0, 15)}... 님|"
+                    && chatRoom.getKey().getMembersUsername().get(1).length() > 10}"
+                          th:text="|${chatRoom.getKey().getMembersUsername().get(1).substring(0, 10)}... 님|"
                           class="font-black text-lg"></span>
                     <span style="padding: 0;" th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembersUsername().get(0))
-                    && chatRoom.getKey().getMembersUsername().get(1).length() <= 15}"
+                    && chatRoom.getKey().getMembersUsername().get(1).length() <= 10}"
                           th:text="|${chatRoom.getKey().getMembersUsername().get(1)} 님|"
                           class="font-black text-lg"></span>
                     <span style="padding: 0;"
                           th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembersUsername().get(1))
-                    && chatRoom.getKey().getMembersUsername().get(0).length() > 15}"
-                          th:text="|${chatRoom.getKey().getMembersUsername().get(0).substring(0, 15)}... 님|"
+                    && chatRoom.getKey().getMembersUsername().get(0).length() > 10}"
+                          th:text="|${chatRoom.getKey().getMembersUsername().get(0).substring(0, 10)}... 님|"
                           class="font-black text-lg"></span>
                     <span style="padding: 0;"
                           th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembersUsername().get(1))
-                    && chatRoom.getKey().getMembersUsername().get(0).length() <= 15}"
+                    && chatRoom.getKey().getMembersUsername().get(0).length() <= 10}"
                           th:text="|${chatRoom.getKey().getMembersUsername().get(0)} 님|"
                           class="font-black text-lg"></span>
                     <span th:text="${#temporals.format(chatRoom.getValue().createdAt, 'HH:mm')}"
