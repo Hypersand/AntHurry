@@ -200,7 +200,7 @@ public class ChatMessageService {
 
     public void markAsRead(Message message) {
         message.markAsRead();
-        if (message instanceof ChatMessage)
+        if (message instanceof ChatMessage chatMessage)
             chatMessageRepository.save((ChatMessage) message);
         else chatFileMessageRepository.save((ChatFileMessage) message);
     }
@@ -213,6 +213,10 @@ public class ChatMessageService {
     public RsData delete(ChatMessage message) {
         chatMessageRepository.delete(message);
         return RsData.of(MESSAGE_DELETED);
+    }
+
+    public void save(ChatMessage message) {
+        chatMessageRepository.save(message);
     }
 
     // event

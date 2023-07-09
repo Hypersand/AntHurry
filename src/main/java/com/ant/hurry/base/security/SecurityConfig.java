@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .logout(
                         logout -> logout.logoutUrl("/usr/member/logout"));
 
-//        http.addFilterBefore(new PhoneAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new PhoneAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/chat/**", "/pub/**", "/sub/**").permitAll()
