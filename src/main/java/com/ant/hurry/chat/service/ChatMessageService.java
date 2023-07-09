@@ -198,13 +198,6 @@ public class ChatMessageService {
         return GridFSBuckets.create(mongoConfig.mongoClient().getDatabase(databaseName));
     }
 
-    public void markAsRead(Message message) {
-        message.markAsRead();
-        if (message instanceof ChatMessage chatMessage)
-            chatMessageRepository.save((ChatMessage) message);
-        else chatFileMessageRepository.save((ChatFileMessage) message);
-    }
-
     public RsData deleteSoft(ChatMessage chatMessage) {
         return chatMessageRepository.deleteSoft(chatMessage).getDeletedAt() != null ?
                 RsData.of(MESSAGE_DELETED) : RsData.of(MESSAGE_NOT_DELETED);

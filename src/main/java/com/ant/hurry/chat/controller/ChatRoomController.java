@@ -51,9 +51,6 @@ public class ChatRoomController {
 
         ChatRoom chatRoom = rs.getData();
 
-        List<ChatMessage> chatMessages = chatMessageService.findByChatRoomId(chatRoom.getId()).getData();
-        chatMessages.forEach(chatMessageService::markAsRead);
-
         Member otherMember = chatRoom.getMembers()
                 .stream().filter(m -> !m.getUsername().equals(rq.getMember().getUsername()))
                 .findFirst().orElse(null);
@@ -62,6 +59,12 @@ public class ChatRoomController {
 
         Optional<ProfileImage> myProfileImage = memberService.findProfileImage(rq.getMember());
         Optional<ProfileImage> otherProfileImage = memberService.findProfileImage(otherMember);
+
+        LatestMessage latestMessage = latestMessageService.findByChatRoomId(id).getData();
+
+        if (latestMessage.getWriter() == null || !latestMessage.getWriter().equals(rq.getMember().getUsername())) {
+            latestMessageService.save(latestMessage.markAsRead());
+        }
 
         model.addAttribute("otherMember", otherMember);
         model.addAttribute("chatMessages", chatMessageService.findAllMessagesByChatRoomId(id).getData());
