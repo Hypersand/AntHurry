@@ -11,6 +11,8 @@ import com.ant.hurry.chat.entity.LatestMessage;
 import com.ant.hurry.chat.service.ChatMessageService;
 import com.ant.hurry.chat.service.ChatRoomService;
 import com.ant.hurry.chat.service.LatestMessageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -28,6 +30,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/chat")
 @PreAuthorize("isAuthenticated()")
+@Tag(name = "ChatRoomController" , description = "채팅방, 채팅 목록에 대한 컨트롤러")
 public class ChatRoomController {
 
     private final ChatMessageController chatMessageController;
@@ -37,6 +40,7 @@ public class ChatRoomController {
     private final MemberService memberService;
     private final Rq rq;
 
+    @Operation(summary = "채팅방 조회", description = "개별적인 채팅방을 조회합니다.")
     @GetMapping("/room/{id}")
     public String showRoom(@PathVariable String id, Model model) {
         RsData<ChatRoom> rs = chatRoomService.findByIdAndVerify(id, rq.getMember());
@@ -67,6 +71,7 @@ public class ChatRoomController {
         return "chat/room";
     }
 
+    @Operation(summary = "채팅 목록 조회", description = "유저가 속한 채팅 목록을 조회합니다.")
     @GetMapping("/myRooms")
     public String showMyRooms(Model model) {
         List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData().stream()
@@ -78,6 +83,7 @@ public class ChatRoomController {
         return "chat/myRooms";
     }
 
+    @Operation(summary = "채팅방 나가기", description = "채팅방 나가기 버튼을 통해 채팅방에서 퇴장합니다.")
     @GetMapping("/exit/{id}")
     public String exit(@PathVariable String id) {
         RsData<ChatRoom> rs = chatRoomService.findByIdAndVerify(id, rq.getMember());
