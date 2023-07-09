@@ -188,13 +188,43 @@ public class BoardController {
         return ResponseEntity.ok(map);
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/search/{code}")
+    public String searchBoard(@PathVariable("code") String code,
+                              @Valid SearchForm searchForm,
+                              Model model) {
+
+        Region region = regionService.findByCode(code).orElseThrow();
+
+        Slice<BoardDto> boards = boardService.getRegionOfflineBoards(null, code, searchForm.getTitle(), PageRequest.ofSize(10));
+
+        model.addAttribute("boards", boards.getContent());
+        model.addAttribute("content", searchForm.getTitle());
+        model.addAttribute("region", region);
+
+        return "board/search";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/search/{code}/{lastId}")
+    @ResponseBody
+    @Operation(summary = "지역별 게시판에서 검색된 게시글 조회")
+    public ResponseEntity<?> searchBoard(@PathVariable("code") String code,
+                                         @PathVariable(value = "lastId", required = false) Long lastId,
+                                         @RequestParam("title") String title) {
+
+        Slice<BoardDto> boards = boardService.getRegionOfflineBoards(lastId, code, title, PageRequest.ofSize(10));
+        Map<String, Object> map = new HashMap<>();
+        map.put("boardList", boards.getContent());
+        return ResponseEntity.ok(map);
+    }
+
     @AllArgsConstructor
     @Getter
     public static class SearchForm {
         @NotBlank
         @Size(min = 2, max = 30)
         private final String title;
-
 
 
     }
