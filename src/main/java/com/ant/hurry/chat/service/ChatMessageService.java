@@ -198,13 +198,6 @@ public class ChatMessageService {
         return GridFSBuckets.create(mongoConfig.mongoClient().getDatabase(databaseName));
     }
 
-    public void markAsRead(Message message) {
-        message.markAsRead();
-        if (message instanceof ChatMessage)
-            chatMessageRepository.save((ChatMessage) message);
-        else chatFileMessageRepository.save((ChatFileMessage) message);
-    }
-
     public RsData deleteSoft(ChatMessage chatMessage) {
         return chatMessageRepository.deleteSoft(chatMessage).getDeletedAt() != null ?
                 RsData.of(MESSAGE_DELETED) : RsData.of(MESSAGE_NOT_DELETED);
@@ -213,6 +206,17 @@ public class ChatMessageService {
     public RsData delete(ChatMessage message) {
         chatMessageRepository.delete(message);
         return RsData.of(MESSAGE_DELETED);
+    }
+
+    public void saveNoticeMessage(ChatMessageDto dto) {
+        ChatMessage noticeMessage = ChatMessage.builder()
+                .id(UUID.randomUUID().toString())
+                .roomId(dto.getRoomId())
+                .writer(dto.getWriter())
+                .message(dto.getMessage())
+                .createdAt(LocalDateTime.now())
+                .build();
+        chatMessageRepository.save(noticeMessage);
     }
 
     // event

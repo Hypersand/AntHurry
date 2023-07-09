@@ -56,12 +56,10 @@
                     <span th:text="${#temporals.format(chatRoom.getValue().createdAt, 'HH:mm')}"
                           class="ml-2 text-gray-400"></span>
                 </div>
-
                 <p th:if="${chatRoom.getValue().message != null}" th:text="${chatRoom.getValue().message.getMessage()}"
                    class="text-lg text-start"></p>
             </div>
-            <div th:if="${chatRoom.getValue().message != null && @rq.getMember().getUsername() != chatRoom.getValue().writer
-                && chatRoom.getValue().message.isNotRead()}"
+            <div th:if="${(@rq.getMember().getUsername() != chatRoom.getValue().writer) && chatRoom.getValue().isNotRead()}"
                  class="bg-[#ff626f] w-12 text-white text-center font-semibold rounded-xl">new
             </div>
         </a>
