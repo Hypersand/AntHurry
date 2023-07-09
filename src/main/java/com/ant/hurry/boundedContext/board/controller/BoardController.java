@@ -164,9 +164,10 @@ public class BoardController {
                               @RequestParam("code") String code,
                               Model model) {
 
+
         Region region = regionService.findByCode(code).orElseThrow();
 
-        Slice<BoardDto> boards = boardService.getBoards(lastId, code, PageRequest.ofSize(10));
+        Slice<BoardDto> boards = boardService.getAllBoards(lastId, code, PageRequest.ofSize(10));
 
         model.addAttribute("boards", boards.getContent());
         model.addAttribute("region", region);
@@ -181,7 +182,7 @@ public class BoardController {
     public ResponseEntity<?> enterRegion(@PathVariable("lastId") Long lastId,
                                          @RequestParam("code") String code) {
 
-        Slice<BoardDto> boards = boardService.getBoards(lastId, code, PageRequest.ofSize(10));
+        Slice<BoardDto> boards = boardService.getAllBoards(lastId, code, PageRequest.ofSize(10));
         Map<String, Object> map = new HashMap<>();
         map.put("boardList", boards.getContent());
         return ResponseEntity.ok(map);
