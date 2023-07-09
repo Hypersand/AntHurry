@@ -104,4 +104,8 @@ public class TradeStatusService {
     public Optional<TradeStatus> checkExistStatus(Long boardId, Long memberId) {
         return tradeStatusRepository.findByBoardIdAndMemberId(boardId, memberId);
     }
+
+    public Long getMemberTradeStatusCount(Long memberId){
+        return tradeStatusRepository.countMemberTradeStatus(memberId);
+    }
 }
