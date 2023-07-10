@@ -21,7 +21,6 @@ import java.security.NoSuchAlgorithmException;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "SmsController", description = "SMS에 관한 컨트롤러")
 public class SmsController {
 
     private final SmsService smsService;

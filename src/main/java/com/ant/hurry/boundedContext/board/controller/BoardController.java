@@ -147,7 +147,7 @@ public class BoardController {
         return rq.redirectWithMsg("/board/" + id, modifyBoard);
     }
 
-    @Operation(summary = "지역검색", description = "지여 검색시 지역 리스트를 보여줍니다.")
+    @Operation(summary = "지역검색", description = "지역 검색시 지역 리스트를 보여줍니다.")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/selectRegion")
     public String showRegion(Model model) {
@@ -189,6 +189,7 @@ public class BoardController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/search/{code}")
+    @Operation(summary = "게시판 검색", description = "게시판을 검색합니다.")
     public String searchBoard(@PathVariable("code") String code,
                               @Valid SearchForm searchForm,
                               Model model) {
