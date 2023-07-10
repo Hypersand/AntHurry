@@ -15,6 +15,8 @@ import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.ant.hurry.boundedContext.board.repository.BoardRepository;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
+import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
+import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -181,5 +183,9 @@ public class BoardService {
 
     public Slice<BoardDto> getRegionOfflineBoards(Long lastId, String code, String search, Pageable pageable){
         return boardRepository.regionOfflineBoardPaginationNoOffsetBuilder(lastId, code, search, pageable);
+    }
+
+    public void whenAfterUpdateStatus(TradeStatus tradeStatus, Status status) {
+
     }
 }
