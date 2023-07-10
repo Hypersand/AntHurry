@@ -9,6 +9,7 @@ import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
 import com.ant.hurry.boundedContext.review.service.ReviewService;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
+import com.ant.hurry.chat.service.ChatRoomService;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -58,6 +59,7 @@ public class MemberController {
     private final PhoneAuthService phoneAuthService;
     private final TradeStatusService tradeStatusService;
     private final ReviewService reviewService;
+    private final ChatRoomService chatRoomService;
     private final Rq rq;
 
     private final ObjectMapper objectMapper;
@@ -209,6 +211,9 @@ public class MemberController {
         }
         Member member = rq.getMember();
         memberService.updateProfile(member, profileRequestDto.getNickname(), file);
+
+        chatRoomService.updateMember(member);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body("{\"message\":\"성공\"}");

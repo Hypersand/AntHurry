@@ -41,16 +41,6 @@ public class ChatRoom {
     @Builder.Default
     private List<Member> exitedMembers = new ArrayList<>();
 
-    public List<String> getMembersUsername() {
-        List<String> memberUsernames = new ArrayList<>();
-        if (!members.isEmpty()) {
-            for (Member member : members) {
-                memberUsernames.add(member.getUsername());
-            }
-        }
-        return memberUsernames;
-    }
-
     public List<Long> getExitedMembersId() {
         List<Long> list = new ArrayList<>();
         if (!exitedMembers.isEmpty()) {

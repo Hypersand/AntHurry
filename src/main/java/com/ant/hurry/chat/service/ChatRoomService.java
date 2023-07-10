@@ -56,7 +56,7 @@ public class ChatRoomService {
     }
 
     public RsData<List<ChatRoom>> findByMember(Member member) {
-        List<ChatRoom> chatRooms = chatRoomRepository.findByMembersContaining(member);
+        List<ChatRoom> chatRooms = chatRoomRepository.findByMemberId(member.getId());
         chatRooms.removeIf(cm -> cm.getExitedMembersId().contains(member.getId()));
 
         return RsData.of(CHATROOM_FOUND, chatRooms);
@@ -142,5 +142,17 @@ public class ChatRoomService {
 
             publisher.publishEvent(new EventAfterDeletedChatRoom(chatRoom));
         }
+    }
+
+    public void updateMember(Member member) {
+        List<ChatRoom> chatRooms = findByMember(member).getData();
+        chatRooms.forEach(cm -> {
+            List<Member> members = cm.getMembers();
+            members.removeIf(m -> m.getId().equals(member.getId()));
+            members.add(member);
+
+            ChatRoom modifiedChatRoom = cm.toBuilder().members(members).build();
+            chatRoomRepository.save(modifiedChatRoom);
+        });
     }
 }
