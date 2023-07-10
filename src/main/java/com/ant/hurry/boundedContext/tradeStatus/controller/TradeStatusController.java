@@ -109,6 +109,11 @@ public class TradeStatusController {
 
         TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, INPROGRESS);
+
+        if (rs.isFail()) {
+            return rq.historyBack(rs.getMsg());
+        }
+
         ChatRoom chatRoom = chatRoomService.findByTradeStatusId(rs.getData().getId()).getData();
         notificationService.notifyStart(tradeStatus.getRequester(), tradeStatus.getHelper());
         return "redirect:/chat/room/%s".formatted(chatRoom.getId());
@@ -120,6 +125,11 @@ public class TradeStatusController {
 
         TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, CANCELED);
+
+        if (rs.isFail()) {
+            return rq.historyBack(rs.getMsg());
+        }
+
         ChatRoom chatRoom = chatRoomService.findByTradeStatusId(rs.getData().getId()).getData();
         notificationService.notifyCancel(tradeStatus.getRequester(), tradeStatus.getHelper());
         return "redirect:/chat/room/%s".formatted(chatRoom.getId());
@@ -131,9 +141,13 @@ public class TradeStatusController {
 
         TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, COMPLETE);
-        ChatRoom chatRoom = chatRoomService.findByTradeStatusId(rs.getData().getId()).getData();
+
+        if (rs.isFail()) {
+            return rq.historyBack(rs.getMsg());
+        }
+
         notificationService.notifyEnd(tradeStatus.getRequester(), tradeStatus.getHelper());
-        return "redirect:/chat/room/%s".formatted(chatRoom.getId());
+        return "redirect:/review/create/%d".formatted(id);
     }
 
 }

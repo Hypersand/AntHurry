@@ -1,6 +1,5 @@
 package com.ant.hurry.chat.repository;
 
-import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.chat.entity.ChatRoom;
 
@@ -13,4 +12,6 @@ public interface CustomChatRoomRepository {
     Optional<ChatRoom> findByTradeStatusId(Long id);
 
     void updateStatusOfChatRoom(ChatRoom chatRoom, String status);
+
+    List<ChatRoom> findByMemberId(Long id);
 }

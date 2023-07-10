@@ -35,23 +35,23 @@
            class="hover:bg-gray-50 active:bg-gray-100 border-2 border-solid border-gray-100 w-[350px] rounded-lg px-8 py-6 mb-6 flex justify-between items-center">
             <div>
                 <div class="mb-2 text-start">
-                    <span style="padding: 0;" th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembersUsername().get(0))
-                    && chatRoom.getKey().getMembersUsername().get(1).length() > 10}"
-                          th:text="|${chatRoom.getKey().getMembersUsername().get(1).substring(0, 10)}... 님|"
+                    <span style="padding: 0;" th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembers().get(0).username)
+                    && chatRoom.getKey().getMembers().get(1).nickname.length() > 10}"
+                          th:text="|${chatRoom.getKey().getMembers().get(1).nickname.substring(0, 10)}... 님|"
                           class="font-black text-lg"></span>
-                    <span style="padding: 0;" th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembersUsername().get(0))
-                    && chatRoom.getKey().getMembersUsername().get(1).length() <= 10}"
-                          th:text="|${chatRoom.getKey().getMembersUsername().get(1)} 님|"
-                          class="font-black text-lg"></span>
-                    <span style="padding: 0;"
-                          th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembersUsername().get(1))
-                    && chatRoom.getKey().getMembersUsername().get(0).length() > 10}"
-                          th:text="|${chatRoom.getKey().getMembersUsername().get(0).substring(0, 10)}... 님|"
+                    <span style="padding: 0;" th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembers().get(0).username)
+                    && chatRoom.getKey().getMembers().get(1).nickname.length() <= 10}"
+                          th:text="|${chatRoom.getKey().getMembers().get(1).nickname} 님|"
                           class="font-black text-lg"></span>
                     <span style="padding: 0;"
-                          th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembersUsername().get(1))
-                    && chatRoom.getKey().getMembersUsername().get(0).length() <= 10}"
-                          th:text="|${chatRoom.getKey().getMembersUsername().get(0)} 님|"
+                          th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembers().get(1).username)
+                    && chatRoom.getKey().getMembers().get(0).nickname.length() > 10}"
+                          th:text="|${chatRoom.getKey().getMembers().get(0).nickname.substring(0, 10)}... 님|"
+                          class="font-black text-lg"></span>
+                    <span style="padding: 0;"
+                          th:if="${@rq.getMember().getUsername().equals(chatRoom.getKey().getMembers().get(1).username)
+                    && chatRoom.getKey().getMembers().get(0).nickname.length() <= 10}"
+                          th:text="|${chatRoom.getKey().getMembers().get(0).nickname} 님|"
                           class="font-black text-lg"></span>
                     <span th:text="${#temporals.format(chatRoom.getValue().createdAt, 'HH:mm')}"
                           class="ml-2 text-gray-400"></span>
