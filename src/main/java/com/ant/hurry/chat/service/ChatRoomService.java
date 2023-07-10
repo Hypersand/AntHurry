@@ -67,7 +67,6 @@ public class ChatRoomService {
 
         return chatRoom.map(room -> RsData.of(CHATROOM_FOUND, room))
                 .orElseGet(() -> RsData.of(CHATROOM_NO_EXISTS));
-
     }
 
     public RsData<List<ChatRoom>> findAll() {

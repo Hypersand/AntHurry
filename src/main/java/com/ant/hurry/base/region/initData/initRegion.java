@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
-@Profile( {"dev", "prod"} )
+@Profile( {"dev"} )
 public class initRegion {
 
     @Bean
