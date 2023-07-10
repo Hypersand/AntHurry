@@ -167,12 +167,16 @@ public class BoardService {
         return boardRepository.findByTradeTypeAndBoardTypeAndTitleContaining(tradeType, boardType, title);
     }
 
-    public Slice<BoardDto> getBoards(Long lastId, String code, Pageable pageable) {
+    public Slice<BoardDto> getAllBoards(Long lastId, String code, Pageable pageable) {
         return boardRepository.paginationNoOffsetBuilder(lastId, code, pageable);
     }
 
 
-    public Slice<BoardDto> getOnlineBoards(Long id, String title, TradeType tradeType, PageRequest pageRequest) {
-        return boardRepository.onlineBoardPaginationNoOffsetBuilder(id, title, tradeType, pageRequest);
+    public Slice<BoardDto> getOnlineBoards(Long id, String title, TradeType tradeType, Pageable pageable) {
+        return boardRepository.onlineBoardPaginationNoOffsetBuilder(id, title, tradeType, pageable);
+    }
+
+    public Slice<BoardDto> getRegionOfflineBoards(Long lastId, String code, String search, Pageable pageable){
+        return boardRepository.regionOfflineBoardPaginationNoOffsetBuilder(lastId, code, search, pageable);
     }
 }
