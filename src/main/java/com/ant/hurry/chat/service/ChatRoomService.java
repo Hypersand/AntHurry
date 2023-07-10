@@ -1,6 +1,9 @@
 package com.ant.hurry.chat.service;
 
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.board.entity.Board;
+import com.ant.hurry.boundedContext.board.entity.BoardType;
+import com.ant.hurry.boundedContext.board.service.BoardService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;

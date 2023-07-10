@@ -1,6 +1,5 @@
 package com.ant.hurry.boundedContext.notification.service;
 
-import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
@@ -30,111 +29,60 @@ public class NotificationService {
 
     private final MemberService memberService;
 
-    private final Rq rq;
 
     //채팅 시작
-    public Notification notifyNew(Member requester, Member helper) {
+    public void notifyNew(Member requester, Member helper) {
 
-        //메시지 내용 생성
-        Member member = rq.getMember();
-        String message;
+        String messageToRequester = helper.getNickname() + "님과의 채팅이 시작되었습니다.";
 
-        if (member.equals(requester)) {
-            message = helper.getNickname() + "님과의 채팅이 시작되었습니다.";
-        }
+        Notification notificationToRequester = Notification.create(messageToRequester, "START", requester, null);
+        notificationRepository.save(notificationToRequester);
 
-        else {
-            message = requester.getNickname() + "님과의 채팅이 시작되었습니다.";
-        }
-
-
-        //알림 엔티티 생성
-        Notification notification = Notification.create(message, "START", requester, helper);
-        notificationRepository.save(notification);
-
-        //채팅시작알림 이벤트 발생 (content 수정 필요)
-        publisher.publishEvent(new NotifyNewMessageEvent(requester.getPhoneNumber(), message));
-
-        return notification;
+        publisher.publishEvent(new NotifyNewMessageEvent(requester.getPhoneNumber(), messageToRequester));
     }
 
     //거래 시작
-    public Notification notifyStart(Member requester, Member helper) {
+    public void notifyStart(Member requester, Member helper) {
 
-        //메시지 내용 생성
-        Member member = rq.getMember();
-        String message;
+        String messageToRequester = helper.getNickname() + "님과의 거래가 시작되었습니다.";
+        String messageToHelper = requester.getNickname() + "님과의 거래가 시작되었습니다.";
 
-        if (member.equals(requester)) {
-            message = helper.getNickname() + "님과의 거래가 시작되었습니다.";
-        }
+        Notification notificationToRequester = Notification.create(messageToRequester, "INPROGRESS", requester, null);
+        Notification notificationToHelper = Notification.create(messageToHelper, "INPROGRESS", null, helper);
+        notificationRepository.save(notificationToRequester);
+        notificationRepository.save(notificationToHelper);
 
-        else {
-            message = requester.getNickname() + "님과의 거래가 시작되었습니다.";
-        }
-
-
-        //알림 엔티티 생성
-        Notification notification = Notification.create(message, "INPROGRESS", requester, helper);
-        notificationRepository.save(notification);
-
-        //채팅시작알림 이벤트 발생 (content 수정 필요)
-        publisher.publishEvent(new NotifyStartMessageEvent(requester.getPhoneNumber(), helper.getPhoneNumber(), message));
-
-        return notification;
+        publisher.publishEvent(new NotifyStartMessageEvent(requester.getPhoneNumber(), helper.getPhoneNumber(), messageToRequester, messageToHelper));
     }
 
 
     //거래 완료
-    public Notification notifyEnd(Member requester, Member helper) {
+    public void notifyEnd(Member requester, Member helper) {
 
-        //메시지 내용 생성
-        Member member = rq.getMember();
-        String message;
+        String messageToRequester = helper.getNickname() + "님과의 거래가 종료되었습니다.";
+        String messageToHelper = requester.getNickname() + "님과의 거래가 종료되었습니다.";
 
-        if (member.equals(requester)) {
-            message = helper.getNickname() + "님과의 거래가 종료되었습니다.";
-        }
+        Notification notificationToRequester = Notification.create(messageToRequester, "END", requester, null);
+        Notification notificationToHelper = Notification.create(messageToHelper, "END", null, helper);
+        notificationRepository.save(notificationToRequester);
+        notificationRepository.save(notificationToHelper);
 
-        else {
-            message = requester.getNickname() + "님과의 거래가 종료되었습니다.";
-        }
-
-        //알림 엔티티 생성
-        Notification notification = Notification.create(message, "END", requester, helper);
-        notificationRepository.save(notification);
-
-        //거래 완료 알림 이벤트 발생 (content 수정 필요)
-        publisher.publishEvent(new NotifyEndMessageEvent(requester.getPhoneNumber(), helper.getPhoneNumber(), message));
-
-        return notification;
+        publisher.publishEvent(new NotifyEndMessageEvent(requester.getPhoneNumber(), helper.getPhoneNumber(), messageToRequester, messageToHelper));
     }
 
 
-    //거래 파기
-    public Notification notifyCancel(Member requester, Member helper) {
+    //거래 취소
+    public void notifyCancel(Member requester, Member helper) {
 
-        //메시지 내용 생성
-        Member member = rq.getMember();
-        String message;
+        String messageToRequester = helper.getNickname() + "님과의 거래가 취소되었습니다.";
+        String messageToHelper = requester.getNickname() + "님과의 거래가 취소되었습니다.";
 
-        if (member.equals(requester)) {
-            message = helper.getNickname() + "님과의 거래가 취소되었습니다.";
-        }
+        Notification notificationToRequester = Notification.create(messageToRequester, "CANCEL", requester, null);
+        Notification notificationToHelper = Notification.create(messageToHelper, "CANCEL", null, helper);
+        notificationRepository.save(notificationToRequester);
+        notificationRepository.save(notificationToHelper);
 
-        else {
-            message = requester.getNickname() + "님과의 거래가 취소되었습니다.";
-        }
-
-        //알림 엔티티 생성
-        Notification notification = Notification.create(message, "CANCEL", requester, helper);
-
-        notificationRepository.save(notification);
-
-        //거래 파기 알림 이벤트 발생 (title, content 수정 필요)
-        publisher.publishEvent(new NotifyCancelMessageEvent(requester.getPhoneNumber(), helper.getPhoneNumber(), message));
-
-        return notification;
+        publisher.publishEvent(new NotifyCancelMessageEvent(requester.getPhoneNumber(), helper.getPhoneNumber(), messageToRequester, messageToHelper));
     }
 
     @Transactional(readOnly = true)
