@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.ant.hurry.boundedContext.board.entity.BoardType.나급해요;
+import static com.ant.hurry.boundedContext.board.entity.BoardType.나잘해요;
 import static com.ant.hurry.boundedContext.tradeStatus.entity.Status.*;
 
 @Controller
@@ -56,12 +58,12 @@ public class TradeStatusController {
         Board board = opBoard.get();
         Member requester;
         Member helper;
-        if (board.getMember().equals(rq.getMember())) {
-            requester = rq.getMember();
-            helper = board.getMember();
-        } else {
+        if (board.getBoardType().equals(나급해요)) {
             requester = board.getMember();
             helper = rq.getMember();
+        } else {
+            requester = rq.getMember();
+            helper = board.getMember();
         }
 
         RsData<TradeStatus> tradeStatus = tradeStatusService.create(board, requester, helper);
