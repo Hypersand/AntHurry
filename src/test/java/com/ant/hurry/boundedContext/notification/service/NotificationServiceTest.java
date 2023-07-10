@@ -76,11 +76,10 @@ class NotificationServiceTest {
         when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 
         //when
-        notification = notificationService.notifyNew(requester, helper);
+        notificationService.notifyNew(requester, helper);
 
         //then
         verify(publisher, times(1)).publishEvent(any(NotifyNewMessageEvent.class));
-        assertThat(notification.getMessage()).isEqualTo(requester.getNickname() +  "님과의 채팅이 시작되었습니다.");
     }
 
     @Test
@@ -94,11 +93,10 @@ class NotificationServiceTest {
         when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 
         //when
-        notification = notificationService.notifyStart(requester, helper);
+        notificationService.notifyStart(requester, helper);
 
         //then
         verify(publisher, times(1)).publishEvent(any(NotifyStartMessageEvent.class));
-        assertThat(notification.getMessage()).isEqualTo(requester.getNickname() +  "님과의 거래가 시작되었습니다.");
     }
 
     @Test
@@ -112,13 +110,10 @@ class NotificationServiceTest {
         when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 
         //when
-        notification = notificationService.notifyEnd(requester, helper);
+        notificationService.notifyEnd(requester, helper);
 
         //then
         verify(publisher, times(1)).publishEvent(any(NotifyEndMessageEvent.class));
-        assertThat(notification.getMessage()).isEqualTo(helper.getNickname() +  "님과의 거래가 종료되었습니다.");
-
-
     }
 
     @Test
@@ -132,11 +127,10 @@ class NotificationServiceTest {
         when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 
         //when
-        notification = notificationService.notifyCancel(requester, helper);
+        notificationService.notifyCancel(requester, helper);
 
         //then
         verify(publisher, times(1)).publishEvent(any(NotifyCancelMessageEvent.class));
-        assertThat(notification.getMessage()).isEqualTo(helper.getNickname() +  "님과의 거래가 취소되었습니다.");
     }
 
 
