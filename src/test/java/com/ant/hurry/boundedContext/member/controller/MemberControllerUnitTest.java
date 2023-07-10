@@ -14,6 +14,7 @@ import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
+import com.ant.hurry.chat.service.ChatRoomService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -52,6 +53,9 @@ public class MemberControllerUnitTest {
 
     @Mock
     TradeStatusService tradeStatusService;
+
+    @Mock
+    ChatRoomService chatRoomService;
 
     @Mock
     ObjectMapper objectMapper;
@@ -189,6 +193,7 @@ public class MemberControllerUnitTest {
                 .andExpect(jsonPath("$.message", is("성공")));
 
         verify(memberService).updateProfile(eq(member), eq(member.getNickname()), any(MultipartFile.class));
+        verify(chatRoomService).updateMember(eq(member));
     }
 
     @Test
