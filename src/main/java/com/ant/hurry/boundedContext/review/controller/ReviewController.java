@@ -64,7 +64,7 @@ public class ReviewController {
 
         RsData<Review> reviewRsData = reviewService.save(reviewRequest, user.getUsername(), tradeStatusId);
 
-        return rq.redirectWithMsg("/review/list", reviewRsData);
+        return rq.redirectWithMsg("/review/list/" + rq.getMember().getId(), reviewRsData);
     }
 
     @Operation(summary = "리뷰 목록", description = "유저의 리뷰들을 조회합니다.")
