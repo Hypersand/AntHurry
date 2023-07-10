@@ -2,10 +2,7 @@ package com.ant.hurry.boundedContext.member.entity;
 
 import com.ant.hurry.base.baseEntity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,6 +36,7 @@ public class Member extends BaseEntity {
     private String providerTypeCode; //일반, 카카오 등 어떤 회원가입인지 구별
 
     @Setter
+    @Builder.Default
     private long coin = 0;
 
 
@@ -63,8 +61,11 @@ public class Member extends BaseEntity {
     public void updatePhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    @Builder.Default
     private double rating = 0;
 
+    @Builder.Default
     private int reviewCount = 0;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -73,6 +74,7 @@ public class Member extends BaseEntity {
             joinColumns = @JoinColumn(name = "member_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @Builder.Default
     private Set<Role> roles = new HashSet<>();
 
     public List<? extends GrantedAuthority> getGrantedAuthorities() {
