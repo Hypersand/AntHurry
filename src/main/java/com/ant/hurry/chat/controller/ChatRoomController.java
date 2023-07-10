@@ -5,7 +5,6 @@ import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.service.MemberService;
-import com.ant.hurry.chat.entity.ChatMessage;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.entity.LatestMessage;
 import com.ant.hurry.chat.service.ChatMessageService;
@@ -30,7 +29,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/chat")
 @PreAuthorize("isAuthenticated()")
-@Tag(name = "ChatRoomController" , description = "채팅방, 채팅 목록에 대한 컨트롤러")
+@Tag(name = "ChatRoomController", description = "채팅방, 채팅 목록에 대한 컨트롤러")
 public class ChatRoomController {
 
     private final ChatMessageController chatMessageController;
@@ -62,7 +61,7 @@ public class ChatRoomController {
 
         LatestMessage latestMessage = latestMessageService.findByChatRoomId(id).getData();
 
-        if (latestMessage.getWriter() == null || !latestMessage.getWriter().equals(rq.getMember().getUsername())) {
+        if (latestMessage.getWriter() != null && !latestMessage.getWriter().equals(rq.getMember().getUsername())) {
             latestMessageService.save(latestMessage.markAsRead());
         }
 
@@ -77,10 +76,16 @@ public class ChatRoomController {
     @Operation(summary = "채팅 목록 조회", description = "유저가 속한 채팅 목록을 조회합니다.")
     @GetMapping("/myRooms")
     public String showMyRooms(Model model) {
-        List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData().stream()
-                .filter(cr -> !cr.getExitedMembers().contains(rq.getMember())).toList();
+        List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData();
         Map<ChatRoom, LatestMessage> map = new HashMap<>();
-        chatRooms.forEach(cr -> map.put(cr, latestMessageService.findByChatRoomId(cr.getId()).getData()));
+
+        for (ChatRoom chatRoom : chatRooms) {
+            LatestMessage latestmessage = latestMessageService.findByChatRoomId(chatRoom.getId()).getData().getMessage() == null ?
+                    null : latestMessageService.findByChatRoomId(chatRoom.getId()).getData();
+            if (latestmessage != null) {
+                map.put(chatRoom, latestmessage);
+            }
+        }
 
         model.addAttribute("chatRooms", map);
         return "chat/myRooms";
@@ -91,9 +96,14 @@ public class ChatRoomController {
     public String exit(@PathVariable String id) {
         RsData<ChatRoom> rs = chatRoomService.findByIdAndVerify(id, rq.getMember());
 
+        RsData exitRs = chatRoomService.exit(rs.getData(), rq.getMember());
+
+        if (exitRs.isFail()) {
+            rq.historyBack(exitRs.getMsg());
+        }
+
         chatMessageController.sendExitMessage(id);
 
-        chatRoomService.exit(rs.getData(), rq.getMember());
         return "redirect:/chat/myRooms";
     }
 

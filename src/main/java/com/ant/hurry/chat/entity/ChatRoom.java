@@ -51,4 +51,12 @@ public class ChatRoom {
         return memberUsernames;
     }
 
+    public List<Long> getExitedMembersId() {
+        List<Long> list = new ArrayList<>();
+        if (!exitedMembers.isEmpty()) {
+            exitedMembers.forEach(em -> list.add(em.getId()));
+        }
+        return list;
+    }
+
 }

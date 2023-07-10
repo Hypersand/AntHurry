@@ -56,7 +56,7 @@
                     <span th:text="${#temporals.format(chatRoom.getValue().createdAt, 'HH:mm')}"
                           class="ml-2 text-gray-400"></span>
                 </div>
-                <p th:if="${chatRoom.getValue().message != null}" th:text="${chatRoom.getValue().message.getMessage()}"
+                <p th:text="${chatRoom.getValue().message.getMessage()}"
                    class="text-lg text-start"></p>
             </div>
             <div th:if="${(@rq.getMember().getUsername() != chatRoom.getValue().writer) && chatRoom.getValue().isNotRead()}"
