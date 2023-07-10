@@ -140,6 +140,4 @@ public class TradeStatusService {
             updateStatus(tradeStatus, CANCELED);
         }
     }
-
-    public boolean
 }

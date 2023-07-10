@@ -55,7 +55,7 @@ public class TradeStatusController {
         Board board = opBoard.get();
 
         if (tradeStatusService.isAlreadyCompletedTrade(board.getId())) {
-            rq.historyBack("이미 거래가 완료된 게시글입니다.");
+            return rq.historyBack("이미 거래가 완료된 게시글입니다.");
         }
 
         if (checkExistStatus.isPresent()) {
