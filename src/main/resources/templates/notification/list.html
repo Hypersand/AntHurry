@@ -32,7 +32,7 @@
                     th:classappend="${notification.type.name() == 'START'} ? 'border-blue-500' : (${notification.type.name() == 'END'} ? 'border-green-500' : 'border-red-500')">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-lg font-semibold text-gray-800" th:text="${notification.message}"></p>
+                            <p class="text-sm font-semibold text-gray-800" th:text="${notification.message}"></p>
                             <span class="text-xs text-gray-400 theme-bg inline-block px-1.5 py-0.5 rounded" th:text="${#temporals.format(notification.createdAt, 'MM-dd HH:mm')}"></span>
                         </div>
 

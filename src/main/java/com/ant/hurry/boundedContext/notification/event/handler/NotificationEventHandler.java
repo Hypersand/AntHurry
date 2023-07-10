@@ -37,25 +37,25 @@ public class NotificationEventHandler {
     public void notifyStartMessageEventListener(NotifyStartMessageEvent event) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
 
         //sms 전송
-        smsService.sendSms(event.getRequesterPhoneNumber(), event.getContent());
-        smsService.sendSms(event.getHelperPhoneNumber(), event.getContent());
+        smsService.sendSms(event.getRequesterPhoneNumber(), event.getContentToRequester());
+        smsService.sendSms(event.getHelperPhoneNumber(), event.getContentToHelper());
 
     }
 
     @EventListener
-    public void notifyEndMessageEventListener(NotifyStartMessageEvent event) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+    public void notifyEndMessageEventListener(NotifyEndMessageEvent event) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
 
         //sms 전송
-        smsService.sendSms(event.getRequesterPhoneNumber(), event.getContent());
-        smsService.sendSms(event.getHelperPhoneNumber(), event.getContent());
+        smsService.sendSms(event.getRequesterPhoneNumber(), event.getContentToRequester());
+        smsService.sendSms(event.getHelperPhoneNumber(), event.getContentToHelper());
     }
 
     @EventListener
     public void notifyCancelMessageEventListener(NotifyCancelMessageEvent event) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
 
         //sms 전송
-        smsService.sendSms(event.getRequesterPhoneNumber(), event.getContent());
-        smsService.sendSms(event.getHelperPhoneNumber(), event.getContent());
+        smsService.sendSms(event.getRequesterPhoneNumber(), event.getContentToRequester());
+        smsService.sendSms(event.getHelperPhoneNumber(), event.getContentToHelper());
     }
 
 
