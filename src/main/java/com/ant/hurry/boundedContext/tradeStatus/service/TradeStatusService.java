@@ -139,6 +139,7 @@ public class TradeStatusService {
         for (TradeStatus tradeStatus : tradeStatuses) {
             updateStatus(tradeStatus, CANCELED);
         }
-
     }
+
+    public boolean
 }

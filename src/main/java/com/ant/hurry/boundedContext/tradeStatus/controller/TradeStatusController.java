@@ -149,6 +149,11 @@ public class TradeStatusController {
     public String complete(@PathVariable Long id) {
 
         TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
+
+        if (tradeStatusService.isAlreadyCompletedTrade(tradeStatus.getBoard().getId())) {
+            return rq.historyBack("이미 거래가 완료된 게시글입니다.");
+        }
+
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, COMPLETE);
         tradeStatusService.updateOtherTradeToCancel(tradeStatus.getBoard());
 
