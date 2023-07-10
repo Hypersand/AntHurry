@@ -51,6 +51,11 @@ public class TradeStatusController {
 
         if (opBoard.isEmpty()) return rq.historyBack("존재하지 않는 게시물입니다.");
         Optional<TradeStatus> checkExistStatus = tradeStatusService.checkExistStatus(id, rq.getMember().getId());
+
+        if (tradeStatusService.isAlreadyCompletedTrade(id)) {
+            rq.historyBack("이미 거래가 완료된 게시글입니다.");
+        }
+
         if (checkExistStatus.isPresent()) {
             RsData<ChatRoom> chatRoomRsData = chatRoomService.findByTradeStatusId(checkExistStatus.get().getId());
             return "redirect:/chat/room/%s".formatted(chatRoomRsData.getData().getId());

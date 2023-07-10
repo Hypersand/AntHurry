@@ -45,4 +45,7 @@ public interface TradeStatusRepository extends JpaRepository<TradeStatus, Long> 
     @Transactional
     @Query("delete from TradeStatus t where t.board.id = :boardId")
     void deleteByBoardId(@Param("boardId") Long boardId);
+
+    @Query("select t from TradeStatus t where t.board.id = :boardId and t.status = com.ant.hurry.boundedContext.tradeStatus.entity.Status.COMPLETE")
+    Optional<TradeStatus> findByBoardIdAndCompleteStatus(@Param("boardId") Long boardId);
 }

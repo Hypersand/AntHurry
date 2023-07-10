@@ -114,6 +114,16 @@ public class TradeStatusService {
         return tradeStatusRepository.findByBoardIdAndMemberId(boardId, memberId);
     }
 
+    public boolean isAlreadyCompletedTrade(Long boardId) {
+        TradeStatus tradeStatus = tradeStatusRepository.findByBoardIdAndCompleteStatus(boardId).orElse(null);
+
+        if (tradeStatus == null) {
+            return false;
+        }
+
+        return true;
+    }
+
     public Long getMemberTradeStatusCount(Long memberId){
         return tradeStatusRepository.countMemberTradeStatus(memberId);
     }
