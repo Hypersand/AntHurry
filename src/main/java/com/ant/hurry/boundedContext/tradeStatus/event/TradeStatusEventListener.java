@@ -23,6 +23,6 @@ public class TradeStatusEventListener {
 
     @EventListener
     public void listenEventAfterUpdateStatus(EventAfterUpdateStatus event) {
-        boardService.whenAfterUpdateStatus(event.getTradeStatus(), event.getStatus());
+        boardService.whenAfterUpdateStatus(event.getTradeStatus());
     }
 }

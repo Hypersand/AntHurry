@@ -7,10 +7,8 @@ import lombok.Getter;
 @Getter
 public class EventAfterUpdateStatus {
     private final TradeStatus tradeStatus;
-    private final Status status;
 
-    public EventAfterUpdateStatus(TradeStatus tradeStatus, Status status) {
+    public EventAfterUpdateStatus(TradeStatus tradeStatus) {
         this.tradeStatus = tradeStatus;
-        this.status = status;
     }
 }

@@ -61,7 +61,7 @@ public class TradeStatusService {
         chatRoomService.updateStatusOfChatRoom(chatRoom, status);
 
         if(status.equals(COMPLETE)){
-            publisher.publishEvent(new EventAfterUpdateStatus(tradeStatus, status));
+            publisher.publishEvent(new EventAfterUpdateStatus(tradeStatus));
         }
 
 

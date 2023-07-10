@@ -185,7 +185,15 @@ public class BoardService {
         return boardRepository.regionOfflineBoardPaginationNoOffsetBuilder(lastId, code, search, pageable);
     }
 
-    public void whenAfterUpdateStatus(TradeStatus tradeStatus, Status status) {
-
+    @Transactional
+    public void whenAfterUpdateStatus(TradeStatus tradeStatus) {
+        Board board = findById(tradeStatus.getBoard().getId()).orElseThrow();
+        if (board.getBoardType() == BoardType.나급해요) {
+            tradeStatus.getHelper().increaseCoin(board.getRewardCoin());
+            tradeStatus.getRequester().decreaseCoin(board.getRewardCoin());
+        } else if (board.getBoardType() == BoardType.나잘해요) {
+            tradeStatus.getHelper().decreaseCoin(board.getRewardCoin());
+            tradeStatus.getRequester().increaseCoin(board.getRewardCoin());
+        }
     }
 }
