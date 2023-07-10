@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TradeStatusEventListener {
 
-    private ChatRoomService chatRoomService;
+    private final ChatRoomService chatRoomService;
 
     @EventListener
     public void listenEventDeledtedTradeStatus(EventAfterDeletedTradeStatus event){
