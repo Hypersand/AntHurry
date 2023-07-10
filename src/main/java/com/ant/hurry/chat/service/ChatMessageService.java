@@ -217,6 +217,7 @@ public class ChatMessageService {
                 .createdAt(LocalDateTime.now())
                 .build();
         chatMessageRepository.save(noticeMessage);
+        saveLatestMessage(dto.getRoomId(), "admin", noticeMessage);
     }
 
     // event
