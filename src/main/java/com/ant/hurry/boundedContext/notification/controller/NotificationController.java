@@ -6,6 +6,8 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.notification.entity.Notification;
 import com.ant.hurry.boundedContext.notification.service.NotificationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,13 +27,14 @@ import java.util.stream.Stream;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/notification")
+@Tag(name = "NotificationController", description = "알림에 관한 컨트롤러")
 public class NotificationController {
 
     private final NotificationService notificationService;
     private final Rq rq;
 
 
-    //알림목록 페이지
+    @Operation(summary = "알림 조회", description = "유저의 모든 알림들을 조회합니다.")
     @GetMapping("/list")
     @PreAuthorize("isAuthenticated()")
     public String list(@AuthenticationPrincipal User user, Model model) {
@@ -44,6 +47,7 @@ public class NotificationController {
         return "notification/list";
     }
 
+    @Operation(summary = "알림 삭제", description = "알림을 삭제합니다.")
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("isAuthenticated()")
     public String delete(@AuthenticationPrincipal User user, @PathVariable Long id) {

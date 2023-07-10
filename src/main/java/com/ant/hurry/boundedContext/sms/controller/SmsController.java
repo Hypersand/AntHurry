@@ -4,6 +4,7 @@ import com.ant.hurry.boundedContext.sms.service.SmsService;
 import com.ant.hurry.boundedContext.sms.web.SendRequest;
 import com.ant.hurry.boundedContext.sms.web.SmsResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "SmsController", description = "SMS에 관한 컨트롤러")
 public class SmsController {
 
     private final SmsService smsService;

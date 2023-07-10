@@ -5,6 +5,8 @@ import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.review.dto.ReviewRequest;
 import com.ant.hurry.boundedContext.review.entity.Review;
 import com.ant.hurry.boundedContext.review.service.ReviewService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +25,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/review")
 @Slf4j
+@Tag(name = "ReviewController", description = "리뷰에 관한 컨트롤러")
 public class ReviewController {
 
     private final ReviewService reviewService;
     private final Rq rq;
 
+    @Operation(summary = "리뷰 작성", description = "리뷰 작성 페이지를 조회합니다.")
     @GetMapping("/create/{tradeStatusId}")
     @PreAuthorize("isAuthenticated()")
     public String showCreate(Model model, @PathVariable Long tradeStatusId,
@@ -46,6 +50,7 @@ public class ReviewController {
         return "review/create";
     }
 
+    @Operation(summary = "리뷰 작성", description = "리뷰를 작성합니다.")
     @PostMapping("/create/{tradeStatusId}")
     @PreAuthorize("isAuthenticated()")
     public String create(@AuthenticationPrincipal User user ,@Valid @ModelAttribute ReviewRequest reviewRequest,
@@ -62,6 +67,7 @@ public class ReviewController {
         return rq.redirectWithMsg("/review/list", reviewRsData);
     }
 
+    @Operation(summary = "리뷰 목록", description = "유저의 리뷰들을 조회합니다.")
     @GetMapping("/list/{memberId}")
     @PreAuthorize("isAuthenticated()")
     public String list(Model model, @AuthenticationPrincipal User user, @PathVariable Long memberId) {
