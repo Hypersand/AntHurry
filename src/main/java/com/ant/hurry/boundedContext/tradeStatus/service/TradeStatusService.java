@@ -8,6 +8,7 @@ import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.event.EventAfterDeletedTradeStatus;
+import com.ant.hurry.boundedContext.tradeStatus.event.EventAfterUpdateStatus;
 import com.ant.hurry.boundedContext.tradeStatus.repository.TradeStatusRepository;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.service.ChatRoomService;
@@ -58,6 +59,11 @@ public class TradeStatusService {
 
         ChatRoom chatRoom = chatRoomService.findByTradeStatusId(modifiedTradeStatus.getId()).getData();
         chatRoomService.updateStatusOfChatRoom(chatRoom, status);
+
+        if(status.equals(COMPLETE)){
+            publisher.publishEvent(new EventAfterUpdateStatus(tradeStatus));
+        }
+
 
         return RsData.of(UPDATE_SUCCESS, modifiedTradeStatus);
     }
