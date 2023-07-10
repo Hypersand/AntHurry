@@ -190,10 +190,9 @@ public class BoardService {
         Board board = findById(tradeStatus.getBoard().getId()).orElseThrow();
         if (board.getBoardType() == BoardType.나급해요) {
             tradeStatus.getHelper().increaseCoin(board.getRewardCoin());
-            tradeStatus.getRequester().decreaseCoin(board.getRewardCoin());
         } else if (board.getBoardType() == BoardType.나잘해요) {
-            tradeStatus.getHelper().decreaseCoin(board.getRewardCoin());
-            tradeStatus.getRequester().increaseCoin(board.getRewardCoin());
+            tradeStatus.getHelper().increaseCoin(board.getRewardCoin());
+            tradeStatus.getRequester().decreaseCoin(board.getRewardCoin());
         }
     }
 }
