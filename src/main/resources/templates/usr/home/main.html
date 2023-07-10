@@ -31,6 +31,11 @@
                         </a>
                         <form class="!hidden" hidden th:action="|/usr/member/logout|" method="POST"></form>
                     </li>
+                    <li th:if="${@rq.isAdmin()}">
+                        <a href="/adm/list">
+                            <span>관리자 페이지</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
