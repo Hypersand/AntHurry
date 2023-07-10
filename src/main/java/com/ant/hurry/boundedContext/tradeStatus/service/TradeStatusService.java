@@ -132,4 +132,13 @@ public class TradeStatusService {
         publisher.publishEvent(new EventAfterDeletedTradeStatus(tradeStatusRepository.findByBoardId(boardId)));
         tradeStatusRepository.deleteByBoardId(boardId);
     }
+
+    public void updateOtherTradeToCancel(Board board) {
+        List<TradeStatus> tradeStatuses = tradeStatusRepository.findByBoardAndStatusNot(board, COMPLETE);
+
+        for (TradeStatus tradeStatus : tradeStatuses) {
+            updateStatus(tradeStatus, CANCELED);
+        }
+
+    }
 }
