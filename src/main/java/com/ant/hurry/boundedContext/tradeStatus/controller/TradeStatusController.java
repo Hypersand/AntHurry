@@ -51,11 +51,18 @@ public class TradeStatusController {
 
         if (opBoard.isEmpty()) return rq.historyBack("존재하지 않는 게시물입니다.");
         Optional<TradeStatus> checkExistStatus = tradeStatusService.checkExistStatus(id, rq.getMember().getId());
+
+        Board board = opBoard.get();
+
+        if (tradeStatusService.isAlreadyCompletedTrade(board.getId())) {
+            return rq.historyBack("이미 거래가 완료된 게시글입니다.");
+        }
+
         if (checkExistStatus.isPresent()) {
             RsData<ChatRoom> chatRoomRsData = chatRoomService.findByTradeStatusId(checkExistStatus.get().getId());
             return "redirect:/chat/room/%s".formatted(chatRoomRsData.getData().getId());
         }
-        Board board = opBoard.get();
+
         Member requester;
         Member helper;
         if (board.getBoardType().equals(나급해요)) {
@@ -142,7 +149,14 @@ public class TradeStatusController {
     public String complete(@PathVariable Long id) {
 
         TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
+
+        if (tradeStatusService.isAlreadyCompletedTrade(tradeStatus.getBoard().getId())) {
+            return rq.historyBack("이미 거래가 완료된 게시글입니다.");
+        }
+
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, COMPLETE);
+        tradeStatusService.updateOtherTradeToCancel(tradeStatus.getBoard());
+
 
         if (rs.isFail()) {
             return rq.historyBack(rs.getMsg());

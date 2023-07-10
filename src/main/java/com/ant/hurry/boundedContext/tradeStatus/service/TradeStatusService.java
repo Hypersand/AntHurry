@@ -114,6 +114,16 @@ public class TradeStatusService {
         return tradeStatusRepository.findByBoardIdAndMemberId(boardId, memberId);
     }
 
+    public boolean isAlreadyCompletedTrade(Long boardId) {
+        TradeStatus tradeStatus = tradeStatusRepository.findByBoardIdAndCompleteStatus(boardId).orElse(null);
+
+        if (tradeStatus == null) {
+            return false;
+        }
+
+        return true;
+    }
+
     public Long getMemberTradeStatusCount(Long memberId){
         return tradeStatusRepository.countMemberTradeStatus(memberId);
     }
@@ -121,5 +131,13 @@ public class TradeStatusService {
     public void deleteTradeStatusDueToBoard(Long boardId){
         publisher.publishEvent(new EventAfterDeletedTradeStatus(tradeStatusRepository.findByBoardId(boardId)));
         tradeStatusRepository.deleteByBoardId(boardId);
+    }
+
+    public void updateOtherTradeToCancel(Board board) {
+        List<TradeStatus> tradeStatuses = tradeStatusRepository.findByBoardAndStatusNot(board, COMPLETE);
+
+        for (TradeStatus tradeStatus : tradeStatuses) {
+            updateStatus(tradeStatus, CANCELED);
+        }
     }
 }
