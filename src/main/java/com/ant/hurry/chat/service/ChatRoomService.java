@@ -56,8 +56,9 @@ public class ChatRoomService {
     }
 
     public RsData<List<ChatRoom>> findByMember(Member member) {
-        List<ChatRoom> chatRooms = chatRoomRepository.findByMembersContaining(member).stream()
-                .filter(cm -> !cm.getExitedMembers().contains(member)).toList();
+        List<ChatRoom> chatRooms = chatRoomRepository.findByMembersContaining(member);
+        chatRooms.removeIf(cm -> cm.getExitedMembersId().contains(member.getId()));
+
         return RsData.of(CHATROOM_FOUND, chatRooms);
     }
 
@@ -91,7 +92,7 @@ public class ChatRoomService {
     public RsData exit(ChatRoom chatRoom, Member member) {
         List<Member> exitedMembers = chatRoom.getExitedMembers();
 
-        if(exitedMembers.contains(member)) {
+        if(exitedMembers.contains(member) || exitedMembers.size() == 2) {
             return RsData.of(CHATROOM_ALREADY_EXITED);
         }
 
