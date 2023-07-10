@@ -89,10 +89,9 @@ public class ChatRoomService {
         List<Member> exitedMembers = chatRoom.getExitedMembers();
         exitedMembers.add(member);
 
-        ChatRoom chatRoomMemberExited = chatRoom.toBuilder()
+        ChatRoom chatRoomMemberExited = chatRoomRepository.save(chatRoom.toBuilder()
                 .exitedMembers(exitedMembers)
-                .build();
-        chatRoomRepository.save(chatRoomMemberExited);
+                .build());
 
         if (chatRoomMemberExited.getExitedMembers().size() == 2) {
             delete(chatRoomMemberExited);

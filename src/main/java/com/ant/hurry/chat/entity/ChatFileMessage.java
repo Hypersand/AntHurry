@@ -25,16 +25,6 @@ public class ChatFileMessage extends BaseMessage implements Message {
 
     private LocalDateTime deletedAt;
 
-    private LocalDateTime readAt;
-
-    public void markAsRead() {
-        readAt = LocalDateTime.now();
-    }
-
-    public boolean isNotRead() {
-        return readAt == null;
-    }
-
     @Override
     public boolean isFileMessage() {
         return true;

@@ -62,5 +62,21 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return checkLastPage(pageable, results);
     }
 
+    @Override
+    public Slice<BoardDto> regionOfflineBoardPaginationNoOffsetBuilder(Long lastId, String code, String search, Pageable pageable) {
+        BooleanExpression idLt = lastId != null ? board.id.lt(lastId) : null;
+        BooleanExpression codeEq = code != null ? board.regCode.eq(code) : null;
+
+        List<Board> results = jpaQueryFactory.selectFrom(board)
+                .where(idLt, codeEq, board.boardType.eq(BoardType.나급해요),
+                        board.tradeType.eq(TradeType.오프라인),
+                        board.title.contains(search).or(board.content.contains(search)))
+                .orderBy(board.id.desc())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        return checkLastPage(pageable, results);
+    }
+
 
 }

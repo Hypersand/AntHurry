@@ -47,4 +47,7 @@ public class LatestMessageService {
         return RsData.of(MESSAGE_FOUND, latestMessage);
     }
 
+    public void save(LatestMessage latestMessage) {
+        latestMessageRepository.save(latestMessage);
+    }
 }
