@@ -52,6 +52,7 @@ public class BoardController {
     private final TradeStatusService tradeStatusService;
     private final MemberService memberService;
 
+    @Operation(summary = "게시판 작성 조회", description = "게시판 작성 페이지를 조회합니다.")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
     public String showCreateBoard(Model model) {
@@ -60,6 +61,7 @@ public class BoardController {
         return "board/create";
     }
 
+    @Operation(summary = "게시판 작성", description = "게시판 작성을 합니다.")
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
     public String createBoard(@Valid CreateRequest createRequest, BindingResult bindingResult, Model model) {
@@ -83,7 +85,7 @@ public class BoardController {
         return rq.redirectWithMsg("/board/enterRegion?code=" + boardInfo.getRegCode(), boardRs);
     }
 
-
+    @Operation(summary = "게시판 조회", description = "게시판을 조회합니다.")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public String showBoard(Model model, @PathVariable("id") Long id) {
@@ -97,6 +99,7 @@ public class BoardController {
         return "board/board";
     }
 
+    @Operation(summary = "게시판 삭제", description = "유저가 만든 게시판을 삭제합니다.")
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{id}")
     public String deleteBoard(@PathVariable("id") Long id) {
@@ -108,6 +111,7 @@ public class BoardController {
         return rq.redirectWithMsg("/board/selectRegion", deleteBoard);
     }
 
+    @Operation(summary = "게시판 수정 조회", description = "유저가 만든 게시판 수정페이지를 조회합니다.")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
     public String showModify(@PathVariable Long id, Model model) {
@@ -124,6 +128,7 @@ public class BoardController {
         return "board/modify";
     }
 
+    @Operation(summary = "게시판 수정", description = "유저가 만든 게시판을 수정합니다.")
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
     public String modify(@PathVariable Long id, @Valid CreateRequest createRequest, BindingResult bindingResult, Model model) {
@@ -142,10 +147,7 @@ public class BoardController {
         return rq.redirectWithMsg("/board/" + id, modifyBoard);
     }
 
-
-    /**
-     * 지역 검색하면 나오는 지역 리스트를 보여준다.
-     **/
+    @Operation(summary = "지역검색", description = "지역 검색시 지역 리스트를 보여줍니다.")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/selectRegion")
     public String showRegion(Model model) {
@@ -154,10 +156,7 @@ public class BoardController {
         return "board/selectRegion";
     }
 
-
-    /**
-     * selectRegion에서 지역을 선택하면 해당 지역의 게시판으로 이동한다.
-     **/
+    @Operation(summary = "지역 게시판들 조회", description = "선택한 지역의 게시판들을 조회합니다.")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/enterRegion")
     public String enterRegion(@RequestParam(value = "lastId", required = false) Long lastId,
@@ -190,6 +189,7 @@ public class BoardController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/search/{code}")
+    @Operation(summary = "게시판 검색", description = "게시판을 검색합니다.")
     public String searchBoard(@PathVariable("code") String code,
                               @Valid SearchForm searchForm,
                               Model model) {
@@ -229,6 +229,7 @@ public class BoardController {
 
     }
 
+    @Operation(summary = "온라인 게시판 조회", description = "거래 유형이 온라인인 게시판들을 조회합니다.")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/online")
     public String showOnlineBoard(@Valid SearchForm searchForm, Model model) {

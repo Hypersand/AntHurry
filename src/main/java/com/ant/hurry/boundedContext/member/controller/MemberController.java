@@ -10,6 +10,8 @@ import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
 import com.ant.hurry.boundedContext.review.service.ReviewService;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import com.ant.hurry.standard.util.Ut;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -50,6 +52,7 @@ import java.util.Optional;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/usr/member")
+@Tag(name = "MemberController" , description = "유저에 관한 컨트롤러")
 public class MemberController {
     private final MemberService memberService;
     private final PhoneAuthService phoneAuthService;
@@ -59,13 +62,14 @@ public class MemberController {
 
     private final ObjectMapper objectMapper;
 
+    @Operation(summary = "로그인", description = "로그인 페이지를 조회합니다.")
     @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
     public String showLogin() {
         return "usr/member/login";
     }
 
-
+    @Operation(summary = "프로필 조회", description = "유저의 프로필을 조회합니다.")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
     public String showProfile(Model model) {
@@ -81,12 +85,14 @@ public class MemberController {
         return "usr/member/profile";
     }
 
+    @Operation(summary = "휴대폰 인증", description = "휴대폰 인증페이지를 조회합니다.")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/phoneAuth")
     public String phoneAuthPage() {
         return "usr/member/phone_auth";
     }
 
+    @Operation(summary = "휴대폰 인증 수행", description = "휴대폰 인증을 수행합니다.")
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/phoneAuth")
     @ResponseBody
@@ -105,6 +111,7 @@ public class MemberController {
                 .body("{\"message\": \"" + result.getMsg() + "\"}");
     }
 
+    @Operation(summary = "인증 번호 발신", description = "휴대폰 인증번호를 발신합니다.")
     @PreAuthorize("isAuthenticated()")
     @PostMapping(value = "/phoneAuth/send", produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -130,6 +137,7 @@ public class MemberController {
                 .body("{\"message\":\"인증번호 전송 성공\"}");
     }
 
+    @Operation(summary = "인증번호 체크", description = "휴대폰 인증번호가 올바른지 체크합니다.")
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/phoneAuth/check")
     @ResponseBody
@@ -159,7 +167,7 @@ public class MemberController {
                 .body("{\"message\":\"인증 성공\"}");
     }
 
-
+    @Operation(summary = "프로필 수정", description = "유저의 닉네임과 프로필사진을 수정하는 페이지를 조회합니다.")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile_edit")
     public String showProfileEdit(Model model) {
@@ -182,7 +190,7 @@ public class MemberController {
     }
 
 
-
+    @Operation(summary = "프로필 사진 수정", description = "유저의 프로필 사진을 수정합니다.")
     @PreAuthorize("isAuthenticated()")
     @PostMapping(value = "/profile_edit", produces = "application/json;utf-8;")
     @ResponseBody
@@ -206,6 +214,7 @@ public class MemberController {
                 .body("{\"message\":\"성공\"}");
     }
 
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/charge")
     public String chargePoint(Model model) {
@@ -223,7 +232,7 @@ public class MemberController {
 
     }
 
-
+    @Operation(summary = "상대방 프로필 조회", description = "상대방의 정보를 조회합니다.")
     @GetMapping("/profile/{id}")
     @PreAuthorize("isAuthenticated()")
     public String showProfile(@PathVariable Long id, Model model) {
@@ -247,6 +256,7 @@ public class MemberController {
         return "usr/member/usrCheck";
     }
 
+    @Operation(summary = "나급해요 공지사항", description = "나급해요 공지사항을 보여줍니다.")
     @GetMapping("/faq")
     public String showFaq() {
         return "usr/member/faq";

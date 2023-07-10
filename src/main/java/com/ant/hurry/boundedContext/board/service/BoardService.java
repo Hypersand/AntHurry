@@ -15,6 +15,7 @@ import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.ant.hurry.boundedContext.board.repository.BoardRepository;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
+import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +38,7 @@ public class BoardService {
     private final MemberService memberService;
     private final KakaoAddressSearchService kakaoAddressSearchService;
     private final RegionRepository regionRepository;
+    private final TradeStatusService tradeStatusService;
 
     public RsData hasEnoughCoin(int rewardCoin) {
         Member member = memberService.findById(rq.getMember().getId()).orElse(null);
@@ -105,6 +107,7 @@ public class BoardService {
     @Transactional
     public RsData<Board> delete(Long id) {
         Board board = findById(id).orElse(null);
+        tradeStatusService.deleteTradeStatusDueToBoard(id);
         rq.getMember().increaseCoin(board.getRewardCoin());
         boardRepository.delete(board);
         return RsData.of("S-1", "게시글이 삭제되었습니다.");

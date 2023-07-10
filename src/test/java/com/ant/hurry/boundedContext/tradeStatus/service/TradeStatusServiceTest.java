@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +44,7 @@ public class TradeStatusServiceTest {
         TradeStatusRepository tradeStatusRepository = Mockito.mock(TradeStatusRepository.class);
         ChatRoomService chatRoomService = Mockito.mock(ChatRoomService.class);
         MemberService memberService = Mockito.mock(MemberService.class);
+        ApplicationEventPublisher publisher = Mockito.mock(ApplicationEventPublisher.class);
 
         Member requester = Member.builder().build();
         Member helper = Member.builder().build();
@@ -51,7 +53,7 @@ public class TradeStatusServiceTest {
         when(tradeStatusRepository.save(any(TradeStatus.class))).thenReturn(new TradeStatus());
         when(memberService.getMember()).thenReturn(requester);
 
-        TradeStatusService tradeStatusService = new TradeStatusService(tradeStatusRepository, chatRoomService, memberService);
+        TradeStatusService tradeStatusService = new TradeStatusService(tradeStatusRepository, chatRoomService, memberService, publisher);
 
         RsData<TradeStatus> rs = tradeStatusService.create(board, requester, helper);
 

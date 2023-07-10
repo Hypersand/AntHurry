@@ -12,6 +12,8 @@ import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.standard.util.Ut;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,7 @@ import java.util.Map;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/coin")
+@Tag(name = "CoinController", description = "코인에 대한 컨트롤러")
 public class CoinController {
     private final MemberService memberService;
     private final Rq rq;
@@ -44,6 +47,7 @@ public class CoinController {
     @Value("${custom.toss-payments.secretKey}")
     private String SECRET_KEY;
 
+    @Operation(summary = "코인 충전", description = "코인 충전 페이지 입니다.")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/charge")
     public String chargePoint(Model model){
@@ -66,7 +70,7 @@ public class CoinController {
         });
     }
 
-
+    @Operation(summary = "코인 충전 성공", description = "코인 충전 성공시 코인을 받습니다.")
     @RequestMapping("/{id}/success")
     public String confirmPayment(
             @PathVariable Long id,
@@ -105,6 +109,7 @@ public class CoinController {
         }
     }
 
+    @Operation(summary = "코인 충전 실패", description = "코인 충전 실패시 실패 페이지로 이동합니다.")
     @RequestMapping("/{id}/fail")
     public String failPayment(@RequestParam String message, @RequestParam String code, Model model) {
         model.addAttribute("message", message);
@@ -112,6 +117,7 @@ public class CoinController {
         return "coin/fail";
     }
 
+    @Operation(summary = "환전 신청 조회", description = "보유한 코인을 환전할 수 있는 페이지입니다.")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/exchange")
     public String exchangePoint(Model model){
@@ -123,6 +129,7 @@ public class CoinController {
         return "coin/exchange";
     }
 
+    @Operation(summary = "환전 신청", description = "코인 환전을 신청합니다.")
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/exchange")
     public String progressExchange(Model model, ExchangeRequest exchangeRequest) {
@@ -135,6 +142,7 @@ public class CoinController {
         return rq.redirectWithMsg("/coin/exchange", rsData.getMsg());
     }
 
+    @Operation(summary = "환전 신청 수정", description = "신청한 환전신청을 수정합니다.")
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/exchange/{exchangeId}")
     public String editApplyExchange(Model model, ExchangeRequest exchangeRequest, @PathVariable Long exchangeId) {
@@ -151,6 +159,7 @@ public class CoinController {
         return rq.redirectWithMsg("/coin/exchange", rsData.getMsg());
     }
 
+    @Operation(summary = "환전 신청 취소", description = "환전신청을 취소합니다.")
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/exchange/{exchangeId}")
     public String cancelApplyExchange(Model model, @PathVariable Long exchangeId) {
@@ -163,6 +172,7 @@ public class CoinController {
         return rq.redirectWithMsg("/coin/exchange", rsData.getMsg());
     }
 
+    @Operation(summary = "환전 내역 삭제", description = "신청했던 환전신청들을 삭제할 수 있습니다.")
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/exchange/info/{exchangeId}")
     public String deleteApplyExchange(Model model, @PathVariable Long exchangeId) {
