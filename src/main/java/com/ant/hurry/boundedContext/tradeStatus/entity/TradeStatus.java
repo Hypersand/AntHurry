@@ -3,6 +3,7 @@ package com.ant.hurry.boundedContext.tradeStatus.entity;
 import com.ant.hurry.base.baseEntity.BaseEntity;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class TradeStatus extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
