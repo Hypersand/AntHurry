@@ -7,10 +7,12 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
+import com.ant.hurry.boundedContext.tradeStatus.event.EventAfterDeletedTradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.repository.TradeStatusRepository;
 import com.ant.hurry.chat.entity.ChatRoom;
 import com.ant.hurry.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,7 @@ public class TradeStatusService {
     private final TradeStatusRepository tradeStatusRepository;
     private final ChatRoomService chatRoomService;
     private final MemberService memberService;
+    private final ApplicationEventPublisher publisher;
 
     @Transactional
     public RsData<TradeStatus> create(Board board, Member requester, Member helper) {
@@ -110,6 +113,7 @@ public class TradeStatusService {
     }
 
     public void deleteTradeStatusDueToBoard(Long boardId){
+        publisher.publishEvent(new EventAfterDeletedTradeStatus(tradeStatusRepository.findByBoardId(boardId)));
         tradeStatusRepository.deleteByBoardId(boardId);
     }
 }

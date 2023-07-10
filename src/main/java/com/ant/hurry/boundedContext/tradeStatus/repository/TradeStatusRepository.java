@@ -38,6 +38,9 @@ public interface TradeStatusRepository extends JpaRepository<TradeStatus, Long> 
             "where r.id = :memberId or h.id = :memberId")
     Long countMemberTradeStatus(@Param("memberId") Long memberid);
 
+    @Query("select t from TradeStatus t join fetch t.board b where b.id = :boardId")
+    List<TradeStatus> findByBoardId(@Param("boardId") Long boardId);
+
     @Modifying
     @Transactional
     @Query("delete from TradeStatus t where t.board.id = :boardId")

@@ -121,4 +121,18 @@ public class ChatRoomService {
     public void updateStatusOfChatRoom(ChatRoom chatRoom, Status status) {
         chatRoomRepository.updateStatusOfChatRoom(chatRoom, status.name());
     }
+
+    public void whenAfterDeletedTradeStatus(List<TradeStatus> tradeStatusList) {
+        List<ChatRoom> chatRoomList = chatRoomRepository.findByTradeStatus(tradeStatusList);
+        for(ChatRoom chatRoom : chatRoomList){
+            DeletedChatRoom deletedChatRoom = DeletedChatRoom.builder()
+                    .tradeStatus(chatRoom.getTradeStatus())
+                    .members(chatRoom.getExitedMembers())
+                    .build();
+            deletedChatRoomRepository.insert(deletedChatRoom);
+            chatRoomRepository.delete(chatRoom);
+
+            publisher.publishEvent(new EventAfterDeletedChatRoom(chatRoom));
+        }
+    }
 }
