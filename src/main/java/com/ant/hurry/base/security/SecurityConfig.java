@@ -35,6 +35,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/chat/**", "/pub/**", "/sub/**").permitAll()
+                .requestMatchers("/css/**", "/img/**", "/js/**").permitAll()
                 .requestMatchers("/usr/member/login").anonymous()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").hasAuthority("admin")
                 .anyRequest().authenticated());
