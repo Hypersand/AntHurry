@@ -20,10 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Controller
@@ -76,12 +73,14 @@ public class ChatRoomController {
     @Operation(summary = "채팅 목록 조회", description = "유저가 속한 채팅 목록을 조회합니다.")
     @GetMapping("/myRooms")
     public String showMyRooms(Model model) {
-        List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData();
+        List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData().stream()
+                .sorted(Comparator.comparing(ChatRoom::getCreatedAt)).toList();
         Map<ChatRoom, LatestMessage> map = new HashMap<>();
 
         for (ChatRoom chatRoom : chatRooms) {
-            LatestMessage latestmessage = latestMessageService.findByChatRoomId(chatRoom.getId()).getData().getMessage() == null ?
-                    null : latestMessageService.findByChatRoomId(chatRoom.getId()).getData();
+            LatestMessage latestmessage =
+                    latestMessageService.findByChatRoomId(chatRoom.getId()).getData().getMessage() == null ?
+                            null : latestMessageService.findByChatRoomId(chatRoom.getId()).getData();
             if (latestmessage != null) {
                 map.put(chatRoom, latestmessage);
             }
