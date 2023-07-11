@@ -74,8 +74,8 @@ public class ChatRoomController {
     @GetMapping("/myRooms")
     public String showMyRooms(Model model) {
         List<ChatRoom> chatRooms = chatRoomService.findByMember(rq.getMember()).getData().stream()
-                .sorted(Comparator.comparing(ChatRoom::getCreatedAt)).toList();
-        Map<ChatRoom, LatestMessage> map = new HashMap<>();
+                .sorted(Comparator.comparing(ChatRoom::getCreatedAt).reversed()).toList();
+        Map<ChatRoom, LatestMessage> map = new LinkedHashMap<>();
 
         for (ChatRoom chatRoom : chatRooms) {
             LatestMessage latestmessage =
