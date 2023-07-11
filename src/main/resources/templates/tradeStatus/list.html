@@ -76,6 +76,14 @@
             } else {
                 opponentNickname = tradeStatus.helper.nickname;
             }
+            let reviewElement;
+            console.log(tradeStatus.reviewCheck);
+            if (!tradeStatus.reviewCheck) {
+                reviewElement = `
+                <div class="flex justify-center">
+                    <a id="reviewBtn" class="btn btn-error text-white btn-wide" ${tradeStatus.status !== 'COMPLETE' ? 'disabled' : ''}>거래 후기 작성</a>
+                </div>`;
+            }
 
             let template = `
             <div class="px-4 py-3 border-b border-gray-200">
@@ -95,11 +103,7 @@
                         <div class="text-gray-400 text-sm mb-2">${tradeStatus.createdAt ? new Date(tradeStatus.createdAt).toLocaleString() : ''}</div>
                     </div>
                 </div>
-
-                <div class="flex justify-center">
-                    <a id="reviewBtn" class="btn btn-error text-white btn-wide" ${tradeStatus.status !== 'COMPLETE' ? 'disabled' : ''}>거래 후기 작성</a>
-                </div>
-
+                ${reviewElement}
             </div>`;
             tradeStatusElement.innerHTML = template;
 

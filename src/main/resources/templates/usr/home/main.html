@@ -20,6 +20,22 @@
                             <span>메인</span>
                         </a>
                     </li>
+                    <li th:if="${@rq.logout}">
+                        <a href="/usr/member/login">
+                            <span>로그인</span>
+                        </a>
+                    </li>
+                    <li th:if="${@rq.login}">
+                        <a href="javascript:" onclick="$(this).next().submit();">
+                            <span>로그아웃</span>
+                        </a>
+                        <form class="!hidden" hidden th:action="|/usr/member/logout|" method="POST"></form>
+                    </li>
+                    <li th:if="${@rq.isAdmin()}">
+                        <a href="/adm/list">
+                            <span>관리자 페이지</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

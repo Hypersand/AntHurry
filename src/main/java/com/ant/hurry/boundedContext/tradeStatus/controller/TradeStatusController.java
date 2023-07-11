@@ -6,6 +6,7 @@ import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.service.BoardService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.notification.service.NotificationService;
+import com.ant.hurry.boundedContext.tradeStatus.dto.TradeStatusDto;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import com.ant.hurry.chat.entity.ChatRoom;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.ant.hurry.boundedContext.board.entity.BoardType.나급해요;
 import static com.ant.hurry.boundedContext.board.entity.BoardType.나잘해요;
@@ -88,8 +90,10 @@ public class TradeStatusController {
         if (rsData.isFail()) {
             return rq.historyBack(rsData.getMsg());
         }
+        List<TradeStatusDto> tradeStatusDTOList = rsData.getData().stream()
+                .map(tradeStatus -> new TradeStatusDto(tradeStatus, rq.getMember())).toList();
 
-        model.addAttribute("tradeStatusList", rsData.getData());
+        model.addAttribute("tradeStatusList", tradeStatusDTOList);
 
         return "tradeStatus/list";
     }
@@ -104,11 +108,13 @@ public class TradeStatusController {
         }
 
         RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), valueOf(status));
+        List<TradeStatusDto> tradeStatusDTOList = rsData.getData().stream()
+                .map(tradeStatus -> new TradeStatusDto(tradeStatus, rq.getMember())).toList();
 
         Map<String, Object> map = new HashMap<>();
 
         map.put("statusMsg", valueOf(status).msg);
-        map.put("tradeStatusList", rsData.getData());
+        map.put("tradeStatusList", tradeStatusDTOList);
         return ResponseEntity.ok(map);
     }
 

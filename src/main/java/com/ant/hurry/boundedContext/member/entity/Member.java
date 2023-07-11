@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.ant.hurry.boundedContext.member.entity.RoleType.ROLE_ADMIN;
+
 @Entity
 @Getter
 @AllArgsConstructor
@@ -106,6 +108,6 @@ public class Member extends BaseEntity {
     }
 
     public boolean isAdmin() {
-        return "admin".equals(nickname);
+        return roles.stream().anyMatch(role -> role.getName() == RoleType.ROLE_ADMIN);
     }
 }
