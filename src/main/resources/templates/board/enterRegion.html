@@ -238,6 +238,28 @@
         });
     </script>
 
+    <script th:inline="javascript">
+        function SearchForm__submit(form) {
+
+            form.title.value = form.title.value.trim();
+
+            if (form.title.value.length === 0) {
+                toastWarning('검색어를 입력해주세요.');
+                form.title.focus();
+                return;
+            }
+
+            if (form.title.value.length < 2) {
+                toastWarning('검색어는 2글자 이상 입력해주세요.');
+                form.title.focus();
+                return;
+            }
+
+            form.submit();
+        }
+
+    </script>
+
 
 </main>
 
