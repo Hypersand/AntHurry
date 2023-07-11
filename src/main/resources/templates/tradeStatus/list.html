@@ -68,8 +68,15 @@
             let tradeStatusElement = document.createElement("div");
             tradeStatusElement.className = "bg-white rounded-lg overflow-hidden shadow";
 
+
             let myNickname = [[${@rq.getMember().nickname}]];
             let opponentNickname = '';
+            let boardTitle = tradeStatus.board.title;
+            let boardId = tradeStatus.board.id;
+
+            //12글자 넘으면 12글자까지 포함하고 ... 으로 표현
+            boardTitle = (boardTitle.length > 12) ? boardTitle.substring(0, 12) + "..." : boardTitle;
+
 
             if (myNickname !== tradeStatus.requester.nickname) {
                 opponentNickname = tradeStatus.requester.nickname;
@@ -86,25 +93,26 @@
             }
 
             let template = `
-            <div class="px-4 py-3 border-b border-gray-200">
-                <div class="flex items-center justify-between space-x-4">
-                    <div class="flex items-center space-x-4">
-                        <div class="flex-shrink-0">
+                <div class="px-4 py-3 border-b border-gray-200">
+
+                    <div class="flex items-center justify-around">
+                        <div class="flex">
                             <i class="fa-solid fa-user fa-xl bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center"></i>
+                            <div class="flex items-center text-gray-400 text-sm pl-2">${opponentNickname}</div>
                         </div>
-                        <div>
-                            <div class="flex-1 font-bold text-gray-700">${opponentNickname}</div>
-                            <div class="py-3">
-                                <div class="text-gray-700">${statusMsg}</div>
-                            </div>
+                        <div class="text-gray-400 text-sm">${tradeStatus.createdAt ? new Date(tradeStatus.createdAt).toLocaleDateString() : ''}</div>
+                    </div>
+
+                    <div class="mt-3 flex justify-between items-center">
+                        <div class="flex-grow flex items-center justify-between px-12">
+                            <div class="font-bold text-gray-700">${boardTitle}</div>
+                            <button class="btn btn-circle" onclick="location.href='/board/${boardId}'">게시글 이동</button>
                         </div>
                     </div>
-                    <div class="flex flex-col items-end">
-                        <div class="text-gray-400 text-sm mb-2">${tradeStatus.createdAt ? new Date(tradeStatus.createdAt).toLocaleString() : ''}</div>
-                    </div>
+                    ${reviewElement}
                 </div>
-                ${reviewElement}
-            </div>`;
+            `;
+
             tradeStatusElement.innerHTML = template;
 
             let reviewBtn = tradeStatusElement.querySelector("#reviewBtn");
