@@ -81,12 +81,12 @@
                               th:text="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
                     </div>
                     <div class="chat-bubble" th:text="${message.message}"></div>
-                    <div class="chat-image avatar flex-none">
+                    <a class="chat-image avatar flex-none" th:href="@{/usr/member/profile/{id}(id=${@rq.getMember().id})}">
                         <img th:if="${myProfileImage != null}" style="width:2.5rem; height:2.5rem;"
                              class="rounded-full bg-pink-300" th:src="${myProfileImage.fullPath}" alt="profile image"/>
                         <img th:if="${myProfileImage == null}" style="width:2.5rem; height:2.5rem;"
                              class="rounded-full bg-pink-300" src="/img/profile.png" alt="profile image"/>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
