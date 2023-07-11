@@ -14,37 +14,22 @@ import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import com.ant.hurry.standard.util.Ut;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.http.*;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.ResponseErrorHandler;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -248,7 +233,7 @@ public class MemberController {
             return rq.historyBack(rsData.getMsg());
         }
 
-        Long completeTradeCount = tradeStatusService.getComleteTradeStatusCount(id);
+        Long completeTradeCount = tradeStatusService.getCompleteTradeStatusCount(id);
         Long reviewCount = reviewService.getReviewCount(id);
         Optional<ProfileImage> profileImage = memberService.findProfileImage(rsData.getData());
         RsData<Map<String, Object>> reviews = reviewService.getReviews(rsData.getData().getUsername(), rsData.getData().getId());

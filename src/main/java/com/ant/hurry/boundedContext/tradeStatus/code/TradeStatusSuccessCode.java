@@ -14,6 +14,6 @@ public enum TradeStatusSuccessCode implements Code {
     REDIRECT_TO_PAGE("S_T-4", "거래 상태 페이지로 이동합니다."),
     TRADESTATUS_FOUND("S_T-5", "거래 상태를 조회했습니다.");
 
-    public String code;
-    public String message;
+    private String code;
+    private String message;
 }

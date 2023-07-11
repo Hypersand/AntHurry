@@ -15,7 +15,7 @@ public enum ChatMessageSuccessCode implements Code {
     FILE_DOWNLOADED("S_G-5", "파일을 저장했습니다.");
 
 
-    public String code;
-    public String message;
+    private String code;
+    private String message;
 
 }

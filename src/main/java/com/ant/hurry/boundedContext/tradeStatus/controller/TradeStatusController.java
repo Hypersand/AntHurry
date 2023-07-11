@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.ant.hurry.boundedContext.board.entity.BoardType.나급해요;
+import static com.ant.hurry.boundedContext.coin.code.ExchangeErrorCode.COIN_NOT_ENOUGH;
 import static com.ant.hurry.boundedContext.tradeStatus.entity.Status.*;
 
 @Controller
@@ -84,10 +85,10 @@ public class TradeStatusController {
     public String showList(@RequestParam(defaultValue = "COMPLETE") String status, @AuthenticationPrincipal User user, Model model) {
 
         RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), valueOf(status));
-
         if (rsData.isFail()) {
             return rq.historyBack(rsData.getMsg());
         }
+
         List<TradeStatusDto> tradeStatusDTOList = rsData.getData().stream()
                 .map(tradeStatus -> new TradeStatusDto(tradeStatus, rq.getMember())).toList();
 
@@ -99,13 +100,17 @@ public class TradeStatusController {
     @Operation(summary = "거래 상태 목록 조회", description = "유저의 현재 거래 상태 목록을 조회합니다.")
     @GetMapping("/list/select")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> showListByResponseBody(@RequestParam(defaultValue = "COMPLETE") String status, @AuthenticationPrincipal User user, Model model) {
+    public ResponseEntity<Map<String, Object>> showListByResponseBody(
+            @RequestParam(defaultValue = "COMPLETE") String status,
+            @AuthenticationPrincipal User user
+    ) {
 
         if (status.equals("undefined")) {
             status = "COMPLETE";
         }
 
-        RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), valueOf(status));
+        RsData<List<TradeStatus>> rsData = tradeStatusService
+                .findMyTradeStatusList(user.getUsername(), valueOf(status));
         List<TradeStatusDto> tradeStatusDTOList = rsData.getData().stream()
                 .map(tradeStatus -> new TradeStatusDto(tradeStatus, rq.getMember())).toList();
 
@@ -120,7 +125,18 @@ public class TradeStatusController {
     @GetMapping("/start/{id}")
     public String start(@PathVariable Long id) {
 
-        TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
+        RsData<TradeStatus> verifyRs = tradeStatusService.findByIdAndVerify(id, rq.getMember());
+        if (verifyRs.isFail()) {
+            return rq.historyBack(verifyRs.getMsg());
+        }
+
+        TradeStatus tradeStatus = verifyRs.getData();
+
+        Board board = tradeStatus.getBoard();
+        if (board.getRewardCoin() > tradeStatus.getRequester().getCoin()) {
+            return rq.historyBack(COIN_NOT_ENOUGH.getMessage());
+        }
+
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, INPROGRESS);
 
         if (rs.isFail()) {
@@ -136,9 +152,14 @@ public class TradeStatusController {
     @GetMapping("/cancel/{id}")
     public String cancel(@PathVariable Long id) {
 
-        TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
-        RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, CANCELED);
+        RsData<TradeStatus> verifyRs = tradeStatusService.findByIdAndVerify(id, rq.getMember());
+        if (verifyRs.isFail()) {
+            return rq.historyBack(verifyRs.getMsg());
+        }
 
+        TradeStatus tradeStatus = verifyRs.getData();
+
+        RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, CANCELED);
         if (rs.isFail()) {
             return rq.historyBack(rs.getMsg());
         }
@@ -152,14 +173,25 @@ public class TradeStatusController {
     @GetMapping("/complete/{id}")
     public String complete(@PathVariable Long id) {
 
-        TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
+        RsData<TradeStatus> verifyRs = tradeStatusService.findByIdAndVerify(id, rq.getMember());
+        if (verifyRs.isFail()) {
+            return rq.historyBack(verifyRs.getMsg());
+        }
+
+        TradeStatus tradeStatus = verifyRs.getData();
+
+        Board board = tradeStatus.getBoard();
+        if (board.getRewardCoin() > tradeStatus.getRequester().getCoin()) {
+            return rq.historyBack(COIN_NOT_ENOUGH.getMessage());
+        }
+
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, COMPLETE);
 
         if (rs.isFail()) {
             return rq.historyBack(rs.getMsg());
         }
 
-        tradeStatusService.updateOtherTradeToCancel(tradeStatus.getBoard());
+        tradeStatusService.updateOtherTradeToCancel(board);
 
         notificationService.notifyEnd(tradeStatus.getRequester(), tradeStatus.getHelper());
         return "redirect:/review/create/%d".formatted(id);

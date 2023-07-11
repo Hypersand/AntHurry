@@ -152,7 +152,7 @@ public class TradeStatusServiceTest {
         Long memberId = 6L;
 
         //when
-        Long count = tradeStatusService.getComleteTradeStatusCount(memberId);
+        Long count = tradeStatusService.getCompleteTradeStatusCount(memberId);
 
         //then
         assertThat(count).isEqualTo(2L);
