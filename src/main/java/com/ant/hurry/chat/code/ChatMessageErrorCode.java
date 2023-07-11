@@ -13,7 +13,7 @@ public enum ChatMessageErrorCode implements Code {
     FILE_NOT_EXISTS("F_G-3", "파일이 존재하지 않습니다."),
     FILE_TOO_BIG("F_G-4", "파일의 크기는 10MB 이하여야 합니다.");
 
-    public String code;
-    public String message;
+    private String code;
+    private String message;
 
 }

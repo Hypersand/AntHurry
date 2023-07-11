@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.ant.hurry.boundedContext.adm.code.AdmErrorCode.APPLY_NOT_EXISTS;
+import static com.ant.hurry.boundedContext.adm.code.AdmSuccessCode.ACCEPT_APPLY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -41,8 +43,8 @@ public class AdmServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("S_A-1"),
-                () -> assertThat(rsData.getMsg()).isEqualTo("성공적으로 처리되었습니다.")
+                () -> assertThat(rsData.getResultCode()).isEqualTo(ACCEPT_APPLY.getCode()),
+                () -> assertThat(rsData.getMsg()).isEqualTo(ACCEPT_APPLY.getMessage())
         );
     }
 
@@ -59,8 +61,8 @@ public class AdmServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("F_A-1"),
-                () -> assertThat(rsData.getMsg()).isEqualTo("존재하지 않는 환전요청입니다.")
+                () -> assertThat(rsData.getResultCode()).isEqualTo(APPLY_NOT_EXISTS.getCode()),
+                () -> assertThat(rsData.getMsg()).isEqualTo(APPLY_NOT_EXISTS.getMessage())
         );
     }
 }

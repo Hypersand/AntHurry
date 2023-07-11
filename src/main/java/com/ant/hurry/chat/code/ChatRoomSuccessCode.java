@@ -13,7 +13,7 @@ public enum ChatRoomSuccessCode implements Code {
     CHATROOM_DELETED("S_C-3", "채팅방이 삭제되었습니다."),
     CHATROOM_EXITED("S_C-4", "채팅방에서 퇴장했습니다.");
 
-    public String code;
-    public String message;
+    private String code;
+    private String message;
 
 }

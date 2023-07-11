@@ -26,10 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.ant.hurry.boundedContext.board.entity.BoardType.나급해요;
-import static com.ant.hurry.boundedContext.board.entity.BoardType.나잘해요;
+import static com.ant.hurry.boundedContext.coin.code.ExchangeErrorCode.COIN_NOT_ENOUGH;
 import static com.ant.hurry.boundedContext.tradeStatus.entity.Status.*;
 
 @Controller
@@ -50,8 +49,8 @@ public class TradeStatusController {
     public String create(@PathVariable Long id) {
 
         Optional<Board> opBoard = boardService.findByIdWithMember(id);
-
         if (opBoard.isEmpty()) return rq.historyBack("존재하지 않는 게시물입니다.");
+
         Optional<TradeStatus> checkExistStatus = tradeStatusService.checkExistStatus(id, rq.getMember().getId());
 
         Board board = opBoard.get();
@@ -86,10 +85,10 @@ public class TradeStatusController {
     public String showList(@RequestParam(defaultValue = "COMPLETE") String status, @AuthenticationPrincipal User user, Model model) {
 
         RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), valueOf(status));
-
         if (rsData.isFail()) {
             return rq.historyBack(rsData.getMsg());
         }
+
         List<TradeStatusDto> tradeStatusDTOList = rsData.getData().stream()
                 .map(tradeStatus -> new TradeStatusDto(tradeStatus, rq.getMember())).toList();
 
@@ -101,13 +100,17 @@ public class TradeStatusController {
     @Operation(summary = "거래 상태 목록 조회", description = "유저의 현재 거래 상태 목록을 조회합니다.")
     @GetMapping("/list/select")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> showListByResponseBody(@RequestParam(defaultValue = "COMPLETE") String status, @AuthenticationPrincipal User user, Model model) {
+    public ResponseEntity<Map<String, Object>> showListByResponseBody(
+            @RequestParam(defaultValue = "COMPLETE") String status,
+            @AuthenticationPrincipal User user
+    ) {
 
         if (status.equals("undefined")) {
             status = "COMPLETE";
         }
 
-        RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), valueOf(status));
+        RsData<List<TradeStatus>> rsData = tradeStatusService
+                .findMyTradeStatusList(user.getUsername(), valueOf(status));
         List<TradeStatusDto> tradeStatusDTOList = rsData.getData().stream()
                 .map(tradeStatus -> new TradeStatusDto(tradeStatus, rq.getMember())).toList();
 
@@ -122,7 +125,18 @@ public class TradeStatusController {
     @GetMapping("/start/{id}")
     public String start(@PathVariable Long id) {
 
-        TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
+        RsData<TradeStatus> verifyRs = tradeStatusService.findByIdAndVerify(id, rq.getMember());
+        if (verifyRs.isFail()) {
+            return rq.historyBack(verifyRs.getMsg());
+        }
+
+        TradeStatus tradeStatus = verifyRs.getData();
+
+        Board board = tradeStatus.getBoard();
+        if (board.getRewardCoin() > tradeStatus.getRequester().getCoin()) {
+            return rq.historyBack(COIN_NOT_ENOUGH.getMessage());
+        }
+
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, INPROGRESS);
 
         if (rs.isFail()) {
@@ -138,9 +152,14 @@ public class TradeStatusController {
     @GetMapping("/cancel/{id}")
     public String cancel(@PathVariable Long id) {
 
-        TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
-        RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, CANCELED);
+        RsData<TradeStatus> verifyRs = tradeStatusService.findByIdAndVerify(id, rq.getMember());
+        if (verifyRs.isFail()) {
+            return rq.historyBack(verifyRs.getMsg());
+        }
 
+        TradeStatus tradeStatus = verifyRs.getData();
+
+        RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, CANCELED);
         if (rs.isFail()) {
             return rq.historyBack(rs.getMsg());
         }
@@ -154,19 +173,25 @@ public class TradeStatusController {
     @GetMapping("/complete/{id}")
     public String complete(@PathVariable Long id) {
 
-        TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
+        RsData<TradeStatus> verifyRs = tradeStatusService.findByIdAndVerify(id, rq.getMember());
+        if (verifyRs.isFail()) {
+            return rq.historyBack(verifyRs.getMsg());
+        }
 
-        if (tradeStatusService.isAlreadyCompletedTrade(tradeStatus.getBoard().getId())) {
-            return rq.historyBack("이미 거래가 완료된 게시글입니다.");
+        TradeStatus tradeStatus = verifyRs.getData();
+
+        Board board = tradeStatus.getBoard();
+        if (board.getRewardCoin() > tradeStatus.getRequester().getCoin()) {
+            return rq.historyBack(COIN_NOT_ENOUGH.getMessage());
         }
 
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, COMPLETE);
-        tradeStatusService.updateOtherTradeToCancel(tradeStatus.getBoard());
-
 
         if (rs.isFail()) {
             return rq.historyBack(rs.getMsg());
         }
+
+        tradeStatusService.updateOtherTradeToCancel(board);
 
         notificationService.notifyEnd(tradeStatus.getRequester(), tradeStatus.getHelper());
         return "redirect:/review/create/%d".formatted(id);

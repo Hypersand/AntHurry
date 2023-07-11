@@ -1,6 +1,5 @@
 package com.ant.hurry.boundedContext.tradeStatus.service;
 
-import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.member.entity.Member;
@@ -60,7 +59,7 @@ public class TradeStatusService {
         ChatRoom chatRoom = chatRoomService.findByTradeStatusId(modifiedTradeStatus.getId()).getData();
         chatRoomService.updateStatusOfChatRoom(chatRoom, status);
 
-        if(status.equals(COMPLETE)){
+        if (status.equals(COMPLETE)) {
             publisher.publishEvent(new EventAfterUpdateStatus(tradeStatus));
         }
 
@@ -82,14 +81,26 @@ public class TradeStatusService {
         return RsData.of(CAN_UPDATE);
     }
 
-    public RsData<List<TradeStatus>> findByMember(Member member) {
-        return RsData.of(TRADESTATUS_FOUND, tradeStatusRepository.findByRequesterOrHelper(member.getId()));
-    }
-
     public RsData<TradeStatus> findById(Long id) {
         Optional<TradeStatus> tradeStatus = tradeStatusRepository.findById(id);
         return tradeStatus.map(status -> RsData.of(TRADESTATUS_FOUND, status))
                 .orElseGet(() -> RsData.of(TRADESTATUS_NOT_EXISTS));
+    }
+
+    public RsData<TradeStatus> findByIdAndVerify(Long id, Member member) {
+        Optional<TradeStatus> opTradeStatus = tradeStatusRepository.findById(id);
+
+        if (opTradeStatus.isEmpty()) {
+            return RsData.of(TRADESTATUS_NOT_EXISTS);
+        }
+
+        TradeStatus tradeStatus = opTradeStatus.get();
+
+        if(!tradeStatus.getRequester().equals(member)) {
+            return RsData.of(UNAUTHORIZED);
+        }
+
+        return RsData.of(TRADESTATUS_FOUND, tradeStatus);
     }
 
     public RsData<List<TradeStatus>> findMyTradeStatusList(String username, Status status) {
@@ -105,7 +116,7 @@ public class TradeStatusService {
         return RsData.of(REDIRECT_TO_PAGE, tradeStatusList);
     }
 
-    public Long getComleteTradeStatusCount(Long id) {
+    public Long getCompleteTradeStatusCount(Long id) {
         return tradeStatusRepository.countMemberCompleteTradeStatus(id);
 
     }
@@ -124,11 +135,11 @@ public class TradeStatusService {
         return true;
     }
 
-    public Long getMemberTradeStatusCount(Long memberId){
+    public Long getMemberTradeStatusCount(Long memberId) {
         return tradeStatusRepository.countMemberTradeStatus(memberId);
     }
 
-    public void deleteTradeStatusDueToBoard(Long boardId){
+    public void deleteTradeStatusDueToBoard(Long boardId) {
         publisher.publishEvent(new EventAfterDeletedTradeStatus(tradeStatusRepository.findByBoardId(boardId)));
         tradeStatusRepository.deleteByBoardId(boardId);
     }
