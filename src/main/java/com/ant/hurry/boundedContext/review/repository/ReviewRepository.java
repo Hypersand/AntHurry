@@ -17,4 +17,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByReceiver(Member receiver);
 
     Long countByReceiver_Id(Long receiverId);
+
+    Long countByWriter_Id(Long writerId);
 }
