@@ -59,12 +59,11 @@
                  'flex w-full justify-end' : 'flex w-full justify-start'" th:each="message : ${chatMessages}">
                 <div class="chat chat-start flex" th:if="${!@rq.getMember().getUsername().equals(message.writer)}">
                     <div class="chat-image avatar flex-none">
-                        <img th:if="${otherProfileImage != null}"
-                             style="width:2.5rem; height:2.5rem;"
-                             class="rounded-full bg-pink-300"
-                             th:src="${otherProfileImage.fullPath}" alt=" "/>
-                        <i th:if="${otherProfileImage == null}"
-                           class="fa-solid fa-user fa-xl bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center"></i>
+                        <img th:if="${otherProfileImage != null}" style="width:2.5rem; height:2.5rem;"
+                             class="rounded-full bg-pink-300" th:src="${otherProfileImage.fullPath}"
+                             alt="profile image"/>
+                        <img th:if="${otherProfileImage == null}" style="width:2.5rem; height:2.5rem;"
+                             class="rounded-full bg-pink-300" src="/img/profile.png" alt="profile image"/>
                     </div>
                     <div class="chat-bubble" th:text="${message.message}"></div>
                     <div class="chat-header mt-6">
@@ -82,12 +81,10 @@
                     </div>
                     <div class="chat-bubble" th:text="${message.message}"></div>
                     <div class="chat-image avatar flex-none">
-                        <img th:if="${myProfileImage != null}"
-                             style="width:2.5rem; height:2.5rem;"
-                             class="rounded-full bg-pink-300"
-                             th:src="${myProfileImage.fullPath}" alt=" "/>
-                        <i th:if="${myProfileImage == null}"
-                           class="fa-solid fa-user fa-xl bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center"></i>
+                        <img th:if="${myProfileImage != null}" style="width:2.5rem; height:2.5rem;"
+                             class="rounded-full bg-pink-300" th:src="${myProfileImage.fullPath}" alt="profile image"/>
+                        <img th:if="${myProfileImage == null}" style="width:2.5rem; height:2.5rem;"
+                             class="rounded-full bg-pink-300" src="/img/profile.png" alt="profile image"/>
                     </div>
                 </div>
             </div>
@@ -148,9 +145,9 @@
                         "<div class='chat-header'>" +
                         "<time class='text-xs opacity-50'>" + currentTime + "</time>" + "</div>" +
                         "<div class='chat-bubble'>" + content.message + "</div><div class='chat-image avatar'>" +
-                        "<i class='fa-solid fa-user fa-xl bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center'></i></div>" :
+                        "<img style='width:2.5rem; height:2.5rem;' class='rounded-full bg-pink-300' src='/img/profile.png' alt='profile image'/></div>" :
                         "<div class='chat-image avatar'>" +
-                        "<i class='fa-solid fa-user fa-xl bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center'></i></div>" +
+                        "<img style='width:2.5rem; height:2.5rem;' class='rounded-full bg-pink-300' src='/img/profile.png' alt='profile image'/></div>" +
                         "</div>" + "<div class='chat-bubble'>" + content.message + "</div>" +
                         "<div class='chat-header mt-6'>" + "<time class='text-xs opacity-50'>" + currentTime + "</time>";
 
