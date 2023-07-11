@@ -15,10 +15,6 @@ INSERT INTO member_roles (member_id, role_id) VALUES (6, 1);
 INSERT INTO member_roles (member_id, role_id) VALUES (6, 2);
 INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('KAKAO__12345678', 'bigsand', 'password12311', '01053833333', 1, 'kakao', 0, 0, 0);
 INSERT INTO member_roles (member_id, role_id) VALUES (7, 2);
-INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('KAKAO__2863095386', 'dddddddd', 'password12311', '01028741882', 1, 'kakao', 10000, 0, 0);
-INSERT INTO member_roles (member_id, role_id) VALUES (8, 2);
-INSERT INTO MEMBER (username, nickname, password, phone_number, phone_auth, provider_type_code, coin, rating, review_count) VALUES ('NAVER__Dg6loRKo1x2V4elCii_uwdgY_kqolEK86ss231ECb7E', 'dfasdfasdf', 'password12311', '01000000100', 1, 'naver', 10000, 0, 0);
-INSERT INTO member_roles (member_id, role_id) VALUES (9, 2);
 
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (1, 2, '채팅시작테스트', 'START', NOW());
 INSERT INTO NOTIFICATION (requester_id, helper_id, message, type, created_at) VALUES (1, 3, '거래취소테스트', 'CANCEL', NOW());
