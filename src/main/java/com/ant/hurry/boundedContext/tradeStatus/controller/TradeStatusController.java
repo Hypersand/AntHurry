@@ -26,10 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.ant.hurry.boundedContext.board.entity.BoardType.나급해요;
-import static com.ant.hurry.boundedContext.board.entity.BoardType.나잘해요;
 import static com.ant.hurry.boundedContext.tradeStatus.entity.Status.*;
 
 @Controller
@@ -50,8 +48,8 @@ public class TradeStatusController {
     public String create(@PathVariable Long id) {
 
         Optional<Board> opBoard = boardService.findByIdWithMember(id);
-
         if (opBoard.isEmpty()) return rq.historyBack("존재하지 않는 게시물입니다.");
+
         Optional<TradeStatus> checkExistStatus = tradeStatusService.checkExistStatus(id, rq.getMember().getId());
 
         Board board = opBoard.get();
@@ -155,18 +153,13 @@ public class TradeStatusController {
     public String complete(@PathVariable Long id) {
 
         TradeStatus tradeStatus = tradeStatusService.findById(id).getData();
-
-        if (tradeStatusService.isAlreadyCompletedTrade(tradeStatus.getBoard().getId())) {
-            return rq.historyBack("이미 거래가 완료된 게시글입니다.");
-        }
-
         RsData<TradeStatus> rs = tradeStatusService.updateStatus(tradeStatus, COMPLETE);
-        tradeStatusService.updateOtherTradeToCancel(tradeStatus.getBoard());
-
 
         if (rs.isFail()) {
             return rq.historyBack(rs.getMsg());
         }
+
+        tradeStatusService.updateOtherTradeToCancel(tradeStatus.getBoard());
 
         notificationService.notifyEnd(tradeStatus.getRequester(), tradeStatus.getHelper());
         return "redirect:/review/create/%d".formatted(id);
