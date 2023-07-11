@@ -57,7 +57,7 @@
             <div id="messages" th:class="${@rq.getMember().getUsername().equals(message.writer)} ?
                  'flex w-full justify-end' : 'flex w-full justify-start'" th:each="message : ${chatMessages}">
                 <div class="chat chat-start flex" th:if="${!@rq.getMember().getUsername().equals(message.writer)}">
-                    <div class="chat-image avatar flex-none" th:href="@{/usr/member/profile/{id}(id=${otherMember.id})}">
+                    <div class="chat-image avatar flex-none">
                         <img th:if="${otherProfileImage != null}" style="width:2.5rem; height:2.5rem;"
                              class="rounded-full bg-pink-300" th:src="${otherProfileImage.fullPath}"
                              alt="profile image"/>
