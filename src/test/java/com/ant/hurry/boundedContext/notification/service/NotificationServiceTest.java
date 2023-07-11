@@ -3,6 +3,9 @@ package com.ant.hurry.boundedContext.notification.service;
 
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.board.entity.Board;
+import com.ant.hurry.boundedContext.board.repository.BoardRepository;
+import com.ant.hurry.boundedContext.board.service.BoardService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.repository.MemberRepository;
 import com.ant.hurry.boundedContext.member.service.MemberService;
@@ -40,6 +43,8 @@ class NotificationServiceTest {
     @Mock
     private MemberService memberService;
 
+    @Mock
+    private BoardService boardService;
     @Mock
     private NotificationRepository notificationRepository;
 
@@ -110,7 +115,7 @@ class NotificationServiceTest {
         when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 
         //when
-        notificationService.notifyEnd(requester, helper);
+        notificationService.notifyEnd(requester, helper, anyLong());
 
         //then
         verify(publisher, times(1)).publishEvent(any(NotifyEndMessageEvent.class));

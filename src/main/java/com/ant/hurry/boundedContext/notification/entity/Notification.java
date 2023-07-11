@@ -28,6 +28,8 @@ public class Notification extends BaseEntity {
 
     private LocalDateTime readDate;
 
+    private Long tradeId;
+
     public Notification() {
     }
 
@@ -38,7 +40,16 @@ public class Notification extends BaseEntity {
                 .requester(requester)
                 .helper(helper)
                 .build();
+    }
 
+    public static Notification create(String message, String type, Member requester, Member helper, Long tradeId) {
+        return Notification.builder()
+                .message(message)
+                .type(NotifyType.valueOf(type))
+                .requester(requester)
+                .helper(helper)
+                .tradeId(tradeId)
+                .build();
     }
 
     public boolean isRead() {
