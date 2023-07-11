@@ -193,7 +193,7 @@ public class TradeStatusController {
 
         tradeStatusService.updateOtherTradeToCancel(board);
 
-        notificationService.notifyEnd(tradeStatus.getRequester(), tradeStatus.getHelper());
+        notificationService.notifyEnd(tradeStatus.getRequester(), tradeStatus.getHelper(), tradeStatus.getId());
         return "redirect:/review/create/%d".formatted(id);
     }
 

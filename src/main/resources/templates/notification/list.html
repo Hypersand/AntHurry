@@ -4,25 +4,25 @@
 </head>
 
 <body>
-    <header layout:fragment="header">
-        <div class="navbar max-w-2xl mx-auto bg-base-100">
-            <div class="navbar-start">
-                <div class="dropdown">
-                    <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
-                        <i class="fa-solid fa-angle-left"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="navbar-center">
-                <a class="font-black">알림 목록</a>
-            </div>
-            <div class="navbar-end">
-                <button class="btn btn-ghost btn-circle hidden">
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                </button>
+<header layout:fragment="header">
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <a href="#" tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
             </div>
         </div>
-    </header>
+        <div class="navbar-center">
+            <a class="font-black">알림 목록</a>
+        </div>
+        <div class="navbar-end">
+            <button class="btn btn-ghost btn-circle hidden">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+</header>
 
 <main layout:fragment="main">
     <div class="min-h-screen flex justify-center">
@@ -30,17 +30,24 @@
             <ul class="space-y-3" th:each="notification : ${notificationList}">
                 <li class="bg-white rounded-lg shadow-lg p-4 border-t-4"
                     th:classappend="${notification.type.name() == 'START'} ? 'border-blue-500' : (${notification.type.name() == 'END'} ? 'border-green-500' : 'border-red-500')">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="text-sm font-semibold text-gray-800" th:text="${notification.message}"></p>
-                            <span class="text-xs text-gray-400 theme-bg inline-block px-1.5 py-0.5 rounded" th:text="${#temporals.format(notification.createdAt, 'MM-dd HH:mm')}"></span>
-                        </div>
+                    <div class="flex flex-col ">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm font-semibold text-gray-800" th:text="${notification.message}"></p>
+                                <span class="text-xs text-gray-400 theme-bg inline-block px-1.5 py-0.5 rounded"
+                                      th:text="${#temporals.format(notification.createdAt, 'MM-dd HH:mm')}"></span>
+                            </div>
 
-                        <form class="delete-notification-form" th:action="@{/notification/delete/{id}(id=${notification.id})}" th:method="DELETE">
-                            <button type="submit" class="text-main">
-                                <i class="fas fa-times fa-xl"></i>
-                            </button>
-                        </form>
+                            <form class="delete-notification-form"
+                                  th:action="@{/notification/delete/{id}(id=${notification.id})}" th:method="DELETE">
+                                <button type="submit" class="text-main">
+                                    <i class="fas fa-times fa-xl"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <div th:if="${notification.tradeId != null}" class="items-center">
+
+                        </div>
                     </div>
                 </li>
             </ul>

@@ -1,6 +1,7 @@
 package com.ant.hurry.boundedContext.notification.service;
 
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.notification.entity.Notification;
@@ -9,6 +10,7 @@ import com.ant.hurry.boundedContext.notification.event.NotifyEndMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyNewMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyStartMessageEvent;
 import com.ant.hurry.boundedContext.notification.repository.NotificationRepository;
+import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -57,13 +59,13 @@ public class NotificationService {
 
 
     //거래 완료
-    public void notifyEnd(Member requester, Member helper) {
+    public void notifyEnd(Member requester, Member helper, Long id) {
 
         String messageToRequester = helper.getNickname() + "님과의 거래가 종료되었습니다.";
         String messageToHelper = requester.getNickname() + "님과의 거래가 종료되었습니다.";
 
         Notification notificationToRequester = Notification.create(messageToRequester, "END", requester, null);
-        Notification notificationToHelper = Notification.create(messageToHelper, "END", null, helper);
+        Notification notificationToHelper = Notification.create(messageToHelper, "END", null, helper, id);
         notificationRepository.save(notificationToRequester);
         notificationRepository.save(notificationToHelper);
 
