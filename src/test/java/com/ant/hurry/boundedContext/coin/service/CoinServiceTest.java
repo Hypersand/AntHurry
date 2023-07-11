@@ -13,13 +13,17 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.ant.hurry.base.code.BasicErrorCode.UNAUTHORIZED;
+import static com.ant.hurry.boundedContext.adm.code.AdmErrorCode.APPLY_NOT_EXISTS;
+import static com.ant.hurry.boundedContext.coin.code.ExchangeErrorCode.*;
+import static com.ant.hurry.boundedContext.coin.code.ExchangeSuccessCode.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
-public class CoinServiceTest {
+class CoinServiceTest {
 
     @Autowired
     private CoinService coinService;
@@ -40,8 +44,8 @@ public class CoinServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("S_E-1"),
-                () -> assertThat(rsData.getMsg()).isEqualTo("충분한 코인을 가지고있습니다.")
+                () -> assertThat(rsData.getResultCode()).isEqualTo(COIN_ENOUGH.getCode()),
+                () -> assertThat(rsData.getMsg()).isEqualTo(COIN_ENOUGH.getMessage())
         );
     }
 
@@ -58,13 +62,13 @@ public class CoinServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("F_E-2"),
-                () -> assertThat(rsData.getMsg()).isEqualTo("0원을 환전할 수 없습니다.")
+                () -> assertThat(rsData.getResultCode()).isEqualTo(CANNOT_EXCHANGE.getCode()),
+                () -> assertThat(rsData.getMsg()).isEqualTo(CANNOT_EXCHANGE.getMessage())
         );
     }
 
     @Test
-    @DisplayName("환전 실패 - 환전은 내가 가지고있는 코인보다 낮아야한다.")
+    @DisplayName("환전 실패 - 환전은 내가 가지고 있는 코인보다 낮아야한다.")
     @WithMockUser("user1")
     void shouldFailExchangeDueToNotEnoughMoney() {
 
@@ -76,8 +80,8 @@ public class CoinServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("F_E-1"),
-                () -> assertThat(rsData.getMsg()).isEqualTo("충분한 돈을 가지고 있지 않습니다.")
+                () -> assertThat(rsData.getResultCode()).isEqualTo(COIN_NOT_ENOUGH.getCode()),
+                () -> assertThat(rsData.getMsg()).isEqualTo(COIN_NOT_ENOUGH.getMessage())
         );
     }
 
@@ -94,8 +98,8 @@ public class CoinServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("F_A-1"),
-                () -> assertThat(rsData.getMsg()).isEqualTo("존재하지 않는 환전요청입니다.")
+                () -> assertThat(rsData.getResultCode()).isEqualTo(APPLY_NOT_EXISTS.getCode()),
+                () -> assertThat(rsData.getMsg()).isEqualTo(APPLY_NOT_EXISTS.getMessage())
         );
     }
 
@@ -112,8 +116,8 @@ public class CoinServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("S_E-3"),
-                () -> assertThat(rsData.getMsg()).isEqualTo("수정되었습니다.")
+                () -> assertThat(rsData.getResultCode()).isEqualTo(EDIT_APPLY_EXCHANGE.getCode()),
+                () -> assertThat(rsData.getMsg()).isEqualTo(EDIT_APPLY_EXCHANGE.getMessage())
         );
     }
 
@@ -127,8 +131,8 @@ public class CoinServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("S_E-6"),
-                () -> assertThat(rsData.getMsg()).isEqualTo("취소 가능")
+                () -> assertThat(rsData.getResultCode()).isEqualTo(CAN_DELETE_APPLY_EXCHANGE.getCode()),
+                () -> assertThat(rsData.getMsg()).isEqualTo(CAN_DELETE_APPLY_EXCHANGE.getMessage())
         );
     }
 
@@ -142,8 +146,8 @@ public class CoinServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("F_E-3"),
-                () -> assertThat(rsData.getMsg()).isEqualTo("존재하지 않는 환전신청입니다.")
+                () -> assertThat(rsData.getResultCode()).isEqualTo(NOT_EXISTS_APPLY_EXCHANGE.getCode()),
+                () -> assertThat(rsData.getMsg()).isEqualTo(NOT_EXISTS_APPLY_EXCHANGE.getMessage())
         );
     }
 
@@ -157,8 +161,8 @@ public class CoinServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("F_A-1"),
-                () -> assertThat(rsData.getMsg()).isEqualTo("접근 권한이 없습니다.")
+                () -> assertThat(rsData.getResultCode()).isEqualTo(UNAUTHORIZED.getCode()),
+                () -> assertThat(rsData.getMsg()).isEqualTo(UNAUTHORIZED.getMessage())
         );
     }
 }

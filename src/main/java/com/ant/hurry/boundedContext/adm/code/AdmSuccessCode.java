@@ -9,6 +9,6 @@ import lombok.Getter;
 public enum AdmSuccessCode implements Code {
     ACCEPT_APPLY("S_A-1", "성공적으로 처리되었습니다.");
 
-    public String code;
-    public String message;
+    private String code;
+    private String message;
 }
