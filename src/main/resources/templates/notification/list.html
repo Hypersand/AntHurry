@@ -45,8 +45,10 @@
                                 </button>
                             </form>
                         </div>
-                        <div th:if="${notification.tradeId != null}" class="items-center">
-
+                        <div th:if="${notification.tradeId != null}" class="flex flex-col justify-center items-center ">
+                            <a class=" w-full h-full flex justify-center btn items-center cursor-pointer text-sm  mt-2" th:href="@{/review/create/{id}(id=${notification.tradeId})}">
+                                후기 작성하기
+                            </a>
                         </div>
                     </div>
                 </li>
