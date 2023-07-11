@@ -198,6 +198,9 @@ public class BoardController {
 
         Slice<BoardDto> boards = boardService.getRegionOfflineBoards(null, code, searchForm.getTitle(), PageRequest.ofSize(10));
 
+        boolean isEmpty = boards.isEmpty();
+
+        model.addAttribute("isEmpty", isEmpty);
         model.addAttribute("boards", boards.getContent());
         model.addAttribute("content", searchForm.getTitle());
         model.addAttribute("region", region);
@@ -235,8 +238,9 @@ public class BoardController {
     public String showOnlineBoard(@Valid SearchForm searchForm, Model model) {
 
         Slice<BoardDto> boards = boardService.getOnlineBoards(null, searchForm.getTitle(), TradeType.온라인 ,PageRequest.ofSize(10));
-
+        boolean isEmpty = boards.isEmpty();
         model.addAttribute("boards", boards);
+        model.addAttribute("isEmpty", isEmpty);
         model.addAttribute("content", searchForm.getTitle());
         return "board/online";
     }
