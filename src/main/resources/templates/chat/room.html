@@ -29,25 +29,18 @@
             <input type="checkbox" id="my_modal_7" class="modal-toggle"/>
             <div class="modal">
                 <div class="modal-box">
-                    <a th:if="${((room.tradeStatus.board.boardType.name().equals('나급해요')
-                            && room.tradeStatus.requester.username.equals(@rq.member.username))
-                            || (room.tradeStatus.board.boardType.name().equals('나잘해요')
-                            && room.tradeStatus.helper.username.equals(@rq.member.username)))
+                    <a th:if="${room.tradeStatus.requester.username.equals(@rq.member.username)
                             && room.tradeStatus.status.msg.equals('거래 전')}" class="btn btn-ghost block pt-4"
                        th:href="@{/trade/start/{id}(id=${room.tradeStatus.id})}">거래 시작</a>
-                    <a th:if="${((room.tradeStatus.board.boardType.name().equals('나급해요')
-                            && room.tradeStatus.requester.username.equals(@rq.member.username))
-                            || (room.tradeStatus.board.boardType.name().equals('나잘해요')
-                            && room.tradeStatus.helper.username.equals(@rq.member.username)))
-                            && room.tradeStatus.status.msg.equals('거래 중') && !room.tradeStatus.status.msg.equals('거래 취소')}"
+                    <a th:if="${room.tradeStatus.requester.username.equals(@rq.member.username)
+                            && (room.tradeStatus.status.msg.equals('거래 중') &&
+                            !room.tradeStatus.status.msg.equals('거래 취소'))}"
                        class="btn btn-ghost block pt-4"
                        th:href="@{/trade/complete/{id}(id=${room.tradeStatus.id})}">거래 완료</a>
                     <hr>
-                    <a th:if="${((room.tradeStatus.board.boardType.name().equals('나급해요')
-                            && room.tradeStatus.requester.username.equals(@rq.member.username))
-                            || (room.tradeStatus.board.boardType.name().equals('나잘해요')
-                            && room.tradeStatus.helper.username.equals(@rq.member.username)))
-                            && (room.tradeStatus.status.msg.equals('거래 중') && !room.tradeStatus.status.msg.equals('거래 취소'))}"
+                    <a th:if="${room.tradeStatus.requester.username.equals(@rq.member.username)
+                            && (room.tradeStatus.status.msg.equals('거래 중') &&
+                            !room.tradeStatus.status.msg.equals('거래 취소'))}"
                        class="btn btn-ghost block pt-4"
                        th:href="@{/trade/cancel/{id}(id=${room.tradeStatus.id})}">거래 취소</a>
                     <hr>
