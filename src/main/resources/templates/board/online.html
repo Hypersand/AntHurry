@@ -28,8 +28,8 @@
 <main layout:fragment="main" class="flex flex-col items-center overflow-y-scroll">
 
     <div class="item_row flex flex-col md:w-[584px] w-[92%] mx-auto">
-        <div class="text-lg text-gray-400 pt-12 mx-auto">
-            <span th:if="${isEmpty}" th:text="|'${content}'에 대한 검색 결과가 없습니다.|"></span>
+        <div th:if="${isEmpty}" class="text-lg text-gray-400 pt-12 mx-auto">
+            <span th:text="|'${content}'에 대한 검색 결과가 없습니다.|"></span>
             <i class="fa-regular fa-face-sad-tear ml-2"></i>
         </div>
         <div th:if="${!#lists.isEmpty(boards)}" th:each="board : ${boards}"

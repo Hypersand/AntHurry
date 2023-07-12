@@ -53,7 +53,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         BooleanExpression tradeTypeEq = tradeType != null ? board.tradeType.eq(tradeType) : null;
 
         List<Board> results = jpaQueryFactory.selectFrom(board)
-                .where(idLt, tradeTypeEq, board.boardType.eq(BoardType.나급해요),
+                .where(idLt, tradeTypeEq,
                         board.title.contains(content).or(board.content.contains(content)))
                 .orderBy(board.id.desc())
                 .limit(pageable.getPageSize() + 1)
