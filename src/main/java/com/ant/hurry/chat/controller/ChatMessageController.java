@@ -53,6 +53,16 @@ public class ChatMessageController {
         messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(roomId), dto);
     }
 
+    public void sendBackMessage(String roomId) {
+        ChatMessageDto dto = new ChatMessageDto();
+        dto.setWriter("admin");
+        dto.setRoomId(roomId);
+        dto.setMessage("[알림]\n" + rq.getMember().getNickname() + " 님이 재입장하셨습니다.");
+
+        chatMessageService.saveNoticeMessage(dto);
+        messagingTemplate.convertAndSend("/sub/chat/room/%s".formatted(roomId), dto);
+    }
+
     @Operation(summary = "파일 메시지 저장 및 전송 요청", description = "파일이 첨부된 메시지의 파일을 저장하고 메시지 전송을 요청합니다.")
     @PostMapping("/file")
     public void sendFile(@RequestParam String roomId, @Payload MultipartFile file) throws IOException {

@@ -11,7 +11,8 @@ public enum ChatRoomSuccessCode implements Code {
     CHATROOM_FOUND("S_C-1", "채팅방을 조회했습니다."),
     CHATROOM_CREATED("S_C-2", "채팅방이 생성되었습니다."),
     CHATROOM_DELETED("S_C-3", "채팅방이 삭제되었습니다."),
-    CHATROOM_EXITED("S_C-4", "채팅방에서 퇴장했습니다.");
+    CHATROOM_EXITED("S_C-4", "채팅방에서 퇴장했습니다."),
+    CHATROOM_REENTRY("S_C-5", "채팅방에 재입장했습니다.");
 
     private String code;
     private String message;
