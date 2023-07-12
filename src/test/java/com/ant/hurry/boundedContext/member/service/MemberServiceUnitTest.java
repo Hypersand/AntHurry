@@ -66,7 +66,7 @@ class MemberServiceUnitTest {
         RsData<Member> result = memberService.whenSocialLogin(providerTypeCode, username);
 
         //then
-        assertThat(result.getResultCode()).isEqualTo("S-2");
+        assertThat(result.getResultCode()).isEqualTo("S_M-1");
         assertThat(result.getMsg()).isEqualTo("로그인 되었습니다.");
         assertThat(result.getData()).isEqualTo(opMember.get());
     }
@@ -87,7 +87,7 @@ class MemberServiceUnitTest {
         RsData<Member> result = memberService.whenSocialLogin(providerTypeCode, username);
 
         //then
-        assertThat(result.getResultCode()).isEqualTo("S-1");
+        assertThat(result.getResultCode()).isEqualTo("S_M-2");
         assertThat(result.getMsg()).isEqualTo("회원가입이 완료되었습니다.");
         assertThat(result.getData()).isEqualTo(member);
     }

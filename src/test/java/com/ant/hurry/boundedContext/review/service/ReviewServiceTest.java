@@ -44,7 +44,7 @@ class ReviewServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("F_T-2"),
+                () -> assertThat(rsData.getResultCode()).isEqualTo("F_T-6"),
                 () -> assertThat(rsData.getMsg()).isEqualTo("아직 리뷰를 남길 수 없는 거래입니다.")
         );
 
@@ -143,7 +143,7 @@ class ReviewServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(rsData.getResultCode()).isEqualTo("F_T-1"),
+                () -> assertThat(rsData.getResultCode()).isEqualTo("F_T-4"),
                 () -> assertThat(rsData.getMsg()).isEqualTo("존재하지 않는 거래입니다.")
         );
 
