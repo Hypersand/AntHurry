@@ -13,6 +13,7 @@ import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.member.service.PhoneAuthService;
+import com.ant.hurry.boundedContext.review.service.ReviewService;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import com.ant.hurry.chat.service.ChatRoomService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,6 +57,10 @@ public class MemberControllerUnitTest {
 
     @Mock
     ChatRoomService chatRoomService;
+
+
+    @Mock
+    ReviewService reviewService;
 
     @Mock
     ObjectMapper objectMapper;
@@ -101,11 +106,14 @@ public class MemberControllerUnitTest {
         //given
         when(rq.isLogin()).thenReturn(true);
 
-        Member member = new Member();
+        Member member = Member.builder()
+                .id(1L)
+                .build();
         Optional<ProfileImage> profileImage = Optional.of(new ProfileImage());
         when(rq.getMember()).thenReturn(member);
         when(memberService.findProfileImage(member)).thenReturn(profileImage);
-        Long tradeStatusCount = tradeStatusService.getMemberTradeStatusCount(member.getId());
+        when(tradeStatusService.getMemberTradeStatusCount(member.getId())).thenReturn(1L);
+        when(reviewService.getMyReviewCount(member.getId())).thenReturn(1L);
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/usr/member/profile"));
@@ -115,7 +123,7 @@ public class MemberControllerUnitTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("usr/member/profile"))
                 .andExpect(model().attribute("member", member))
-                .andExpect(model().attribute("tradeStatusCount", tradeStatusCount))
+                .andExpect(model().attribute("myTradeStatusCount", 0L))
                 .andExpect(model().attribute("profileImage", profileImage.orElse(null)));
     }
 
