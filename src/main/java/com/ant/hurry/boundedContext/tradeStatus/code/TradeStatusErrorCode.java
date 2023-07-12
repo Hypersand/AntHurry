@@ -13,7 +13,7 @@ public enum TradeStatusErrorCode implements Code {
     ALREADY_COMPLETED("F_T-3", "이미 완료된 거래입니다."),
     TRADESTATUS_NOT_EXISTS("F_T-4", "존재하지 않는 거래입니다."),
     UNAUTHORIZED("F_T-5", "거래 상태를 변경할 권한이 없습니다."),
-    CANNOT_WRITE_REVIEW("F_T-6", "아직 리뷰를 남길 수 없는 거래입니다.");
+    CANNOT_WRITE_REVIEW("F_T-6", "아직 후기를 남길 수 없는 거래입니다.");
 
 
     private String code;

@@ -45,7 +45,7 @@ class ReviewServiceTest {
         //then
         assertAll(
                 () -> assertThat(rsData.getResultCode()).isEqualTo("F_T-6"),
-                () -> assertThat(rsData.getMsg()).isEqualTo("아직 리뷰를 남길 수 없는 거래입니다.")
+                () -> assertThat(rsData.getMsg()).isEqualTo("아직 후기를 남길 수 없는 거래입니다.")
         );
 
     }
