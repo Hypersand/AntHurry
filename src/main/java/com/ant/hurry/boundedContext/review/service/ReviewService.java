@@ -2,6 +2,8 @@ package com.ant.hurry.boundedContext.review.service;
 
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.entity.ProfileImage;
+import com.ant.hurry.boundedContext.member.repository.ProfileImageRepository;
 import com.ant.hurry.boundedContext.member.service.MemberService;
 import com.ant.hurry.boundedContext.review.dto.ReviewRequest;
 import com.ant.hurry.boundedContext.review.entity.Review;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +28,8 @@ public class ReviewService {
 
     private final TradeStatusService tradeStatusService;
     private final ReviewRepository reviewRepository;
+
+    private final ProfileImageRepository profileImageRepository;
 
     public RsData<Review> save(ReviewRequest reviewRequest, String username, Long tradeStatusId) {
 
@@ -121,7 +126,12 @@ public class ReviewService {
         Map<String, Object> map = new HashMap<>();
 
         List<Review> reviews = reviewRepository.findByReceiver(profileMember);
+        List<ProfileImage> reviewerProfileImage = new ArrayList<>();
+        for (Review review : reviews) {
+            reviewerProfileImage.add(profileImageRepository.findByMember(review.getWriter()).orElse(null));
+        }
         map.put("reviews", reviews);
+        map.put("reviewerProfileImage", reviewerProfileImage);
         map.put("profileMember", profileMember);
 
         return RsData.of("S_R-3", "후기목록페이지로 이동합니다.", map);
