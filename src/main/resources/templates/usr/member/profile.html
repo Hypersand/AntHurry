@@ -32,7 +32,8 @@
                 <img th:if="${profileImage != null}" class="h-20 w-20 rounded-full bg-pink-300 mr-4"
                      th:src="${profileImage.fullPath}" alt=" ">
 
-                <i class="fa-solid fa-user fa-xl bg-gray-200 rounded-full w-20 h-20 flex items-center justify-center" th:if="${profileImage == null}"></i>
+                <i class="fa-solid fa-user fa-xl bg-gray-200 rounded-full w-20 h-20 flex items-center justify-center"
+                   th:if="${profileImage == null}"></i>
                 <div class="flex-1 d-flex flex-row justify-content-between items-center ml-5">
                     <h4 class="text-xl font-bold text-navy-700 dark:text-white mb-2 mr-2"
                         th:text="${member.nickname}"></h4>
@@ -125,14 +126,16 @@
             <div class="col-span-1  p-3">
                 <div class="flex flex-col items-center ">
                     <button class="tr-300 flex flex-col items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             class="h-14 w-14 text-gray-500" fill="none"
-                             viewBox="0 0 24 24" stroke="currentColor"
-                             stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        <span class="text-lg font-medium">파일</span>
+                        <a href="/usr/member/myboard">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="h-14 w-14 text-gray-500" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor"
+                                 stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span class="text-lg font-medium">내 게시글</span>
+                        </a>
                     </button>
                 </div>
             </div>
