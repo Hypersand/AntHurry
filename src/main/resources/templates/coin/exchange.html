@@ -197,7 +197,7 @@
         function formatCurrency(input) {
             var value = input.value;
             if (value > userCoin) {
-                alert("현재 가지고 있는 코인보다 높게 입력했습니다.");
+                toastWarning("현재 가지고 있는 코인보다 높게 입력했습니다.");
                 input.value = userCoin;
                 return;
             }
@@ -208,12 +208,12 @@
             const moneyInput = document.getElementById("money");
 
             if (moneyInput === 0) {
-                alert("환전 금액을 입력해주세요.");
+                toastWarning("환전 금액을 입력해주세요.");
                 return;
             }
 
             if (moneyInput > userCoin) {
-                alert("현재 가지고 있는 코인보다 높게 입력했습니다.");
+                toastWarning("현재 가지고 있는 코인보다 높게 입력했습니다.");
                 return;
             }
         }

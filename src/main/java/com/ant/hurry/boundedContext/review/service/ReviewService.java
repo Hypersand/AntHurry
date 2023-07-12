@@ -19,6 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.ant.hurry.boundedContext.member.code.MemberErrorCode.*;
+import static com.ant.hurry.boundedContext.review.code.ReviewErrorCode.*;
+import static com.ant.hurry.boundedContext.review.code.ReviewSuccessCode.*;
+import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusErrorCode.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -38,15 +43,15 @@ public class ReviewService {
         TradeStatus tradeStatus = tradeStatusService.findById(tradeStatusId).getData();
 
         if (member == null) {
-            return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
+            return RsData.of(MEMBER_NOT_EXISTS);
         }
 
         if (receiver == null) {
-            return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
+            return RsData.of(MEMBER_NOT_EXISTS);
         }
 
         if (tradeStatus == null) {
-            return RsData.of("F_T-1", "존재하지 않는 거래입니다.");
+            return RsData.of(TRADESTATUS_NOT_EXISTS);
         }
 
         Review review = Review.create(reviewRequest.getContent(), reviewRequest.getRating(), tradeStatus, member, receiver);
@@ -64,7 +69,7 @@ public class ReviewService {
             tradeStatus.getRequester().updateRating(opponentRating);
         }
 
-        return RsData.of("S_R-1", "후기가 성공적으로 등록되었습니다.", review);
+        return RsData.of(CREATE_SUCCESS, review);
     }
 
 
@@ -96,22 +101,22 @@ public class ReviewService {
         Member member = memberService.findByUsername(username).orElse(null);
 
         if (!member.getUsername().equals(tradeStatus.getRequesterUsername()) && !member.getUsername().equals(tradeStatus.getHelperUsername())) {
-            return RsData.of("F_M-2", "접근할 수 있는 권한이 없습니다.");
+            return RsData.of(CANNOT_ACCESS);
         }
 
         if (!tradeStatus.getStatus().name().equals("COMPLETE")) {
-            return RsData.of("F_T-2", "아직 리뷰를 남길 수 없는 거래입니다.");
+            return RsData.of(CANNOT_WRITE_REVIEW);
         }
 
         if (isAlreadyReviewed(member, tradeStatus)) {
-            return RsData.of("F_R-1", "이미 후기를 작성했습니다.");
+            return RsData.of(ALREADY_WRITE_REVIEW);
         }
 
         if (tradeStatus.getRequesterUsername().equals(member.getUsername())) {
-            return RsData.of("S_R-2", "후기등록페이지로 이동합니다.", tradeStatus.getHelper().getNickname());
+            return RsData.of(REDIRECT_TO_CREATE_REVIEW_PAGE, tradeStatus.getHelper().getNickname());
         }
 
-        return RsData.of("S_R-2", "후기등록페이지로 이동합니다.", tradeStatus.getRequester().getNickname());
+        return RsData.of(REDIRECT_TO_CREATE_REVIEW_PAGE, tradeStatus.getRequester().getNickname());
     }
 
     public RsData<Map<String, Object>> getReviews(String username, Long memberId) {
@@ -120,7 +125,7 @@ public class ReviewService {
         Member profileMember = memberService.findById(memberId).orElse(null);
 
         if (currentMember == null || profileMember == null) {
-            return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
+            return RsData.of(MEMBER_NOT_EXISTS);
         }
 
         Map<String, Object> map = new HashMap<>();
@@ -134,7 +139,7 @@ public class ReviewService {
         map.put("reviewerProfileImage", reviewerProfileImage);
         map.put("profileMember", profileMember);
 
-        return RsData.of("S_R-3", "후기목록페이지로 이동합니다.", map);
+        return RsData.of(REDIRECT_TO_REVIEW_LIST_PAGE, map);
     }
 
     public Long getReviewCount(Long id) {

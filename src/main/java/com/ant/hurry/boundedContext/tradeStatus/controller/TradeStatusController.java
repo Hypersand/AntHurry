@@ -89,8 +89,7 @@ public class TradeStatusController {
             return rq.historyBack(rsData.getMsg());
         }
 
-        List<TradeStatusDto> tradeStatusDTOList = rsData.getData().stream()
-                .map(tradeStatus -> new TradeStatusDto(tradeStatus, rq.getMember())).toList();
+        List<TradeStatusDto> tradeStatusDTOList = tradeStatusService.getTradeStatusInfo(rsData.getData(), rq.getMember());
 
         model.addAttribute("tradeStatusList", tradeStatusDTOList);
 
@@ -111,8 +110,8 @@ public class TradeStatusController {
 
         RsData<List<TradeStatus>> rsData = tradeStatusService
                 .findMyTradeStatusList(user.getUsername(), valueOf(status));
-        List<TradeStatusDto> tradeStatusDTOList = rsData.getData().stream()
-                .map(tradeStatus -> new TradeStatusDto(tradeStatus, rq.getMember())).toList();
+
+        List<TradeStatusDto> tradeStatusDTOList = tradeStatusService.getTradeStatusInfo(rsData.getData(), rq.getMember());
 
         Map<String, Object> map = new HashMap<>();
 

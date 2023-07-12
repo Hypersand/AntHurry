@@ -26,6 +26,9 @@ import java.util.Set;
 
 import static com.ant.hurry.boundedContext.coin.code.ExchangeErrorCode.*;
 import static com.ant.hurry.boundedContext.coin.code.ExchangeSuccessCode.COIN_ENOUGH;
+import static com.ant.hurry.boundedContext.coin.code.ExchangeSuccessCode.SUCCESS_CHARGE;
+import static com.ant.hurry.boundedContext.member.code.MemberErrorCode.*;
+import static com.ant.hurry.boundedContext.member.code.MemberSuccessCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +52,7 @@ public class MemberService {
         Optional<Member> opMember = memberRepository.findByUsername(username); // username 예시 : KAKAO__1312319038130912, NAVER__1230812300
 
         if (opMember.isPresent())
-            return RsData.of("S-2", "로그인 되었습니다.", opMember.get());
+            return RsData.of(SUCCESS_LOGIN, opMember.get());
 
         // 소셜 로그인를 통한 가입시 비번은 없다.
         return createAndSave(username, "", null, providerTypeCode); // 최초 로그인 시 딱 한번 실행
@@ -74,7 +77,7 @@ public class MemberService {
                 .roles(roles)
                 .build();
         Member savedMember = memberRepository.save(member);
-        return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
+        return RsData.of(SUCCESS_SIGNUP, savedMember);
     }
 
     @Transactional
@@ -117,16 +120,16 @@ public class MemberService {
 
     public RsData<String> phoneAuthComplete(Member member, String phoneNumber) {
         if(member.getTmpPhoneNumber() == null){
-            return RsData.of("F-2", "전화번호를 입력해서 인증번호를 받아주세요.");
+            return RsData.of(NOT_INPUT_PHONE_NUMBER);
         }
         if (member.getPhoneAuth() != 1) {
-            return RsData.of("F-2", "인증번호 검증이 완료되지 않았습니다.");
+            return RsData.of(NOT_CERTIFICATION_NUMBER);
         }
         if (!member.getTmpPhoneNumber().equals(phoneNumber)) {
-            return RsData.of("F-2", "입력하신 전화번호와 인증번호를 받은 번호가 일치하지 않습니다.");
+            return RsData.of(NOT_MATCH_NUMBER);
         }
 
-        return RsData.of("S-2", "전화번호 인증이 완료되었습니다.");
+        return RsData.of(CERTIFICATION_PHONE_NUMBER);
     }
 
     @Transactional
@@ -173,9 +176,9 @@ public class MemberService {
         Long orderIdInput = Long.parseLong(orderId.split("__")[1]);
 
         if(id != orderIdInput || member.getId() != id){
-            return RsData.of("F_M-3", "로그인한 회원과 충전할 회원이 일치하지 않습니다.");
+            return RsData.of(NOT_MATCH_MEMBER);
         }
-        return RsData.of("S_M-3", "충전이 완료되었습니다.");
+        return RsData.of(SUCCESS_CHARGE);
 
     }
 
@@ -200,7 +203,7 @@ public class MemberService {
         Member profileMember = findById(id).orElse(null); //프로필 유저
 
         if (currentMember == null || profileMember == null) {
-            return RsData.of("F_M-2", "접근할 수 있는 권한이 없습니다.");
+            return RsData.of(CANNOT_ACCESS);
         }
 
         return RsData.successOf(profileMember);
