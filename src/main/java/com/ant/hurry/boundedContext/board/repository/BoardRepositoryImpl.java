@@ -68,8 +68,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         BooleanExpression codeEq = code != null ? board.regCode.eq(code) : null;
 
         List<Board> results = jpaQueryFactory.selectFrom(board)
-                .where(idLt, codeEq, board.boardType.eq(BoardType.나급해요),
-                        board.tradeType.eq(TradeType.오프라인),
+                .where(idLt, codeEq,
                         board.title.contains(search).or(board.content.contains(search)))
                 .orderBy(board.id.desc())
                 .limit(pageable.getPageSize() + 1)
