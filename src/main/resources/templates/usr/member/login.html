@@ -5,7 +5,7 @@
 </head>
 
 <body>
-<header layout:fragment="header" >
+<header layout:fragment="header">
     <div class="navbar max-w-2xl mx-auto  bg-base-100">
         <div class="navbar-start">
             <div class="dropdown">
@@ -48,29 +48,39 @@
             <div id="myDIV">
                 <div class="w-[100vw] h-[85vh] px-3 sm:px-5 flex flex-col items-center justify-center absolute">
                     <div class="w-full sm:w-1/2 lg:2/3 px-6  z-50 py-4  rounded-lg">
-                        <img src="/img/loginpage.png" class="w-96 mx-auto" />
+                        <img src="/img/loginpage.png" class="w-96 mx-auto"/>
                     </div>
                     <div class="w-full sm:w-1/2 lg:2/3 px-6  text-white z-50 py-4  rounded-lg">
 
                         <div class="text-center mt-2">
-                            <a href="/oauth2/authorization/naver" class="btn border border-slate-600 bg-slate-700 text-slate-300 w-full gap-1">
+                            <a href="/oauth2/authorization/naver"
+                               class="btn border border-slate-600 bg-slate-700 text-slate-300 w-full gap-1">
                                 <i class="fa-solid fa-n text-[color:#2DB400]"></i>
                                 <span class="normal-case">네이버 로그인</span>
                             </a>
                         </div>
                         <div class="my-3 flex items-center px-3">
-                            <hr class="w-full border-slate-600" />
+                            <hr class="w-full border-slate-600"/>
                             <span class="mx-3 text-slate-500">or</span>
-                            <hr class="w-full border-slate-600" />
+                            <hr class="w-full border-slate-600"/>
                         </div>
                         <div class="text-center mt-2">
-                                <!-- 로그인하지 않은 경우, 로그인 버튼을 보여줌 -->
-                                <a href="/oauth2/authorization/kakao" class="btn border border-slate-600 bg-slate-700 text-slate-300 w-full gap-1">
-                                    <i class="fa-solid fa-comment text-[color:#ffe812]"></i>
-                                    <span class="normal-case">카카오 로그인</span>
-                                </a>
+                            <!-- 로그인하지 않은 경우, 로그인 버튼을 보여줌 -->
+                            <a href="/oauth2/authorization/kakao"
+                               class="btn border border-slate-600 bg-slate-700 text-slate-300 w-full gap-1">
+                                <i class="fa-solid fa-comment text-[color:#ffe812]"></i>
+                                <span class="normal-case">카카오 로그인</span>
+                            </a>
                         </div>
 
+                    </div>
+                    <div class="z-50">
+                        <a href="/usr/member/faq" class="btn btn-link">
+                            <span>
+                                <i class="fa-solid fa-circle-info mr-1"></i>
+                                <span>FAQ</span>&nbsp;
+                            </span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -84,12 +94,12 @@
         let el = '<div class = "  transition-colors duration-[1.5s] hover:duration-[0s] border-[#00FF00] h-[calc(5vw-2px)] w-[calc(5vw-2px)] md:h-[calc(4vw-2px)] md:w-[calc(4vw-2px)] lg:h-[calc(3vw-4px)] lg:w-[calc(3vw-4px)] bg-gray-900 hover:bg-[#FF626F]"></div>'
         for (var k = 1; k <= 1000; k++) {
             el += '<div class = " transition-colors duration-[1.5s] hover:duration-[0s] border-[#00FF00] h-[calc(5vw-2px)] w-[calc(5vw-2px)] md:h-[calc(4vw-2px)] md:w-[calc(4vw-2px)] lg:h-[calc(3vw-4px)] lg:w-[calc(3vw-4px)] bg-gray-900 hover:bg-[#FF626F]"></div>';
-        };
+        }
+        ;
 
         para.innerHTML = el;
         document.getElementById("myDIV").appendChild(para);
     </script>
-
 
 
 </main>
