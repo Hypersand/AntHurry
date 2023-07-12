@@ -7,6 +7,7 @@ import com.ant.hurry.boundedContext.review.entity.Review;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -35,6 +36,7 @@ public class TradeStatus extends BaseEntity {
     private Board board;
 
     @OneToMany(mappedBy = "tradeStatus")
+    @Builder.Default
     List<Review> reviewList = new ArrayList<>();
 
     public String getRequesterUsername() {
