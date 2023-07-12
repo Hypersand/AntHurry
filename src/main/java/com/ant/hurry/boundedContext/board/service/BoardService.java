@@ -15,11 +15,9 @@ import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.ant.hurry.boundedContext.board.repository.BoardRepository;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
-import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -127,14 +125,6 @@ public class BoardService {
 
     public Optional<Board> findByIdWithMember(Long id) {
         return boardRepository.findByIdWithMember(id);
-    }
-
-    public List<Board> findByCode(String code) {
-        return boardRepository.findByRegCode(code);
-    }
-
-    public List<Board> findByCodeAndBoard(String code, BoardType boardType) {
-        return boardRepository.findByRegCodeAndBoardType(code, boardType);
     }
 
     public RsData<Board> canModify(Member member, Long id) {
