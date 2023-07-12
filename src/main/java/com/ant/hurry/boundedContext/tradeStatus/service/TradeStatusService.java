@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.ant.hurry.boundedContext.member.code.MemberErrorCode.MEMBER_NOT_EXISTS;
 import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusErrorCode.*;
 import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusSuccessCode.*;
 import static com.ant.hurry.boundedContext.tradeStatus.entity.Status.*;
@@ -113,7 +114,7 @@ public class TradeStatusService {
         Member member = memberService.findByUsername(username).orElse(null);
 
         if (member == null) {
-            return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
+            return RsData.of(MEMBER_NOT_EXISTS);
         }
 
         List<TradeStatus> tradeStatusList = tradeStatusRepository.findMyTradeStatus(member.getId(), status);

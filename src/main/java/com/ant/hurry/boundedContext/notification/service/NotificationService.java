@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.ant.hurry.boundedContext.member.code.MemberErrorCode.MEMBER_NOT_EXISTS;
+import static com.ant.hurry.boundedContext.notification.code.NotificationSuccessCode.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -94,12 +97,12 @@ public class NotificationService {
 
         if (member == null) {
             //MEMBER_NOT_EXISTS
-            return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
+            return RsData.of(MEMBER_NOT_EXISTS);
         }
 
 
         //NOTIFICATION_LIST_MOVE
-        return RsData.of("S_N-1", "알림목록페이지로 이동합니다.",
+        return RsData.of(REDIRECT_NOTIFICATION_LIST_PAGE,
                 notificationRepository.findAllByMemberId(member.getId()));
     }
 
@@ -108,13 +111,13 @@ public class NotificationService {
         Member member = memberService.findByUsername(username).orElse(null);
 
         if (member == null) {
-            return RsData.of("F_M-1", "존재하지 않는 회원입니다.");
+            return RsData.of(MEMBER_NOT_EXISTS);
         }
 
 
         notificationRepository.deleteById(id);
 
-        return RsData.of("S_N-2", "성공적으로 알림이 삭제되었습니다.");
+        return RsData.of(REMOVE_NOTIFICATION);
     }
 
     public void markRead(List<Notification> notifications) {
