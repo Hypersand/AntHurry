@@ -61,8 +61,8 @@ class ChatRoomServiceTest {
     @Test
     @DisplayName("모든 멤버가 채팅방을 나가면 채팅방은 자동으로 삭제됩니다.")
     void chatRoom_create_delete_whenMemberExit() {
-        Member member1 = Member.builder().build();
-        Member member2 = Member.builder().build();
+        Member member1 = Member.builder().id(100L).build();
+        Member member2 = Member.builder().id(101L).build();
         TradeStatus tradeStatus = TradeStatus.builder().requester(member1).helper(member2).build();
         RsData<ChatRoom> createdRs = chatRoomService.create(tradeStatus);
 
