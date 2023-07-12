@@ -66,9 +66,14 @@ public class MemberController {
         Member member = rq.getMember();
         Optional<ProfileImage> profileImage = memberService.findProfileImage(member);
         Long tradeStatusCount = tradeStatusService.getMemberTradeStatusCount(member.getId());
+        Long reviewCount = reviewService.getMyReviewCount(member.getId());
+        Long myTradeStatusCount = tradeStatusCount - reviewCount;
+        if(myTradeStatusCount < 0){
+            myTradeStatusCount = 0L;
+        }
         model.addAttribute("member", member);
         model.addAttribute("profileImage", profileImage.orElse(null));
-        model.addAttribute("tradeStatusCount", tradeStatusCount);
+        model.addAttribute("myTradeStatusCount", myTradeStatusCount);
         return "usr/member/profile";
     }
 

@@ -131,4 +131,8 @@ public class ReviewService {
         return reviewRepository.countByReceiver_Id(id);
     }
 
+    public Long getMyReviewCount(Long id){
+        return reviewRepository.countByWriter_Id(id);
+    }
+
 }
