@@ -2,6 +2,9 @@ package com.ant.hurry.boundedContext.member.controller;
 
 import com.ant.hurry.base.rq.Rq;
 import com.ant.hurry.base.rsData.RsData;
+import com.ant.hurry.boundedContext.board.dto.BoardDto;
+import com.ant.hurry.boundedContext.board.entity.Board;
+import com.ant.hurry.boundedContext.board.service.BoardService;
 import com.ant.hurry.boundedContext.member.dto.ProfileRequestDto;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.entity.ProfileImage;
@@ -16,6 +19,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -31,6 +36,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -45,6 +51,7 @@ public class MemberController {
     private final TradeStatusService tradeStatusService;
     private final ReviewService reviewService;
     private final ChatRoomService chatRoomService;
+    private final BoardService boardService;
     private final Rq rq;
 
     private final ObjectMapper objectMapper;
@@ -249,6 +256,28 @@ public class MemberController {
         model.addAttribute("reviewCount", reviewCount);
 
         return "usr/member/usrCheck";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/myboard")
+    @Operation(summary = "내가 쓴 글", description = "내가 쓴 글을 보여줍니다.")
+    public String showMyBoard(Model model, @RequestParam(value = "lastId", required = false) Long lastId) {
+        Member member = rq.getMember();
+        Slice<BoardDto> boards = boardService.getMyBoards(lastId, member, PageRequest.ofSize(10));
+        model.addAttribute("boards", boards);
+        return "usr/member/myboard";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/myboard/{lastId}")
+    @ResponseBody
+    @Operation(summary = "내가 쓴 글 첫 페이지 이후", description = "내가 쓴 글을 첫 페이지 이후 페이지를 요청합니다.")
+    public ResponseEntity<?> showMyBoard(@PathVariable("lastId") Long lastId) {
+        Member member = rq.getMember();
+        Slice<BoardDto> boards = boardService.getMyBoards(lastId, member, PageRequest.ofSize(10));
+        Map<String, Object> map = new HashMap<>();
+        map.put("boardList", boards.getContent());
+        return ResponseEntity.ok(map);
     }
 
     @Operation(summary = "나급해요 공지사항", description = "나급해요 공지사항을 보여줍니다.")

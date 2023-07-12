@@ -1,0 +1,179 @@
+<html layout:decorate="~{usr/layout/layout.html}">
+
+<head>
+  <title>내 게시글</title>
+</head>
+
+<body>
+<header layout:fragment="header" class="sticky top-0 z-50">
+
+  <div class="navbar max-w-2xl mx-auto bg-base-100">
+    <div class="navbar-start">
+      <div>
+        <a tabindex="0" class="btn btn-ghost btn-circle" onclick="history.back()">
+          <i class="fa-solid fa-angle-left"></i>
+        </a>
+      </div>
+    </div>
+    <div class="navbar-center">
+      <a class="font-black">내 게시글</a>
+    </div>
+    <div class="navbar-end">
+
+    </div>
+  </div>
+
+</header>
+
+<main layout:fragment="main" class="flex flex-col items-center overflow-y-scroll">
+
+  <div class="item_row flex flex-col md:w-[584px] w-[92%] mx-auto">
+    <div th:if="${!#lists.isEmpty(boards)}" th:each="board : ${boards}"
+         class="item flex flex-col md:w-[584px] w-[92%] mx-auto">
+      <div class="card-item p-2 mt-2" th:data-type="${board.boardType}">
+        <a th:href="@{/board/{id}(id=${board.id})}">
+          <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+              <div class="flex">
+                <span class="card-title" th:text="${board.title}"></span>
+                <span class="text-xs mt-1 ml-auto" th:text="${board.boardType}"></span>
+              </div>
+              <span class="text-xs mb-1" th:if="${board.nickname != null}"
+                    th:text="${board.nickname}"></span>
+              <div class="flex">
+                <span th:text="${board.rewardCoin}" class="pr-1"></span>
+                <img class="w-6 h-6" src="https://cdn-icons-png.flaticon.com/128/1490/1490853.png"
+                     alt="text">
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script th:inline="javascript">
+    let isFetching = false;
+    const itemRow = document.querySelector('.item_row');
+    const boardSearch = [[${content}]];
+
+    const drawSearchList = (boardList) => {
+      boardList.forEach(board => {
+
+        const cardItem = document.createElement('div');
+        cardItem.setAttribute('class', 'item flex flex-col md:w-[584px] w-[92%] mx-auto');
+
+        const cardItemBody = document.createElement('div');
+        cardItemBody.setAttribute('class', 'card-item p-2 mt-2');
+        cardItemBody.setAttribute('data-type', board.boardType);
+
+        const cardItemBodyLink = document.createElement('a');
+        cardItemBodyLink.setAttribute('href', `/board/${board.id}`);
+
+        const card = document.createElement('div');
+        card.setAttribute('class', 'card bg-base-100 shadow-lg');
+
+        const cardBody = document.createElement('div');
+        cardBody.setAttribute('class', 'card-body');
+
+        const cardBodyFlex = document.createElement('div');
+        cardBodyFlex.setAttribute('class', 'flex');
+
+        const cardTitle = document.createElement('span');
+        cardTitle.setAttribute('class', 'card-title');
+        cardTitle.innerText = board.title;
+
+        const cardType = document.createElement('span');
+        cardType.setAttribute('class', 'text-xs mt-1 ml-auto');
+        cardType.innerText = board.boardType;
+
+        const memberNickname = document.createElement('span');
+        memberNickname.setAttribute('class', 'text-xs mb-1');
+        memberNickname.innerText = board.nickname;
+
+        const cardBodyFlex2 = document.createElement('div');
+        cardBodyFlex2.setAttribute('class', 'flex');
+
+        const cardRewardCoin = document.createElement('span');
+        cardRewardCoin.setAttribute('class', 'pr-1');
+        cardRewardCoin.innerText = board.rewardCoin;
+
+        const cardRewardCoinImg = document.createElement('img');
+        cardRewardCoinImg.setAttribute('class', 'w-6 h-6');
+        cardRewardCoinImg.setAttribute('src', 'https://cdn-icons-png.flaticon.com/128/1490/1490853.png');
+        cardRewardCoinImg.setAttribute('alt', 'text');
+
+        cardBodyFlex2.appendChild(cardRewardCoin);
+        cardBodyFlex2.appendChild(cardRewardCoinImg);
+
+        cardBodyFlex.appendChild(cardTitle);
+        cardBodyFlex.appendChild(cardType);
+        cardBody.appendChild(cardBodyFlex);
+        cardBody.appendChild(memberNickname);
+        cardBody.appendChild(cardBodyFlex2);
+        card.appendChild(cardBody);
+        cardItemBodyLink.appendChild(card);
+        cardItemBody.appendChild(cardItemBodyLink);
+        cardItem.appendChild(cardItemBody);
+
+
+        itemRow.appendChild(cardItem);
+      });
+      isFetching = false;
+    };
+
+    const loadMoreItems = () => {
+      isFetching = true;
+      const lastId = document.querySelector('.item_row .item:last-child .card-item a').getAttribute('href').split('/')[2];
+
+
+      const url = `/usr/member/myboard/${lastId}`;
+
+      fetch(url)
+              .then((response) => response.json())
+              .then(data => {
+                const boardList = data.boardList;
+                if(boardList.length === 0){
+                  toastNotice('더 이상 게시글이 없습니다.');
+                  return;
+                }
+                drawSearchList(boardList);
+              })
+              .catch(error => {
+                console.log(error);
+              });
+    };
+
+
+    function debounce(callback, limit = 100) {
+      let timeout
+      return function (...args) {
+        clearTimeout(timeout)
+        timeout = setTimeout(() => {
+          callback.apply(this, args)
+        }, limit)
+      }
+    }
+
+    //무한 스크롤, 스크롤이 바닥에 닿으면 loadMoreItems 함수 실행
+    document.addEventListener("scroll", debounce(e => {
+      const {clientHeight, scrollTop, scrollHeight} = e.target.scrollingElement;
+      if (clientHeight + scrollTop >= scrollHeight) {
+        if (!isFetching) {
+          loadMoreItems();
+
+        }
+      }
+    }, 200))
+
+
+
+  </script>
+
+
+
+</main>
+
+</body>
+
+</html>

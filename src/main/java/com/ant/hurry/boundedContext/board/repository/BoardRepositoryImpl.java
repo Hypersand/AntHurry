@@ -4,6 +4,7 @@ import com.ant.hurry.boundedContext.board.dto.BoardDto;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.board.entity.BoardType;
 import com.ant.hurry.boundedContext.board.entity.TradeType;
+import com.ant.hurry.boundedContext.member.entity.Member;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -71,6 +72,20 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .where(idLt, codeEq, board.boardType.eq(BoardType.나급해요),
                         board.tradeType.eq(TradeType.오프라인),
                         board.title.contains(search).or(board.content.contains(search)))
+                .orderBy(board.id.desc())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        return checkLastPage(pageable, results);
+    }
+
+    @Override
+    public Slice<BoardDto> myBoardPaginationNoOffsetBuilder(Long id, Member member, Pageable pageable) {
+        BooleanExpression idLt = id != null ? board.id.lt(id) : null;
+        BooleanExpression memberIdEq = member != null ? board.member.eq(member) : null;
+
+        List<Board> results = jpaQueryFactory.selectFrom(board)
+                .where(idLt, memberIdEq)
                 .orderBy(board.id.desc())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
