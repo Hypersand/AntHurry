@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ant.hurry.boundedContext.board.entity.BoardType.나급해요;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.*;
@@ -76,12 +77,18 @@ class NotificationServiceTest {
 
         //given
         Notification notification = new Notification();
+        Optional<Board> opBoard = Optional.of(
+                Board.builder()
+                        .boardType(나급해요)
+                        .build()
+        );
+        when(boardService.findByIdWithMember(any(Long.class))).thenReturn(opBoard);
         when(memberService.findByUsername(anyString())).thenReturn(Optional.of(requester));
         when(rq.getMember()).thenReturn(helper);
         when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 
         //when
-        notificationService.notifyNew(requester, helper);
+        notificationService.notifyNew(requester, helper, opBoard.get());
 
         //then
         verify(publisher, times(1)).publishEvent(any(NotifyNewMessageEvent.class));
