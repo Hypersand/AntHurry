@@ -17,10 +17,12 @@
             </div>
         </div>
         <div class="navbar-center">
-            <a th:if="${otherMember.getNickname().length() > 15}" th:href="@{/usr/member/profile/{id}(id=${otherMember.id})}"
-                  class="font-black" th:text="|${otherMember.getNickname().substring(0, 15)}... 님과의 채팅|"></a>
-            <a th:if="${otherMember.getNickname().length() <= 15}" th:href="@{/usr/member/profile/{id}(id=${otherMember.id})}"
-                  class="font-black" th:text="|${otherMember.getNickname()} 님과의 채팅|"></a>
+            <a th:if="${otherMember.getNickname().length() > 15}"
+               th:href="@{/usr/member/profile/{id}(id=${otherMember.id})}"
+               class="font-black" th:text="|${otherMember.getNickname().substring(0, 15)}... 님과의 채팅|"></a>
+            <a th:if="${otherMember.getNickname().length() <= 15}"
+               th:href="@{/usr/member/profile/{id}(id=${otherMember.id})}"
+               class="font-black" th:text="|${otherMember.getNickname()} 님과의 채팅|"></a>
         </div>
         <div class="navbar-end">
             <label for="my_modal_7" class="btn btn-ghost btn-circle">
@@ -57,13 +59,13 @@
             <div id="messages" th:class="${@rq.getMember().getUsername().equals(message.writer)} ?
                  'flex w-full justify-end' : 'flex w-full justify-start'" th:each="message : ${chatMessages}">
                 <div class="chat chat-start flex" th:if="${!@rq.getMember().getUsername().equals(message.writer)}">
-                    <div class="chat-image avatar flex-none">
+                    <a class="chat-image avatar flex-none" th:href="@{/usr/member/profile/{id}(id=${otherMember.id})}">
                         <img th:if="${otherProfileImage != null}" style="width:2.5rem; height:2.5rem;"
                              class="rounded-full bg-pink-300" th:src="${otherProfileImage.fullPath}"
                              alt="profile image"/>
                         <img th:if="${otherProfileImage == null}" style="width:2.5rem; height:2.5rem;"
                              class="rounded-full bg-pink-300" src="/img/profile.png" alt="profile image"/>
-                    </div>
+                    </a>
                     <div class="chat-bubble" th:text="${message.message}"></div>
                     <div class="chat-header mt-6">
                         <time class="text-xs opacity-50"
@@ -79,12 +81,12 @@
                               th:text="${#temporals.format(message.createdAt, 'HH:mm')}"></time>
                     </div>
                     <div class="chat-bubble" th:text="${message.message}"></div>
-                    <div class="chat-image avatar flex-none">
+                    <a class="chat-image avatar flex-none" th:href="@{/usr/member/profile/{id}(id=${@rq.getMember().id})}">
                         <img th:if="${myProfileImage != null}" style="width:2.5rem; height:2.5rem;"
                              class="rounded-full bg-pink-300" th:src="${myProfileImage.fullPath}" alt="profile image"/>
                         <img th:if="${myProfileImage == null}" style="width:2.5rem; height:2.5rem;"
                              class="rounded-full bg-pink-300" src="/img/profile.png" alt="profile image"/>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
