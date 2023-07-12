@@ -3,7 +3,9 @@ package com.ant.hurry.boundedContext.tradeStatus.service;
 import com.ant.hurry.base.rsData.RsData;
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.member.service.MemberService;
+import com.ant.hurry.boundedContext.tradeStatus.dto.TradeStatusDto;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.event.EventAfterDeletedTradeStatus;
@@ -15,9 +17,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusErrorCode.*;
 import static com.ant.hurry.boundedContext.tradeStatus.code.TradeStatusSuccessCode.*;
@@ -150,5 +155,23 @@ public class TradeStatusService {
         for (TradeStatus tradeStatus : tradeStatuses) {
             updateStatus(tradeStatus, CANCELED);
         }
+    }
+
+    public List<TradeStatusDto> getTradeStatusInfo(List<TradeStatus> data, Member member) {
+        return data.stream()
+                .map(tradeStatus -> createTradeStatusDto(tradeStatus, member))
+                .collect(Collectors.toList());
+    }
+
+    private TradeStatusDto createTradeStatusDto(TradeStatus tradeStatus, Member member) {
+        TradeStatusDto tradeStatusDto = new TradeStatusDto(tradeStatus, member);
+        Member opponent = getOpponent(tradeStatus, member);
+        memberService.findProfileImage(opponent)
+                .ifPresent(profileImage -> tradeStatusDto.setFullPath(profileImage.getFullPath()));
+        return tradeStatusDto;
+    }
+
+    private Member getOpponent(TradeStatus tradeStatus, Member member) {
+        return tradeStatus.getRequester().equals(member) ? tradeStatus.getHelper() : tradeStatus.getRequester();
     }
 }
