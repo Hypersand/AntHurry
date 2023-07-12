@@ -58,7 +58,7 @@ public class BoardServiceTest {
 
 
         // Then
-        assertThat(canModify.getResultCode()).isEqualTo("S_B-3");
+        assertThat(canModify.getResultCode()).isEqualTo("S_B-4");
         assertThat(canModify.getMsg()).isEqualTo("수정 가능합니다.");
     }
 
@@ -91,7 +91,7 @@ public class BoardServiceTest {
 
 
         // Then
-        assertThat(modify.getResultCode()).isEqualTo("S_B-3");
+        assertThat(modify.getResultCode()).isEqualTo("S_B-5");
         assertThat(modify.getMsg()).isEqualTo("게시글이 수정되었습니다.");
     }
 
