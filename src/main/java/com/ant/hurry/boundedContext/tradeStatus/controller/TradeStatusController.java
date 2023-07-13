@@ -67,15 +67,18 @@ public class TradeStatusController {
             if (chatRoom != null && chatRoom.getExitedMembers().size() == 1 &&
                     chatRoom.getExitedMembers().get(0).getId().equals(rq.getMember().getId())) {
                 return "redirect:/chat/back/%s".formatted(chatRoom.getId());
+            } else if (chatRoom != null && (chatRoom.getExitedMembers().isEmpty() ||
+                    !chatRoom.getExitedMembers().get(0).getId().equals(rq.getMember().getId()))) {
+                return "redirect:/chat/room/%s".formatted(chatRoom.getId());
             }
         }
 
         Member requester;
         Member helper;
 
-        //request: 도움을 받고자 하는 자 / helper: 도와주는 사람
-        //나 급해요 request: 게시글을 올린 사람
-        //나 잘해요 request: 채팅 걸은 사람
+        // requester: 도움을 받는 유저 / helper: 도움을 주는 유저
+        // 나 급해요 requester: 게시글을 작성한 유저
+        // 나 잘해요 requester: 채팅을 시작한 유저
         if (board.getBoardType().equals(나급해요)) {
             requester = board.getMember();
             helper = rq.getMember();
@@ -86,7 +89,7 @@ public class TradeStatusController {
 
         RsData<TradeStatus> tradeStatus = tradeStatusService.create(board, requester, helper);
         RsData<ChatRoom> chatRoom = chatRoomService.create(tradeStatus.getData());
-        notificationService.notifyNew(requester, helper,board);
+        notificationService.notifyNew(requester, helper, board);
         return "redirect:/chat/room/%s".formatted(chatRoom.getData().getId());
     }
 
