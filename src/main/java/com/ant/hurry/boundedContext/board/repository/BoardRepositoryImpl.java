@@ -2,7 +2,6 @@ package com.ant.hurry.boundedContext.board.repository;
 
 import com.ant.hurry.boundedContext.board.dto.BoardDto;
 import com.ant.hurry.boundedContext.board.entity.Board;
-import com.ant.hurry.boundedContext.board.entity.BoardType;
 import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.querydsl.core.types.dsl.BooleanExpression;

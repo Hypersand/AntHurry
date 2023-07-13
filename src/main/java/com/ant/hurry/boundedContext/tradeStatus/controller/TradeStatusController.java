@@ -44,14 +44,15 @@ public class TradeStatusController {
     private final NotificationService notificationService;
     private final Rq rq;
 
-    @Operation(summary = "거래 상태 생성", description = "게시물의 채팅하기 버튼을 누르면 거래 상태가 생성됩니다.")
+    @Operation(summary = "거래 상태 생성", description = "게시글의 채팅하기 버튼을 누르면 거래 상태가 생성됩니다.")
     @GetMapping("/create/{id}")
     public String create(@PathVariable Long id) {
 
         Optional<Board> opBoard = boardService.findByIdWithMember(id);
         if (opBoard.isEmpty()) return rq.historyBack("존재하지 않는 게시물입니다.");
 
-        Optional<TradeStatus> checkExistStatus = tradeStatusService.checkExistStatus(id, rq.getMember().getId());
+        Optional<TradeStatus> checkExistStatus = tradeStatusService
+                .checkExistStatus(id, rq.getMember().getId());
 
         Board board = opBoard.get();
 
@@ -60,8 +61,13 @@ public class TradeStatusController {
         }
 
         if (checkExistStatus.isPresent()) {
-            RsData<ChatRoom> chatRoomRsData = chatRoomService.findByTradeStatusId(checkExistStatus.get().getId());
-            return "redirect:/chat/room/%s".formatted(chatRoomRsData.getData().getId());
+            ChatRoom chatRoom = chatRoomService
+                    .findByTradeStatusId(checkExistStatus.get().getId()).getData();
+
+            if (chatRoom != null && chatRoom.getExitedMembers().size() == 1 &&
+                    chatRoom.getExitedMembers().get(0).getId().equals(rq.getMember().getId())) {
+                return "redirect:/chat/back/%s".formatted(chatRoom.getId());
+            }
         }
 
         Member requester;
@@ -86,15 +92,18 @@ public class TradeStatusController {
 
     @Operation(summary = "거래 상태 목록 조회", description = "유저의 현재 거래 상태 목록을 조회합니다.")
     @GetMapping("/list")
-    public String showList(@RequestParam(defaultValue = "COMPLETE") String status, @AuthenticationPrincipal User user, Model model) {
+    public String showList(
+            @RequestParam(defaultValue = "COMPLETE") String status,
+            @AuthenticationPrincipal User user, Model model
+    ) {
 
-        RsData<List<TradeStatus>> rsData = tradeStatusService.findMyTradeStatusList(user.getUsername(), valueOf(status));
+        RsData<List<TradeStatus>> rsData = tradeStatusService
+                .findMyTradeStatusList(user.getUsername(), valueOf(status));
         if (rsData.isFail()) {
             return rq.historyBack(rsData.getMsg());
         }
 
-        List<TradeStatusDto> tradeStatusDTOList = rsData.getData().stream()
-                .map(tradeStatus -> new TradeStatusDto(tradeStatus, rq.getMember())).toList();
+        List<TradeStatusDto> tradeStatusDTOList = tradeStatusService.getTradeStatusInfo(rsData.getData(), rq.getMember());
 
         model.addAttribute("tradeStatusList", tradeStatusDTOList);
 
@@ -115,8 +124,8 @@ public class TradeStatusController {
 
         RsData<List<TradeStatus>> rsData = tradeStatusService
                 .findMyTradeStatusList(user.getUsername(), valueOf(status));
-        List<TradeStatusDto> tradeStatusDTOList = rsData.getData().stream()
-                .map(tradeStatus -> new TradeStatusDto(tradeStatus, rq.getMember())).toList();
+
+        List<TradeStatusDto> tradeStatusDTOList = tradeStatusService.getTradeStatusInfo(rsData.getData(), rq.getMember());
 
         Map<String, Object> map = new HashMap<>();
 

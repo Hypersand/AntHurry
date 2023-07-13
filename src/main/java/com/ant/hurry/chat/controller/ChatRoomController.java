@@ -98,12 +98,28 @@ public class ChatRoomController {
         RsData exitRs = chatRoomService.exit(rs.getData(), rq.getMember());
 
         if (exitRs.isFail()) {
-            rq.historyBack(exitRs.getMsg());
+            return rq.historyBack(exitRs.getMsg());
         }
 
         chatMessageController.sendExitMessage(id);
 
         return "redirect:/chat/myRooms";
+    }
+
+    @Operation(summary = "채팅방 재입장", description = "삭제된 채팅방이 아니라면 퇴장한 채팅방에 재입장합니다.")
+    @GetMapping("/back/{id}")
+    public String backToRoom(@PathVariable String id) {
+        ChatRoom chatRoom = chatRoomService.findById(id).getData();
+
+        RsData backRs = chatRoomService.backToRoom(chatRoom, rq.getMember());
+
+        if(backRs.isFail()) {
+            return rq.historyBack(backRs.getMsg());
+        }
+
+        chatMessageController.sendBackMessage(id);
+
+        return "redirect:/chat/room/%s".formatted(chatRoom.getId());
     }
 
 }

@@ -104,7 +104,7 @@
           // 입력된 전화번호가 비어 있거나 형식에 맞지 않는 경우
           var phoneRegEx = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/; // 수정: 전화번호 형식 정규 표현식
           if (!phoneNumber || !phoneRegEx.test(phoneNumber)) {
-            alert('유효한 전화번호를 입력하세요.');
+            toastWarning("유효한 전화번호를 입력하세요.");
             return; // 중요: 유효하지 않은 전화번호를 입력한 경우 요청을 중단합니다.
           }
 
@@ -146,20 +146,19 @@
                 // 시간이 끝났으면 타이머 중지
                 if (timeLeft <= 0) {
                   clearInterval(interval);
-                  alert("인증시간이 지났습니다. 인증번호를 다시 받아주세요.");
+                  toastWarning("인증시간이 지났습니다. 인증번호를 다시 받아주세요.");
                 }
               }, 1000); // 1초에 한 번씩 실행
-
-              alert("인증번호가 발송되었습니다.");
+              toastWarning("인증번호가 발송되었습니다.");
             },
             error: function(jqXHR, textStatus, errorThrown) {
               // 요청이 실패하면 이곳에 코드를 작성합니다.
               var errorResponse = jqXHR.responseJSON;  // JSON 데이터로 파싱된 응답
               var errorMessage = errorResponse.message;  // 실패 메시지
               if(errorMessage === "전화번호 중복"){
-                alert("이미 사용중인 전화번호 입니다. 다른 번호로 요청해주세요.");
+                toastWarning("이미 사용중인 전화번호 입니다. 다른 번호로 요청해주세요.");
               }else{
-                alert('핸드폰 인증에 실패하였습니다. 다시 시도해 주세요.');
+                toastWarning("핸드폰 인증에 실패하였습니다. 다시 시도해 주세요.");
               }
             }
           });
@@ -182,14 +181,13 @@
             },
             success: function (response) {
               clearInterval(interval); //타이머 중지
-              alert(response.message);
+              toastNotice(response.message);
             },
             error: function (jqXHR, textStatus, errorThrown) {
               // 서버가 반환한 데이터를 확인합니다.
               var errorResponse = jqXHR.responseJSON;  // JSON 데이터로 파싱된 응답
               var errorMessage = errorResponse.message;  // 실패 메시지
-
-              alert(errorMessage);  // 출력: 실패 메시지
+              toastWarning(errorMessage); // 출력: 실패 메시지
             }
           });
         });
@@ -208,7 +206,7 @@
             },
             success: function (response) {
               if(response.message === "전화번호 인증이 완료되었습니다.") {
-                alert(response.message);
+                toastNotice(response.message);
                 window.location.href = "/";
               }
             },
@@ -216,9 +214,7 @@
               // 서버가 반환한 데이터를 확인합니다.
               var errorResponse = jqXHR.responseJSON;  // JSON 데이터로 파싱된 응답
               var errorMessage = errorResponse.message;  // 실패 메시지
-              alert(errorMessage);  // 출력: 실패 메시지
-              console.log(errorMessage);
-
+              toastWarning(errorMessage); // 출력: 실패 메시지
             }
           });
         });

@@ -4,7 +4,6 @@ import com.ant.hurry.base.baseEntity.BaseEntity;
 import com.ant.hurry.boundedContext.board.dto.CreateConvertDTO;
 import com.ant.hurry.boundedContext.board.dto.CreateRequest;
 import com.ant.hurry.boundedContext.member.entity.Member;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

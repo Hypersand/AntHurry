@@ -3,6 +3,7 @@ package com.ant.hurry.boundedContext.tradeStatus.dto;
 
 import com.ant.hurry.boundedContext.board.entity.Board;
 import com.ant.hurry.boundedContext.member.entity.Member;
+import com.ant.hurry.boundedContext.member.entity.ProfileImage;
 import com.ant.hurry.boundedContext.review.entity.Review;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
@@ -21,6 +22,7 @@ public class TradeStatusDto {
     private Board board;
     private boolean reviewCheck;
     private LocalDateTime createdAt;
+    private String fullPath;
 
     public TradeStatusDto(TradeStatus tradeStatus, Member member){
         this.id = tradeStatus.getId();
@@ -30,6 +32,11 @@ public class TradeStatusDto {
         this.helper = tradeStatus.getHelper();
         this.requester = tradeStatus.getRequester();
         this.reviewCheck = checkReview(tradeStatus.getReviewList(), member);
+        this.fullPath = null;
+    }
+
+    public void setFullPath(String fullPath){
+        this.fullPath = fullPath;
     }
 
     private boolean checkReview(List<Review> reviewList, Member member) {

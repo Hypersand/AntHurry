@@ -1,9 +1,6 @@
 package com.ant.hurry.chat.service;
 
 import com.ant.hurry.base.rsData.RsData;
-import com.ant.hurry.boundedContext.board.entity.Board;
-import com.ant.hurry.boundedContext.board.entity.BoardType;
-import com.ant.hurry.boundedContext.board.service.BoardService;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
@@ -23,8 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.ant.hurry.base.code.BasicErrorCode.UNAUTHORIZED;
-import static com.ant.hurry.chat.code.ChatRoomErrorCode.CHATROOM_ALREADY_EXITED;
-import static com.ant.hurry.chat.code.ChatRoomErrorCode.CHATROOM_NO_EXISTS;
+import static com.ant.hurry.chat.code.ChatRoomErrorCode.*;
 import static com.ant.hurry.chat.code.ChatRoomSuccessCode.*;
 
 @Service
@@ -94,7 +90,8 @@ public class ChatRoomService {
     public RsData exit(ChatRoom chatRoom, Member member) {
         List<Member> exitedMembers = chatRoom.getExitedMembers();
 
-        if(exitedMembers.contains(member) || exitedMembers.size() == 2) {
+        if (exitedMembers.size() == 2 || (exitedMembers.size() == 1
+                && exitedMembers.get(0).getId().equals(member.getId()))) {
             return RsData.of(CHATROOM_ALREADY_EXITED);
         }
 
@@ -112,10 +109,27 @@ public class ChatRoomService {
         return RsData.of(CHATROOM_EXITED);
     }
 
-    /**
-     * 모든 멤버가 채팅방을 나가면 ChatRoom을 삭제하고 DeletedChatRoom으로 변환하여 저장합니다.
-     * 이벤트 리스너를 통해 삭제된 채팅방에 대한 채팅 메시지를 soft-delete합니다.
-     */
+    public RsData backToRoom(ChatRoom chatRoom, Member member) {
+        if (chatRoom == null) {
+            return RsData.of(CHATROOM_NOT_FOUND);
+        }
+
+        List<Member> exitedMembers = chatRoom.getExitedMembers();
+
+        if (!exitedMembers.get(0).getId().equals(member.getId())) {
+            return RsData.of(CHATROOM_UNAUTHORIZED);
+        }
+
+        exitedMembers.removeIf(em -> em.getId().equals(member.getId()));
+
+        ChatRoom chatRoomMemberBack = chatRoomRepository.save(chatRoom.toBuilder()
+                .exitedMembers(exitedMembers)
+                .build());
+        chatRoomRepository.save(chatRoomMemberBack);
+
+        return RsData.of(CHATROOM_REENTRY);
+    }
+
     public RsData delete(ChatRoom chatRoom) {
         DeletedChatRoom deletedChatRoom = DeletedChatRoom.builder()
                 .tradeStatus(chatRoom.getTradeStatus())
@@ -135,7 +149,7 @@ public class ChatRoomService {
 
     public void whenAfterDeletedTradeStatus(List<TradeStatus> tradeStatusList) {
         List<ChatRoom> chatRoomList = chatRoomRepository.findByTradeStatus(tradeStatusList);
-        for(ChatRoom chatRoom : chatRoomList){
+        for (ChatRoom chatRoom : chatRoomList) {
             DeletedChatRoom deletedChatRoom = DeletedChatRoom.builder()
                     .tradeStatus(chatRoom.getTradeStatus())
                     .members(chatRoom.getExitedMembers())
@@ -154,8 +168,16 @@ public class ChatRoomService {
             members.removeIf(m -> m.getId().equals(member.getId()));
             members.add(member);
 
-            ChatRoom modifiedChatRoom = cm.toBuilder().members(members).build();
+            List<Member> exitedMembers = cm.getExitedMembers();
+            exitedMembers.removeIf(m -> m.getId().equals(member.getId()));
+            exitedMembers.add(member);
+
+            ChatRoom modifiedChatRoom = cm.toBuilder()
+                    .members(members)
+                    .exitedMembers(exitedMembers)
+                    .build();
             chatRoomRepository.save(modifiedChatRoom);
         });
     }
+
 }

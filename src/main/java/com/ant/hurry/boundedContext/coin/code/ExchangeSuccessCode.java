@@ -13,7 +13,8 @@ public enum ExchangeSuccessCode implements Code {
     EDIT_APPLY_EXCHANGE("S_E-3", "수정되었습니다."),
     CANCEL_APPLY_EXCHANGE("S_E-4", "취소되었습니다."),
     SUCCESS_DELETE_APPLY_EXCHANGE("S_E-5", "삭제되었습니다."),
-    CAN_DELETE_APPLY_EXCHANGE("S_E-6", "취소가 가능합니다.");
+    CAN_DELETE_APPLY_EXCHANGE("S_E-6", "취소가 가능합니다."),
+    SUCCESS_CHARGE("S_E-7", "충전이 완료되었습니다.");
 
     private String code;
     private String message;

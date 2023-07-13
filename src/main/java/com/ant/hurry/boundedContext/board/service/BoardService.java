@@ -15,11 +15,9 @@ import com.ant.hurry.boundedContext.board.entity.TradeType;
 import com.ant.hurry.boundedContext.board.repository.BoardRepository;
 import com.ant.hurry.boundedContext.member.entity.Member;
 import com.ant.hurry.boundedContext.member.service.MemberService;
-import com.ant.hurry.boundedContext.tradeStatus.entity.Status;
 import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import com.ant.hurry.boundedContext.tradeStatus.service.TradeStatusService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -29,6 +27,12 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.ant.hurry.boundedContext.board.code.BoardErrorCode.*;
+import static com.ant.hurry.boundedContext.board.code.BoardSuccessCode.*;
+import static com.ant.hurry.boundedContext.coin.code.ExchangeErrorCode.COIN_NOT_ENOUGH;
+import static com.ant.hurry.boundedContext.coin.code.ExchangeSuccessCode.COIN_ENOUGH;
+import static com.ant.hurry.boundedContext.member.code.MemberErrorCode.MEMBER_NOT_EXISTS;
 
 @Service
 @RequiredArgsConstructor
@@ -45,13 +49,13 @@ public class BoardService {
     public RsData hasEnoughCoin(int rewardCoin) {
         Member member = memberService.findById(rq.getMember().getId()).orElse(null);
         if (ObjectUtils.isEmpty(member)) {
-            return RsData.of("F-1", "유저정보가 없습니다.");
+            return RsData.of(MEMBER_NOT_EXISTS);
         }
         if (member.getCoin() < rewardCoin) {
-            return RsData.of("F-1", "유저의 코인이 부족합니다.");
+            return RsData.of(COIN_NOT_ENOUGH);
         }
         member.decreaseCoin(rewardCoin);
-        return RsData.of("S-1", "충분한 코인을 가지고있습니다.");
+        return RsData.of(COIN_ENOUGH);
     }
 
     @Transactional
@@ -69,7 +73,7 @@ public class BoardService {
                 .member(member)
                 .build();
         boardRepository.save(board);
-        return RsData.of("S-1", "게시글이 작성되었습니다.");
+        return RsData.of(CREATE_BOARD);
     }
 
     public CreateConvertDTO addressConvert(CreateRequest createRequest) {
@@ -98,12 +102,12 @@ public class BoardService {
     public RsData<Board> canDelete(Member member, Long id) {
         Board board = findById(id).orElse(null);
         if (board == null) {
-            return RsData.of("F_B-1", "존재하지 않는 게시물입니다.");
+            return RsData.of(NOT_EXISTS_BOARD);
         }
         if (!member.equals(board.getMember())) {
-            return RsData.of("F_B-2", "삭제할 권한이 없습니다.");
+            return RsData.of(CAN_NOT_REMOVE_BOARD);
         }
-        return RsData.of("S_B-1", "삭제 가능합니다.");
+        return RsData.of(CAN_REMOVE_BOARD);
     }
 
     @Transactional
@@ -112,7 +116,7 @@ public class BoardService {
         tradeStatusService.deleteTradeStatusDueToBoard(id);
         rq.getMember().increaseCoin(board.getRewardCoin());
         boardRepository.delete(board);
-        return RsData.of("S-1", "게시글이 삭제되었습니다.");
+        return RsData.of(REMOVE_BOARD);
     }
 
     public Optional<Board> findById(Long id) {
@@ -123,24 +127,16 @@ public class BoardService {
         return boardRepository.findByIdWithMember(id);
     }
 
-    public List<Board> findByCode(String code) {
-        return boardRepository.findByRegCode(code);
-    }
-
-    public List<Board> findByCodeAndBoard(String code, BoardType boardType) {
-        return boardRepository.findByRegCodeAndBoardType(code, boardType);
-    }
-
     public RsData<Board> canModify(Member member, Long id) {
         Board board = findById(id).orElse(null);
         if (board == null) {
-            return RsData.of("F_B-1", "존재하지 않는 게시물입니다.");
+            return RsData.of(NOT_EXISTS_BOARD);
         }
 
         if (!member.equals(board.getMember())) {
-            return RsData.of("F_B-3", "수정할 권한이 없습니다.");
+            return RsData.of(CAN_NOT_EDIT_BOARD);
         }
-        return RsData.of("S_B-3", "수정 가능합니다.", board);
+        return RsData.of(CAN_EDIT_BOARD, board);
     }
 
     @Transactional
@@ -164,7 +160,7 @@ public class BoardService {
         member.increaseCoin(coin);
         member.decreaseCoin(board.getRewardCoin()); //새 금액으로 차감
 
-        return RsData.of("S_B-4", "게시글이 수정되었습니다.");
+        return RsData.of(EDIT_BOARD);
     }
 
 

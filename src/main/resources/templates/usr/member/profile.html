@@ -31,9 +31,8 @@
             <div class="flex rounded-3xl bg-gray-100 dark:bg-gray-700  flex-row items-center px-4 py-7">
                 <img th:if="${profileImage != null}" class="h-20 w-20 rounded-full bg-pink-300 mr-4"
                      th:src="${profileImage.fullPath}" alt=" ">
-
-                <i class="fa-solid fa-user fa-xl bg-gray-200 rounded-full w-20 h-20 flex items-center justify-center"
-                   th:if="${profileImage == null}"></i>
+                <img th:if="${profileImage == null}" class="h-20 w-20 rounded-full bg-pink-300 mr-4"
+                     src="/img/profile.png" alt="profile image"/>
                 <div class="flex-1 d-flex flex-row justify-content-between items-center ml-5">
                     <h4 class="text-xl font-bold text-navy-700 dark:text-white mb-2 mr-2"
                         th:text="${member.nickname}"></h4>

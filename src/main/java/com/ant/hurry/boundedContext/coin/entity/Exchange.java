@@ -9,9 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.springframework.beans.BeanUtils;
 
 import static jakarta.persistence.FetchType.LAZY;
 
