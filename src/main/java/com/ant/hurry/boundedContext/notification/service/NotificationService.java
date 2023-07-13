@@ -10,7 +10,6 @@ import com.ant.hurry.boundedContext.notification.event.NotifyEndMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyNewMessageEvent;
 import com.ant.hurry.boundedContext.notification.event.NotifyStartMessageEvent;
 import com.ant.hurry.boundedContext.notification.repository.NotificationRepository;
-import com.ant.hurry.boundedContext.tradeStatus.entity.TradeStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -19,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.ant.hurry.boundedContext.board.entity.BoardType.나급해요;
 import static com.ant.hurry.boundedContext.member.code.MemberErrorCode.MEMBER_NOT_EXISTS;
 import static com.ant.hurry.boundedContext.notification.code.NotificationSuccessCode.*;
 
@@ -36,14 +36,29 @@ public class NotificationService {
 
 
     //채팅 시작
-    public void notifyNew(Member requester, Member helper) {
+    public void notifyNew(Member requester, Member helper, Board board) {
 
-        String messageToRequester = helper.getNickname() + "님과의 채팅이 시작되었습니다.";
+        String messageToRequester;
+        Notification notificationToRequester;
 
-        Notification notificationToRequester = Notification.create(messageToRequester, "START", requester, null);
+        //나 급해요
+        //채팅 시작 시, 알림과 문자는 게시판을 만든 사람(request)에게 가야한다.
+        if(board.getBoardType().equals(나급해요)){
+            messageToRequester = helper.getNickname() + "님과의 채팅이 시작되었습니다.";
+            notificationToRequester = Notification.create(messageToRequester, "START", requester, null);
+
+            notificationRepository.save(notificationToRequester);
+            publisher.publishEvent(new NotifyNewMessageEvent(requester.getPhoneNumber(), messageToRequester));
+            return;
+        }
+
+        //나 잘해요
+        //채팅 시작 시, 알림과 문자는 게시판을 만든 사람(helper)에게 가야한다.
+        messageToRequester = requester.getNickname() + "님과의 채팅이 시작되었습니다.";
+        notificationToRequester = Notification.create(messageToRequester, "START", helper, null);
         notificationRepository.save(notificationToRequester);
 
-        publisher.publishEvent(new NotifyNewMessageEvent(requester.getPhoneNumber(), messageToRequester));
+        publisher.publishEvent(new NotifyNewMessageEvent(helper.getPhoneNumber(), messageToRequester));
     }
 
     //거래 시작
